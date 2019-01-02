@@ -1,0 +1,29 @@
+.warning {
+  position: relative;
+  top: 60px;
+  width: calc(100% - 40px);
+  height: 50px;
+  margin: 10px;
+  padding: 0 10px;
+  margin-right: -200px;
+  background-color: rgba(255, 128, 128, 0.75);
+  border: 1px solid red;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: warning-slide-in .5s forwards;
+}
+
+.remove-warning img {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+@keyframes warning-slide-in {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+}

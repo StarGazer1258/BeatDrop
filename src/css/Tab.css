@@ -1,0 +1,16 @@
+.tab {
+  font-weight: 700;
+  margin: 0 5px;
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.tab:hover {
+  opacity: 0.8;
+}
+
+.tab.active {
+  color: royalblue;
+  text-decoration-color: royalblue;
+  opacity: 1;
+}

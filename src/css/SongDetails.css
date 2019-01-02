@@ -1,0 +1,204 @@
+#song-details {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 15px;
+  height: calc(100vh - 85px);
+  position: relative;
+  animation: song-details-fade-in .2s forwards;
+}
+
+#song-details .cover-image {
+  width: 15vw;
+  height: 15vw;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  border-radius: 5px;
+}
+
+#song-details.loading .cover-image {
+  display: block;
+  background-color: silver;
+  width: 150px;
+  height: 150px;
+}
+
+#song-details .close-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 25px;
+  height: 25px;
+  background: url(../assets/close.png);
+  background-size: 25px;
+}
+
+.theme-dark #song-details .close-icon {
+  background: url(../assets/dark/close.png);
+  background-size: 25px;
+}
+
+#song-details .details-info {
+  margin: 10px 20px;
+}
+
+#song-details .details-title {
+  display: inline-block;
+  font-size: 20pt;
+  font-weight: 900;
+  margin-top: 3px;
+  margin-bottom: -3px;
+  max-width: calc(62vw - 300px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.view-right.sidebar-collapsed #song-details .details-title {
+  max-width: calc(70vw - 250px);
+}
+
+#song-details.loading .details-title {
+  display: inline-block;
+  height: 30px;
+  width: 30vw;
+  background-color: silver;
+}
+
+#song-details.loading .details-subtitle {
+  height: 15px;
+  width: 15vw;
+  background-color: silver;
+}
+
+#song-details .details-artist {
+  font-size: 14pt;
+  opacity: 0.8;
+}
+
+#song-details.loading .details-artist {
+  height: 20px;
+  width: 15vw;
+  background-color: silver;
+  margin-top: 5px;
+}
+
+#song-details .details-description {
+  margin-bottom: 10px;
+  max-width: 30vw;
+  max-height: 20vh;
+  overflow-y: scroll;
+}
+
+#song-details .details-uploader {
+  margin-bottom: 10px;
+}
+
+#song-details .details-difficulties {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+#song-details .details-ratings {
+  position: absolute;
+  right: 8vw;
+}
+
+#song-details .action-buttons {
+  margin: 15px 0;
+}
+
+#song-details .action-buttons .action-button {
+  margin: 0 3px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 8pt;
+  font-weight: 900;
+  color: white;
+  background-color: rgba(42, 77, 163, 0.8);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+#song-details .action-buttons .action-button:hover {
+  background-color: rgb(42, 77, 163);
+}
+
+#song-details .action-buttons .action-button.download-button {
+  padding: 2px 7px;
+  width: 90px;
+  background-color: rgba(42, 77, 163, 0.3);
+  border: 3px solid rgba(42, 77, 163, 0.8);
+  display: inline-flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+  margin-top: -1px;
+}
+
+#song-details .action-buttons .action-button.download-button:hover {
+  border: 3px solid rgb(42, 77, 163);
+}
+
+#song-details .action-buttons .action-button.download-button:hover span:first-child {
+  background-color: rgb(42, 77, 163);
+}
+
+#song-details .action-buttons .action-button.download-button span:first-child {
+  display: inline-block;
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  height: 110%;
+  background-color: rgba(42, 77, 163, 0.8);
+  z-index: -1;
+}
+
+#song-details .action-buttons .action-button:not(.more-button) img {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+#song-details.loading .action-button {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#song-details .action-buttons .action-button.playlist-add-button {
+  width: 110px;
+}
+
+#song-details .action-buttons .action-button.more-button img {
+  width: 15px;
+  height: 15px;
+}
+
+#song-details.loading .details-description {
+  background-color: silver;
+  width: 30vw;
+  height: 16.8vw;
+}
+
+#song-details #preview {
+  margin-top: 5px;
+}
+
+#song-details #preview:not([src]) {
+  mask-image: linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  mask-size: 300px;
+  animation: song-details-loading-mask 1s linear forwards infinite;
+}
+
+@keyframes song-details-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes song-details-loading-mask {
+  to {
+    mask-position: 300px 0; 
+  }
+}

@@ -1,0 +1,63 @@
+.compact-song-list-item {
+  width: calc(100% - 10px);
+  height: 50px;
+  padding: 0 10px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: .2s;
+  flex-flow: row nowrap;
+  overflow: hidden;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.compact-song-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.compact-song-list-item .song-details {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.compact-song-list-item.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.compact-song-list-item.loading img {
+  width: 150px;
+  height: 150px;
+}
+
+.compact-song-list-item .song-title {
+  font-size: 18pt;
+  font-weight: 900;
+  max-width: calc(100vw - 600px);
+  margin-right: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.compact-song-list-item .song-artist {
+  font-weight: 700;
+  opacity: 0.7;
+  margin-right: 5px;
+  white-space: nowrap;
+}
+
+.compact-song-list-item .uploader {
+  font-size: 12pt;
+  max-width: calc(100vw - 290px);
+  margin-right: 5px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-right: 5px;
+}

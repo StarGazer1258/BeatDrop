@@ -1,0 +1,135 @@
+#titlebar {
+  width: 100%;
+  height: 35px;
+  font-weight: 200;
+  -webkit-app-region: drag;
+  position: fixed;
+  top: 0;
+  border-radius: 5px 5px 0 0;
+  font-family: "Montserrat", "Lato", sans-serif;
+  background: white;
+  background-size: 100px;
+  background-position: 20px 0;
+  border-bottom: 1px solid silver;
+}
+
+#titlebar.theme-dark {
+  background: #252525;
+  border-bottom: 1px solid #454545;
+}
+
+#titlebar .window-title {
+  height: 100%;
+  margin-left: 0px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+}
+
+#titlebar.theme-dark {
+  color: white;
+}
+
+#titlebar img {
+  width: 15px;
+  margin-right: 5px;
+}
+
+
+#titlebar #close-button {
+  flex-basis: 45px;
+  width: 45px;
+  height: 100%;
+  background: white;
+  float: right;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: .2s;
+  -webkit-app-region: no-drag;
+}
+
+#titlebar.theme-dark #close-button {
+  background: #252525;
+}
+
+#titlebar #close-button:hover {
+  background: #e0021f;
+  transition: 0s;
+}
+
+#titlebar #close-button #close-icon {
+  background-image: url(../assets/close.png);
+  background-size: cover;
+  width: 10px;
+  height: 10px;
+}
+
+#titlebar.theme-dark #close-button #close-icon {
+  background-image: url(../assets/dark/close.png);
+}
+
+#titlebar #resize-button {
+  width: 45px;
+  height: 100%;
+  background: white;
+  float: right;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: .2s;
+  -webkit-app-region: no-drag;
+}
+
+#titlebar.theme-dark #resize-button {
+  background: #252525;
+}
+
+#titlebar #resize-button #resize-icon {
+  background-image: url(../assets/maximize.png);
+  background-size: cover;
+  width: 10px;
+  height: 10px;
+}
+
+#titlebar.theme-dark #resize-button #resize-icon {
+  background-image: url(../assets/dark/maximize.png);
+}
+
+#titlebar #minimize-button {
+  width: 45px;
+  height: 100%;
+  background: white;
+  float: right;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: .2s;
+  -webkit-app-region: no-drag;
+}
+
+#titlebar.theme-dark #minimize-button {
+  background: #252525;
+}
+
+#titlebar #resize-button:hover, #titlebar #minimize-button:hover {
+  background: silver;
+  transition: 0s;
+}
+
+#titlebar #minimize-button #minimize-icon {
+  background-image: url(../assets/minimize.png);
+  background-size: cover;
+  width: 10px;
+  height: 1px;
+}
+
+#titlebar.theme-dark #minimize-button #minimize-icon {
+  background-image: url(../assets/dark/minimize.png);
+}

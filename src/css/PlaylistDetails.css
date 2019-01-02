@@ -1,0 +1,213 @@
+#playlist-details {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 15px;
+  height: calc(100vh - 85px);
+  position: relative;
+  animation: playlist-details-fade-in .2s forwards;
+}
+
+#playlist-details .cover-image {
+  width: 15vw;
+  height: 15vw;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  border-radius: 5px;
+}
+
+#playlist-details.loading .cover-image {
+  display: block;
+  background-color: silver;
+  width: 150px;
+  height: 150px;
+}
+
+#playlist-details .close-icon {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 25px;
+  height: 25px;
+  background: url(../assets/close.png);
+  background-size: 25px;
+}
+
+.theme-dark #playlist-details .close-icon {
+  background: url(../assets/dark/close.png);
+  background-size: 25px;
+}
+
+#playlist-details .close-icon img {
+  width: 25px;
+  height: 25px;
+}
+
+#playlist-details .details-info {
+  margin: 10px 20px;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+#playlist-details .details-title {
+  display: inline-block;
+  font-size: 20pt;
+  font-weight: 900;
+  margin-top: 3px;
+  margin-bottom: -3px;
+  max-width: calc(62vw - 300px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.view-right.sidebar-collapsed #playlist-details .details-title {
+  max-width: calc(70vw - 250px);
+}
+
+#playlist-details.loading .details-title {
+  display: inline-block;
+  height: 30px;
+  width: 30vw;
+  background-color: silver;
+  flex-shrink: 0;
+}
+
+#playlist-details .details-artist {
+  font-size: 14pt;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+#playlist-details.loading .details-artist {
+  height: 20px;
+  width: 15vw;
+  background-color: silver;
+  margin-top: 5px;
+}
+
+#playlist-details .details-description {
+  margin-bottom: 10px;
+  max-width: 30vw;
+  max-height: 20vh;
+  overflow-y: scroll;
+  flex-shrink: 0;
+}
+
+#playlist-details .action-buttons {
+  margin: 15px 0;
+}
+
+#playlist-details .action-buttons .action-button {
+  margin: 0 3px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 8pt;
+  font-weight: 900;
+  color: white;
+  background-color: rgba(42, 77, 163, 0.8);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+#playlist-details .action-buttons .action-button:hover {
+  background-color: rgb(42, 77, 163);
+}
+
+#playlist-details .action-buttons .action-button.download-button {
+  padding: 2px 7px;
+  width: 90px;
+  background-color: rgba(42, 77, 163, 0.3);
+  border: 3px solid rgba(42, 77, 163, 0.8);
+  display: inline-flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
+  margin-top: -1px;
+}
+
+#playlist-details .action-buttons .action-button.download-button:hover {
+  border: 3px solid rgb(42, 77, 163);
+}
+
+#playlist-details .action-buttons .action-button.download-button:hover span:first-child {
+  background-color: rgb(42, 77, 163);
+}
+
+#playlist-details .action-buttons .action-button.download-button span:first-child {
+  display: inline-block;
+  position: absolute;
+  left: -1px;
+  top: -1px;
+  height: 110%;
+  background-color: rgba(42, 77, 163, 0.8);
+  z-index: -1;
+}
+
+#playlist-details .action-buttons .action-button:not(.more-button) img {
+  width: 15px;
+  height: 15px;
+  margin-right: 5px;
+}
+
+#playlist-details.loading .action-button {
+  opacity: 0.4;
+  cursor: not-allowed;
+  flex-shrink: 0;
+}
+
+#playlist-details .action-buttons .action-button.playlist-add-button {
+  width: 110px;
+}
+
+#playlist-details .action-buttons .action-button.more-button img {
+  width: 15px;
+  height: 15px;
+}
+
+#playlist-details.loading .details-description {
+  background-color: silver;
+  width: 30vw;
+  height: 16.8vw;
+  flex-shrink: 0;
+}
+
+#playlist-details #preview {
+  margin-top: 5px;
+}
+
+#playlist-details #preview:not([src]) {
+  mask-image: linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+  mask-size: 300px;
+  animation: playlist-details-loading-mask 1s linear forwards infinite;
+}
+
+#playlist-details ol#playlist-songs {
+  overflow-y: scroll;
+  flex-grow: 1;
+  margin-bottom: -40px;
+}
+
+#playlist-details ol#playlist-songs li.playlist-song-item {
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(0,0,0,0.25);
+}
+
+#playlist-details ol#playlist-songs li.playlist-song-item span {
+  margin-left: 10px;
+}
+
+
+@keyframes playlist-details-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes playlist-details-loading-mask {
+  to {
+    mask-position: 300px 0; 
+  }
+}

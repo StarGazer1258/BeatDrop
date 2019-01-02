@@ -1,0 +1,83 @@
+.song-list-item {
+  width: calc(100% - 10px);
+  height: 100px;
+  padding: 0 5px;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  transition: .2s;
+  flex-flow: row wrap;
+  overflow: hidden;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.song-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.song-list-item .id {
+  font-weight: 300;
+  margin-left: 5px;
+  opacity: 0.5;
+  font-size: 10pt !important;
+}
+
+.song-list-item.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.song-list-item.loading img {
+  width: 150px;
+  height: 150px;
+  box-shadow: none;
+  background: transparent;
+}
+
+.song-list-item img {
+  width: 80px;
+  height: 80px;
+  margin: 10px 10px;
+  border-radius: 5px;
+  position: relative;
+  background:  rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+}
+
+.song-list-item .song-details .song-title {
+  font-size: 18pt;
+  font-weight: 900;
+  margin-top: 3px;
+  margin-bottom: -3px;
+  width: calc(100vw - 460px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.song-list-item .song-details .song-artist, .song-list-item .song-details .uploader {
+  font-size: 12pt;
+  width: calc(100vw - 460px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.beatmap-details {
+  width: 150px;
+  position: absolute;
+  right: 5px;
+  height: 100px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: flex-end;
+}
+
+.beatmap-details div {
+  text-align: right;
+  width: 100%;
+}

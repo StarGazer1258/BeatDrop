@@ -1,0 +1,80 @@
+.select-hidden {
+  display: none;
+  visibility: hidden;
+  padding-right: 10px;
+}
+
+.select {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 30px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 15px 0 0 15px;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif !important;
+  font-size: 10pt;
+  z-index: 1;
+}
+
+.select:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.select-styled {
+  text-align: center;
+  padding-top: 7px;
+  padding-right: 9px;
+}
+
+.select-styled::after {
+  content:"";
+  width: 0;
+  height: 0;
+  border: 4px solid transparent;
+  border-color: white transparent transparent transparent;
+  position: absolute;
+  top: 15px;
+  right: 8px;
+}
+
+.select-options {
+  position: absolute;
+  display: none; 
+  list-style: none;
+  margin-left: -40px;
+  margin-top: 11px;
+}
+
+.select-options.active {
+  display: block;
+}
+
+.select-options li {
+  text-align: center;
+  padding-top: 5px;
+  width: 90px;
+  height: 25px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  font-family: 'Lato', sans-serif !important;
+  z-index: 1;
+}
+
+.select-options li:first-child {
+  border-radius: 15px 15px 0 0;
+}
+
+.select-options li:last-child {
+  border-radius: 0 0 15px 15px;
+}
+
+.select-options li:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}

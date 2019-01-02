@@ -1,0 +1,7 @@
+export const WELCOME          = 'WELCOME'
+export const SONG_LIST        = 'SONG_LIST'
+export const SONG_DETAILS     = 'SONG_DETAILS'
+export const PLAYLIST_LIST    = 'PLAYLIST_LIST'
+export const PLAYLIST_DETAILS = 'PLAYLIST_DETAILS'
+export const SETTINGS         = 'SETTINGS'
+export const SEARCH           = 'SEARCH'

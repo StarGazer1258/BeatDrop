@@ -1,0 +1,70 @@
+{
+  "name": "beatdrop",
+  "description": "A desktop app for downloading Beat Saber songs.",
+  "author": "Nathaniel Johns (StarGazer1258)",
+  "version": "2.0.0",
+  "private": true,
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "cross-env": "5.1.6",
+    "electron-is-dev": "^0.3.0",
+    "electron-log": "^2.2.6",
+    "electron-updater": "^4.0.6",
+    "get-image-colors": "^1.8.1",
+    "md5": "^2.2.1",
+    "original-fs": "^1.0.0",
+    "react": "16.4.0",
+    "react-dom": "16.4.0",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1",
+    "redux-persist": "^5.10.0",
+    "redux-thunk": "^2.3.0",
+    "rimraf": "^2.6.2",
+    "walker": "^1.0.7"
+  },
+  "devDependencies": {
+    "concurrently": "3.5.1",
+    "electron": "2.0.2",
+    "electron-builder": "^20.15.1",
+    "electron-devtools-installer": "^2.2.4",
+    "prettier": "^1.4.4",
+    "react-scripts": "2.1.2",
+    "wait-on": "2.1.0"
+  },
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test --env=jsdom",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "release": "npm react-build && electron-builder --publish=always",
+    "build": "npm run react-build && npm run electron-build --win",
+    "build-portable": "npm run react-build && npm run electron-build --win portable",
+    "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
+  },
+  "build": {
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "BeatDrop ${version} Setup.${ext}",
+      "oneClick": false,
+      "perMachine": false,
+      "shortcutName": "BeatDrop"
+    },
+    "directories": {
+      "buildResources": "resources"
+    },
+    "win": {
+      "publish": {
+        "provider": "github"
+      }
+    }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

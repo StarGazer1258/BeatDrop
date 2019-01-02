@@ -1,0 +1,93 @@
+.cover-grid-item {
+  position: relative;
+  border-radius: 5px;
+  height: 25.5vw;
+  max-height: 345px;
+  width: 17vw;
+  max-width: 230px;
+  margin-bottom: 2vw;
+  cursor: pointer;
+  transition: transform 0.5s;
+}
+
+.cover-grid-item:hover {
+  transform: scale(1.05);
+}
+
+.cover-grid-item::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.5);
+  border-radius: 5px;
+  height: 25.5vw;
+  max-height: 345px;
+  width: 17vw;
+  max-width: 230px;
+}
+
+.cover-grid-item img {
+  width: 17vw;
+  height: 17vw;
+  max-height: 230px;
+  max-width: 230px;
+  border-radius: 5px 5px 0 0;
+  background:  rgba(0, 0, 0, 0.1);
+  margin: 0;
+}
+
+.cover-grid-item:last-child {
+  margin-bottom: 7vw;
+  margin-right: 1vw;
+}
+
+.cover-grid-info-tab {
+  height: calc(8.5vw + 1px);
+  max-height: 116px;
+  width: 100%;
+  background-color: silver;
+  margin-top: -4px;
+  padding: .5vw;
+  box-sizing: border-box;
+  border-radius: 0 0 5px 5px;
+  transition: background-color 0.5s;
+  overflow: hidden;
+}
+
+.cover-grid-title {
+  width: 16vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 1.5vw;
+  white-space: nowrap;
+}
+
+.cover-grid-artist {
+  width: 16vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.5vw;
+  white-space: nowrap;
+}
+
+.cover-grid-item .dots {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.cover-grid-item .dots .dot {
+  width: 1vw;
+  height: 1vw;
+  background-color: black;
+  border-radius: 25%;
+  margin: .2vw;
+}
+
+@keyframes pulse {
+  to {
+    background-position: 0px -18vw;
+  }
+}

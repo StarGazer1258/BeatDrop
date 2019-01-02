@@ -1,0 +1,15 @@
+.sort-button {
+  padding: 0 10px;
+  height: 30px;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.1);
+  font-family: "Lato", sans-serif;
+  color: white;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.sort-button:hover, .sort-button.active {
+  background-color: rgba(255, 255, 255, 0.15);
+}

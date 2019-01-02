@@ -1,0 +1,8 @@
+.cover-flow {
+  margin-top: 85px;
+  width: 100vw;
+  height: calc(100vh - 85px);
+  overflow: hidden;
+  display: flex;
+  flex-flow: row nowrap;
+}
