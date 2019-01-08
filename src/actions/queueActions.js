@@ -12,7 +12,8 @@ const Walker = remote.require('walker')
 const request = remote.require('request')
 const rimraf = remote.require('rimraf')
 
-export const setQueueOpen = (open) => dispatch => {
+export const setQueueOpen = open => dispatch => {
+  console.log(open)
   dispatch({
     type: SET_QUEUE_OPEN,
     payload: open
@@ -91,7 +92,8 @@ export const deleteSong = (file) => dispatch => {
 
 export const checkDownloadedSongs = () => dispatch => {
   let state = store.getState()
-  let songs = []
+  let songKeys = []
+  let songFiles = []
   let count = 0
   let ended = false
   let decrementCounter = () => {
@@ -99,7 +101,7 @@ export const checkDownloadedSongs = () => dispatch => {
     if(ended && count === 0) {
       dispatch({
         type: CHECK_DOWNLOADED_SONGS,
-        payload: songs
+        payload: {songKeys, songFiles}
       })
       return
     }
@@ -119,7 +121,8 @@ export const checkDownloadedSongs = () => dispatch => {
             let dir = dirs.join('\\')
             let song = JSON.parse(data)
             if(song.hasOwnProperty('key')) {
-              songs.push(song.key)
+              songKeys.push(song.key)
+              songFiles.push(file)
               decrementCounter()
             } else {
               let to_hash = ''
@@ -132,7 +135,8 @@ export const checkDownloadedSongs = () => dispatch => {
                   if(json.songs.length === 1) {
                     song.key = json.songs[0].key
                     fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-                    songs.push(json.songs[0].key)
+                    songKeys.push(json.songs[0].key)
+                    songFiles.push(file)
                   }
                   decrementCounter()
                 })
@@ -144,7 +148,7 @@ export const checkDownloadedSongs = () => dispatch => {
         if(count === 0) {
           dispatch({
             type: CHECK_DOWNLOADED_SONGS,
-            payload: songs
+            payload: {songKeys, songFiles}
           })
           return
         }

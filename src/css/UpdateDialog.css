@@ -1,0 +1,94 @@
+#update-dialog {
+  position: absolute;
+  top: 35px;
+  width: 100%;
+  height: calc(100% - 35px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  animation: update-dialog-fade-in .2s forwards ease-out;
+}
+
+#update-dialog-inner {
+  background: white;
+  width: 575px;
+  height: 500px;
+  max-width: 575px;
+  max-height: 500px;
+  border-radius: 5px;
+  padding: 10px;
+  animation: update-dialog-drop-in .2s forwards ease-out;
+}
+
+.theme-dark #update-dialog-inner {
+  background: #303030;
+  color: white;
+}
+
+#update-dialog-inner h1, #update-dialog-inner div {
+  text-align: center;
+}
+
+#update-dialog .button {
+  width: 110px;
+  margin-top: 10px;
+  position: relative;
+  left: calc(50% - 77px);
+}
+
+#update-dialog .button.primary {
+  margin-top: 55px;
+}
+
+#update-dialog h1:before {
+  content: "";
+  display: block;
+  position: relative;
+  left: calc(50% - 50px);
+  top: 25px;
+  width: 100px;
+  height: 100px;
+  padding: 30px 0;
+  background: url(../assets/update.png);
+  background-repeat: no-repeat;
+  transition: .5s;
+}
+
+#update-dialog h1.downloading-update:before {
+  margin-top: 80px;
+}
+
+#update-dialog.theme-dark h1:before {
+  background: url(../assets/dark/update.png);
+  background-repeat: no-repeat;
+}
+
+#update-dialog #update-progress {
+  background: silver;
+  height: 10px;
+  border-radius: 5px;
+  width: 80%;
+  margin: 0 10%;
+  margin-top: 50px;
+  overflow: hidden;
+}
+
+#update-dialog #update-progress-inner {
+  background: #2a4da3;
+  height: inherit;
+  transition: width 1s linear;
+}
+
+@keyframes update-dialog-fade-in {
+  from {
+    background: rgba(0, 0, 0, 0.0);
+  }
+}
+
+@keyframes update-dialog-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-500px);
+  }
+}

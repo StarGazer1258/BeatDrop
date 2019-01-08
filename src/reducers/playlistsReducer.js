@@ -1,6 +1,6 @@
-import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, CLEAR_PLAYLIST_DETAILS } from '../actions/types'
+import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_PLAYLIST_PICKER_OPEN } from '../actions/types'
 
-export default function(state={playlists: [], playlistDetails: {playlistTitle: '', playlistAuthor: '', playlistDescription: '', image: '', songs: []}, newCoverImageSource: '', newPlaylistDialogOpen: false}, action) {
+export default function(state={playlists: [], playlistDetails: {playlistTitle: '', playlistAuthor: '', playlistDescription: '', image: '', songs: []}, newCoverImageSource: '', newPlaylistDialogOpen: false, pickerOpen: false, editing: false}, action) {
   switch(action.type) {
     case FETCH_LOCAL_PLAYLISTS:
       return {
@@ -16,6 +16,12 @@ export default function(state={playlists: [], playlistDetails: {playlistTitle: '
       return {
         ...state,
         newPlaylistDialogOpen: action.payload
+      }
+
+    case SET_PLAYLIST_PICKER_OPEN:
+      return {
+        ...state,
+        pickerOpen: action.payload
       }
     case CLEAR_PLAYLIST_DIALOG:
       return {
@@ -40,6 +46,11 @@ export default function(state={playlists: [], playlistDetails: {playlistTitle: '
           image: '',
           songs: []
         }
+      }
+    case SET_PLAYLIST_EDITING:
+      return {
+        ...state,
+        editing: action.payload
       }
     default:
       return state

@@ -6,19 +6,16 @@
 
 .cover-grid {
   display: grid;
-  grid-gap: 1vw;
-  grid-template-columns: auto auto auto auto;
-  margin-left: -1vw;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  justify-items: center;
   margin-bottom: -85px;
-  padding-left: 2vw;
   padding-top: 1vw;
-  width: inherit;
+  margin: 0 10px;
+  width: calc(100% -20px);
 }
 
-.view-right.sidebar-collapsed .cover-grid {
-  grid-template-columns: auto auto auto auto auto;
-}
-
+/*
 @media(min-width: 1200px) {
   .cover-grid {
     grid-template-columns: auto auto auto auto auto;
@@ -28,7 +25,4 @@
     grid-template-columns: auto auto auto auto auto auto;
   }
 }
-
-#cover-grid-container::-webkit-scrollbar {
-  display: none !important;
-}
+*/

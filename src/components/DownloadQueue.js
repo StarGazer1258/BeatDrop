@@ -11,7 +11,7 @@ class DownloadQueue extends Component {
   render() {
     if(this.props.isOpen) {
       return (
-        <div id={`download-queue theme-${this.props.theme}`}>
+        <div id="download-queue" className={`theme-${this.props.theme}`}>
           <div id="queue-toolbar"><div style={{width: '40px'}}></div><div style={{height: '20px'}}>Download Queue</div><div title="Clear Queue" id="clear-queue-button" onClick={this.props.clearQueue}></div></div>
           <ul>
               {this.props.items.map((song, i) => {

@@ -3,7 +3,6 @@
   flex-flow: row nowrap;
   padding: 15px;
   height: calc(100vh - 85px);
-  position: relative;
   animation: song-details-fade-in .2s forwards;
 }
 
@@ -12,6 +11,7 @@
   height: 15vw;
   box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
   border-radius: 5px;
+  background:  silver;
 }
 
 #song-details.loading .cover-image {
@@ -24,12 +24,15 @@
 #song-details .close-icon {
   cursor: pointer;
   position: absolute;
-  top: 20px;
-  right: 20px;
+  transform: translateX(calc(100vw - 280px));
   width: 25px;
   height: 25px;
   background: url(../assets/close.png);
   background-size: 25px;
+}
+
+.sidebar-collapsed #song-details .close-icon {
+  transform: translateX(calc(100vw - 120px));
 }
 
 .theme-dark #song-details .close-icon {
@@ -121,19 +124,24 @@
 }
 
 #song-details .action-buttons .action-button:hover {
-  background-color: rgb(42, 77, 163);
+  background: rgb(42, 77, 163);
+}
+
+#song-details .song-in-library {
+  font-weight: bold;
+  color: rgb(42, 77, 163);
+  margin-top: 5px;
 }
 
 #song-details .action-buttons .action-button.download-button {
   padding: 2px 7px;
   width: 90px;
-  background-color: rgba(42, 77, 163, 0.3);
+  background: rgba(42, 77, 163, 0.3);
   border: 3px solid rgba(42, 77, 163, 0.8);
   display: inline-flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
   position: relative;
-  overflow: hidden;
   margin-top: -1px;
 }
 
@@ -142,7 +150,7 @@
 }
 
 #song-details .action-buttons .action-button.download-button:hover span:first-child {
-  background-color: rgb(42, 77, 163);
+  background: rgb(42, 77, 163);
 }
 
 #song-details .action-buttons .action-button.download-button span:first-child {
@@ -151,8 +159,9 @@
   left: -1px;
   top: -1px;
   height: 110%;
-  background-color: rgba(42, 77, 163, 0.8);
+  background: rgba(42, 77, 163, 0.8);
   z-index: -1;
+  border-radius: 10px;
 }
 
 #song-details .action-buttons .action-button:not(.more-button) img {
@@ -182,13 +191,110 @@
 }
 
 #song-details #preview {
+  width: 350px;
   margin-top: 5px;
 }
 
 #song-details #preview:not([src]) {
-  mask-image: linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-  mask-size: 300px;
-  animation: song-details-loading-mask 1s linear forwards infinite;
+  opacity: 0.8;
+  animation: song-details-loading-mask .7s alternate infinite;
+}
+
+#playlist-picker {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 35px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  animation: playlist-picker-fade-in .2s forwards;
+}
+
+#playlist-picker-inner {
+  background: white;
+  width: 575px;
+  height: 500px;
+  max-width: 575px;
+  max-height: 500px;
+  border-radius: 5px;
+  padding: 10px;
+  opacity: 1;
+  animation: playlist-picker-drop-in .2s forwards;
+}
+
+.theme-dark #playlist-picker-inner {
+  background: #303030;
+  color: white;
+}
+
+#playlist-picker h1 {
+  margin-left: 25px;
+  display: inline-block;
+}
+
+#playlist-picker .button {
+  float: right;
+  margin-top: 25px;
+  margin-right: 25px;
+}
+
+#playlist-picker #playlist-picker-table {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.playlist-picker-item {
+  width: calc(50% - 30px);
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 11pt;
+}
+
+.playlist-picker-item:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.playlist-picker-item img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  margin-right: 10px;
+  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  background: silver;
+}
+
+.playlist-picker-item .playlist-picker-item-title, .playlist-picker-item .playlist-picker-item-author {
+  white-space: nowrap;
+  width: 195px;
+  overflow: hidden;
+  text-overflow: ellipsis
+}
+
+.playlist-picker-item .playlist-picker-item-title {
+  font-weight: bold;
+}
+
+@keyframes playlist-picker-fade-in {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes playlist-picker-drop-in {
+  from {
+    opacity: 0.0;
+    transform: translateY(-500px);
+  }
 }
 
 @keyframes song-details-fade-in {
@@ -199,6 +305,6 @@
 
 @keyframes song-details-loading-mask {
   to {
-    mask-position: 300px 0; 
+    opacity: 0.2;
   }
 }

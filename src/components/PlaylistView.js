@@ -18,7 +18,7 @@ class PlaylistView extends Component {
             <div className="playlist-item" onClick={() => {this.props.loadPlaylistDetails(playlist.file)}}>
               <img src={playlist.image} alt=""/>
               <div className="playlist-item-info">
-                <span className="playlist-item-title">{playlist.playlistTitle}</span><span className="playlist-item-length-info"> - {playlist.songs.length} Songs</span>
+                <span className="playlist-item-title">{playlist.playlistTitle}</span><span className="playlist-item-length-info">{playlist.songs.length} Songs</span>
                 <div className="playlist-item-author">Created by: {playlist.playlistAuthor}</div>
                 <div className={`playlist-item-description${(!playlist.playlistDescription || playlist.playlistDescription === 'This playlist has no description.') ? ' no-description' : ''}`}>{playlist.playlistDescription || "This playlist must be updated to support descriptions."}</div>
               </div>

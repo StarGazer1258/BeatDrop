@@ -8,6 +8,7 @@ import { store, persistor } from '../store'
 import ViewSwitcher from './ViewSwitcher';
 import { PersistGate } from 'redux-persist/integration/react';
 import DownloadQueue from './DownloadQueue';
+import UpdateDialog from './UpdateDialog';
 
 class App extends Component {
   constructor(props) {
@@ -32,6 +33,7 @@ class App extends Component {
             <Slate />
             <ViewSwitcher />
             <DownloadQueue />
+            <UpdateDialog />
           </div>
         </PersistGate>
       </Provider>

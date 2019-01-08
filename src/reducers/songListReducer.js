@@ -1,12 +1,13 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, LOAD_MORE, REFRESH, ADD_BSABER_RATING, FETCH_LOCAL_SONGS, CHECK_DOWNLOADED_SONGS } from '../actions/types'
 
-export default function(state={songs: [], downloadedSongs:[], totalSongs: 0}, action) {
+export default function(state={songs: [], downloadedSongs: {songKeys: [], songFiles: []}, totalSongs: 0}, action) {
   switch(action.type) {
     case FETCH_NEW:
     case FETCH_TOP_DOWNLOADS:
     case FETCH_TOP_FINISHED:
     case REFRESH:
     return {
+      ...state,
       songs:  [
         ...action.payload.songs
       ],
@@ -14,6 +15,7 @@ export default function(state={songs: [], downloadedSongs:[], totalSongs: 0}, ac
     }
     case FETCH_LOCAL_SONGS:
       return {
+        ...state,
         songs:  [
           ...action.payload
         ],
@@ -21,6 +23,7 @@ export default function(state={songs: [], downloadedSongs:[], totalSongs: 0}, ac
       }
     case LOAD_MORE:
       return {
+        ...state,
         songs:  [
           ...state.songs,
           ...action.payload.songs

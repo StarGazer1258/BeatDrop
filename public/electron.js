@@ -1,10 +1,11 @@
 const electron = require('electron')
 const app = electron.app
-const globalShortcut = electron.globalShortcut
 const BrowserWindow = electron.BrowserWindow
 
 const path = require('path')
 const isDev = require('electron-is-dev')
+
+const { autoUpdater } = require("electron-updater")
 
 const appIcon = path.join(__dirname, '/assets/appicons/ico/icon.ico')
 
@@ -35,8 +36,38 @@ app.on('ready', () => {
 
   loading.once('show', () => {
     let main = createWindow()
-    main.webContents.once('dom-ready', () => {
+    main.once('ready-to-show', () => {
       main.show()
+      electron.ipcMain.on('electron-updater', (_, event, message) => {
+        switch(event) {
+          case 'download-update':
+            autoUpdater.downloadUpdate()
+            return
+          case 'check-for-updates':
+            autoUpdater.checkForUpdates()
+            return
+          default:
+            return
+        }
+      })
+      autoUpdater.on('checking-for-update', () => {
+        main.webContents.send('electron-updater', 'checking-for-update')
+      })
+      autoUpdater.on('update-available', info => {
+        main.webContents.send('electron-updater', 'update-available', info)
+      })
+      autoUpdater.on('update-not-available', () => {
+        main.webContents.send('electron-updater', 'update-not-available')
+      })
+      autoUpdater.on('download-progress', (progress) => {
+        main.webContents.send('electron-updater', 'download-progress', progress.percent)
+      })
+      autoUpdater.on('update-downloaded', () => {
+        autoUpdater.quitAndInstall()
+      })
+      autoUpdater.autoDownload = false
+      autoUpdater.autoInstallOnAppQuit = false
+      autoUpdater.checkForUpdates()
       loading.hide()
       loading.close()
     })
@@ -44,14 +75,15 @@ app.on('ready', () => {
   loading.loadURL(`file://${path.join(__dirname, '../build/loading.html')}`)
   loading.show()
 
-  //Install React DevTools - REMOVE BEFORE BUILDING
-  const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-  installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
-      console.log(`Added Extension:  ${name}`);
-  })
-  .catch((err) => {
-      console.log('An error occurred: ', err)
-  });
+  if(isDev) {
+    const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
+    installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
+        console.log(`Added Extension:  ${name}`)
+    })
+    .catch((err) => {
+        console.log('An error occurred: ', err)
+    })
+  }
 })
 
 app.on('window-all-closed', () => {

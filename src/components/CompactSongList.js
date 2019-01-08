@@ -41,6 +41,7 @@ class CompactSongList extends Component {
     let songList = document.getElementById('song-list')
     if(((songList.scrollHeight - songList.scrollTop) - songList.clientHeight) <= 1) {
       if(!this.props.loadingMore && !this.props.loading && this.props.autoLoadMore) {
+        if(this.props.songs.songs.length >= this.props.songs.totalSongs) return
         this.props.loadMore()
       }
     }
@@ -53,8 +54,8 @@ class CompactSongList extends Component {
   render() {
     return (
       <ul id='song-list'>
-        <MapsSongs loading={this.props.loading} songs={this.props.songs} />
-        <LoadMore songs={this.props.songs} />
+        <MapsSongs loading={this.props.loading} songs={this.props.songs.songs} />
+        <LoadMore />
       </ul>
     )
   }
@@ -62,13 +63,13 @@ class CompactSongList extends Component {
 
 CompactSongList.propTypes = {
   loading: PropTypes.bool.isRequired,
-  songs: PropTypes.array.isRequired,
+  songs: PropTypes.object.isRequired,
   refresh: PropTypes.func.refresh,
   autoLoadMore: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({
-  songs: state.songs.songs,
+  songs: state.songs,
   loading: state.loading,
   loadingMore: state.loadingMore,
   autoLoadMore: state.settings.autoLoadMore

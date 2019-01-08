@@ -12,7 +12,7 @@
   margin-top: -40px;
 }
 
-.load-more a {
+.load-more span:not(.button) {
   text-decoration: underline;
   animation: load-more-failed-anim 1s 10s forwards;
   opacity: 0;

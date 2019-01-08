@@ -40,6 +40,7 @@ class CoverGrid extends Component {
     let coverGridContainer = document.getElementById('cover-grid-container')
     if(((coverGridContainer.scrollHeight - coverGridContainer.scrollTop) - coverGridContainer.clientHeight) <= 1) {
       if(!this.props.loadingMore && !this.props.loading && this.props.autoLoadMore) {
+        if(this.props.songs.songs.length >= this.props.songs.totalSongs) return
         this.props.loadMore()
       }
     }
@@ -49,23 +50,23 @@ class CoverGrid extends Component {
     return (
       <div id="cover-grid-container">
         <div className="cover-grid">
-          <MapSongs loading={this.props.loading} songs={this.props.songs} />
+          <MapSongs loading={this.props.loading} songs={this.props.songs.songs} />
         </div>
-        <LoadMore songs={this.props.songs} />
+        <LoadMore />
       </div>
     )
   }
 }
 
 CoverGrid.propTypes = {
-  songs: PropTypes.array.isRequired,
+  songs: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   refresh: PropTypes.func.isRequired,
   loadMore: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-  songs: state.songs.songs,
+  songs: state.songs,
   loading: state.loading,
   autoLoadMore: state.settings.autoLoadMore
 })

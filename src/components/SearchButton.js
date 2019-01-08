@@ -9,7 +9,7 @@ import { SEARCH } from '../views'
 class SearchButton extends Component {
   constructor(props) {
     super(props)
-    window.addEventListener('keyup', (e) => { if(e.keyCode === 83 && e.ctrlKey) { this.props.setView(SEARCH); document.getElementById('search-box').focus() } })
+    window.addEventListener('keyup', (e) => { if(e.keyCode === 83 && e.ctrlKey) { this.props.setView(SEARCH); document.getElementById('search-box').focus() } if (e.which === 123) { require('electron').remote.getCurrentWindow().toggleDevTools() } })
   }
 
   render() {

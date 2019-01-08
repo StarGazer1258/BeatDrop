@@ -5,9 +5,14 @@
   border-radius: 10px;
   width: 30vw;
   height: 70vh;
-  background-color: white;
+  background: white;
   box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.5);
   overflow: hidden;
+}
+
+#download-queue.theme-dark {
+  background: #303030;
+  color: white;
 }
 
 #queue-toolbar {
@@ -28,6 +33,10 @@
   background-position: center center;
   cursor: pointer;
   transition: transform .5s;
+}
+
+.theme-dark #clear-queue-button {
+  background-image: url(../assets/dark/clear-queue.png);
 }
 
 #download-queue ul {

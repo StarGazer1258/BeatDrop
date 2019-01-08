@@ -1,10 +1,8 @@
 .cover-grid-item {
   position: relative;
   border-radius: 5px;
-  height: 25.5vw;
-  max-height: 345px;
-  width: 17vw;
-  max-width: 230px;
+  height: 275px;
+  width: 200px;
   margin-bottom: 2vw;
   cursor: pointer;
   transition: transform 0.5s;
@@ -22,19 +20,15 @@
   top: 0;
   box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.5);
   border-radius: 5px;
-  height: 25.5vw;
-  max-height: 345px;
-  width: 17vw;
-  max-width: 230px;
+  height: 275px;
+  width: 200px;
 }
 
 .cover-grid-item img {
-  width: 17vw;
-  height: 17vw;
-  max-height: 230px;
-  max-width: 230px;
+  height: 200px;
+  width: 200px;
   border-radius: 5px 5px 0 0;
-  background:  rgba(0, 0, 0, 0.1);
+  background: silver;
   margin: 0;
 }
 
@@ -44,8 +38,8 @@
 }
 
 .cover-grid-info-tab {
-  height: calc(8.5vw + 1px);
-  max-height: 116px;
+
+  height: 76px;
   width: 100%;
   background-color: silver;
   margin-top: -4px;
@@ -57,19 +51,19 @@
 }
 
 .cover-grid-title {
-  width: 16vw;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: bold;
-  font-size: 1.5vw;
+  font-size: 14pt;
   white-space: nowrap;
 }
 
 .cover-grid-artist {
-  width: 16vw;
+  width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 1.5vw;
+  font-size: 12pt;
   white-space: nowrap;
 }
 
@@ -79,11 +73,12 @@
 }
 
 .cover-grid-item .dots .dot {
-  width: 1vw;
-  height: 1vw;
+  width: 10px;
+  height: 10px;
   background-color: black;
   border-radius: 25%;
-  margin: .2vw;
+  margin-right: 5px;
+  margin-top: 5px;
 }
 
 @keyframes pulse {

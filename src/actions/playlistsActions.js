@@ -1,4 +1,4 @@
-import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, CLEAR_PLAYLIST_DETAILS, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
+import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
 import { store } from '../store'
 
@@ -6,16 +6,20 @@ const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
 
-export const fetchLocalPlaylists = () => dispatch => {
+export const fetchLocalPlaylists = (doSetView) => dispatch => {
   let state = store.getState()
-  dispatch({
-    type: SET_VIEW,
-    payload: PLAYLIST_LIST
-  })
-  dispatch({
-    type: SET_LOADING,
-    payload: true
-  })
+  console.log(typeof doSetView)
+  if(typeof doSetView === 'object') { doSetView = true } else { doSetView = false }
+  if(doSetView === true) {
+    dispatch({
+      type: SET_VIEW,
+      payload: PLAYLIST_LIST
+    })
+    dispatch({
+      type: SET_LOADING,
+      payload: true
+    })
+  }
   let playlists = []
   fs.access(path.join(state.settings.installationDirectory, 'Playlists'), (err) => {
     if(err) { 
@@ -62,7 +66,6 @@ export const fetchLocalPlaylists = () => dispatch => {
         fs.readFile(path.join(state.settings.installationDirectory, 'Playlists', files[f]), 'UTF8', (err, data) => {
           let playlist = JSON.parse(data)
           playlist.file = path.join(state.settings.installationDirectory, 'Playlists', files[f])
-          console.log(playlist)
           pushPlaylist(playlist)
         })
       }
@@ -91,9 +94,31 @@ export const createNewPlaylist = playlistInfo => dispatch => {
   })
 }
 
+export const deletePlaylist = playlistFile => dispatch => {
+  fs.unlink(playlistFile, (err) => {
+    if(err) {
+      dispatch({
+        type: DISPLAY_WARNING,
+        payload: {
+          color: 'gold',
+          text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.'
+        }
+      })
+      return
+    }
+  })
+}
+
 export const setNewPlaylistDialogOpen = open => dispatch => {
   dispatch({
     type: SET_NEW_PLAYLIST_OPEN,
+    payload: open
+  })
+}
+
+export const setPlaylistPickerOpen = open => dispatch => {
+  dispatch({
+    type: SET_PLAYLIST_PICKER_OPEN,
     payload: open
   })
 }
@@ -108,7 +133,6 @@ export const clearPlaylistDialog = () => dispatch => {
 }
 
 export const loadPlaylistDetails = playlistFile => dispatch => {
-  console.log(playlistFile)
   dispatch({
     type: SET_VIEW,
     payload: PLAYLIST_DETAILS
@@ -119,7 +143,7 @@ export const loadPlaylistDetails = playlistFile => dispatch => {
         type: DISPLAY_WARNING,
         payload: {
           color: 'gold',
-          text: 'Cannot access playlist file! BeatDrop has insufficient permissions. Try redownloading the playlist and try again.'
+          text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.'
         }
       })
       return
@@ -140,8 +164,85 @@ export const loadPlaylistDetails = playlistFile => dispatch => {
       })
       dispatch({
         type: LOAD_PLAYLIST_DETAILS,
-        payload: JSON.parse(data)
+        payload: {...JSON.parse(data), playlistFile}
       })
+    })
+  })
+}
+
+export const savePlaylistDetails = details => dispatch => {
+  let file = details.playlistFile
+  delete details.playlistFile
+  let newSongs = []
+  function findWithAttr(array, attr, value) {
+    for(var i = 0; i < array.length; i += 1) {
+      if(array[i][attr] === value) {
+          return i;
+      }
+    }
+    return -1;
+  }
+  for(let i = 0; i < details.newOrder.length; i++) {
+    newSongs.push(details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])])
+  }
+  details.songs = newSongs
+  delete details.newOrder
+  fs.writeFile(file, JSON.stringify(details), 'UTF8', (err) => {
+    if(err)  {
+      dispatch({
+        type: DISPLAY_WARNING,
+        payload: {
+          color: 'gold',
+          text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+        }
+      })
+      return
+    }
+    delete details.songs
+    dispatch({
+      type: LOAD_PLAYLIST_DETAILS,
+      payload: details
+    })
+    fetchLocalPlaylists(false)(dispatch)
+  })
+}
+
+export const setPlaylistEditing = isEditing => dispatch => {
+  dispatch({
+    type: SET_PLAYLIST_EDITING,
+    payload: isEditing
+  })
+}
+
+export const addSongToPlaylist = (song, playlistFile) => dispatch => {
+  fs.readFile(playlistFile, 'UTF8', (err, data) => {
+    if(err) {
+      dispatch({
+        type: DISPLAY_WARNING,
+        payload: {
+          color: 'gold',
+          text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+        }
+      })
+      return
+    }
+    let playlist = JSON.parse(data)
+    playlist.songs.push({
+      key: song.key,
+      songName: song.songName
+    })
+    fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
+      if(err)  {
+        dispatch({
+          type: DISPLAY_WARNING,
+          payload: {
+            color: 'gold',
+            text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+          }
+        })
+        return
+      }
+      fetchLocalPlaylists()(dispatch)
     })
   })
 }

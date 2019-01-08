@@ -2,14 +2,18 @@
   "name": "beatdrop",
   "description": "A desktop app for downloading Beat Saber songs.",
   "author": "Nathaniel Johns (StarGazer1258)",
-  "version": "2.0.0",
+  "version": "2.0.0-beta.1",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/StarGazer1258/BeatDrop.git"
+  },
   "dependencies": {
     "adm-zip": "^0.4.13",
     "cross-env": "5.1.6",
     "electron-is-dev": "^0.3.0",
-    "electron-log": "^2.2.6",
-    "electron-updater": "^4.0.6",
+    "electron-log": "^2.2.17",
+    "electron-updater": "3.2.3",
     "get-image-colors": "^1.8.1",
     "md5": "^2.2.1",
     "original-fs": "^1.0.0",
@@ -20,12 +24,13 @@
     "redux-persist": "^5.10.0",
     "redux-thunk": "^2.3.0",
     "rimraf": "^2.6.2",
+    "sortablejs": "^1.8.0-rc1",
     "walker": "^1.0.7"
   },
   "devDependencies": {
     "concurrently": "3.5.1",
-    "electron": "2.0.2",
-    "electron-builder": "^20.15.1",
+    "electron": "3.0.10",
+    "electron-builder": "20.34.0",
     "electron-devtools-installer": "^2.2.4",
     "prettier": "^1.4.4",
     "react-scripts": "2.1.2",
@@ -38,10 +43,10 @@
     "react-build": "react-scripts build",
     "react-test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
-    "electron-build": "electron-builder",
-    "release": "npm react-build && electron-builder --publish=always",
-    "build": "npm run react-build && npm run electron-build --win",
-    "build-portable": "npm run react-build && npm run electron-build --win portable",
+    "release": "react-scripts build && electron-builder --publish=always",
+    "build": "react-scripts build && electron-builder --win",
+    "publish": "electron-builder -p always",
+    "build-portable": "npm run react-build && electron-builder --win portable",
     "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
@@ -57,7 +62,10 @@
     },
     "win": {
       "publish": {
-        "provider": "github"
+        "provider": "github",
+        "owner": "StarGazer1258",
+        "private": true,
+        "token": "***REMOVED***"
       }
     }
   },

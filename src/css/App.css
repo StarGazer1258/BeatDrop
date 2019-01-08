@@ -5,6 +5,8 @@ body {
   color: black;
   overflow: hidden;
   background-color:#fff;
+  cursor: default;
+  user-select: none;
 }
 
 .theme-dark, .theme-light {
@@ -15,6 +17,10 @@ body {
 ::-webkit-scrollbar {
   background-color: transparent;
   width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 .text-box {
@@ -53,6 +59,11 @@ select {
   margin-top: -10px;
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+select:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .theme-dark select {
@@ -60,6 +71,14 @@ select {
   color: white;
 }
 
+.theme-dark select:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
 .theme-dark select :not(:nth-child(0)) {
   color: black;
+}
+
+.hidden {
+  display: none !important;
 }

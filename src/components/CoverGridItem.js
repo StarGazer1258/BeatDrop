@@ -93,7 +93,7 @@ componentWillReceiveProps(props) {
       )
     } else {
       return (
-        <div key={this.props.key} className='cover-grid-item' onClick={() => { this.props.loadDetails(this.props.songKey || this.props.file) }}>
+        <div key={this.props.key} className='cover-grid-item' onClick={() => { this.props.loadDetails(this.props.file || this.props.songKey) }}>
           <img src={this.props.coverImage} alt=""/>
           <div style={{backgroundColor: this.state.bgc, color: this.state.textColor}} className="cover-grid-info-tab">
             <div className="cover-grid-title">{this.props.title}</div>
