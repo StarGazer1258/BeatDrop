@@ -11,13 +11,18 @@ const initialState = {
     isTranslucent: true
   },
   songs: {
-    songs: []
+    songs: [],
+    downloadedSongs: {
+      songKeys: [],
+      songFiles: []
+    }
   },
   search: {
     searchResults: {
       beatSaver: {
         songs: []
-      }
+      },
+      library: []
     }
   }
 }

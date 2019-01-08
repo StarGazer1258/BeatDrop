@@ -1,5 +1,7 @@
 import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_THEME } from './types'
 
+import { checkDownloadedSongs } from './queueActions'
+
 export const setSettingsOpen = isOpen => dispatch => {
   dispatch({
     type: SET_SETTINGS_OPEN,
@@ -12,6 +14,7 @@ export const setInstallationDirectory = directory => dispatch => {
     type: SET_INSTALLATION_DIRECTORY,
     payload: directory
   })
+  checkDownloadedSongs()(dispatch)
 }
 
 export const setAutoLoadMore = willAutoLoadMore => dispatch => {
