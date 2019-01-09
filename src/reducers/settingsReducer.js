@@ -1,10 +1,11 @@
-import { SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_SETTINGS_OPEN, SET_THEME } from '../actions/types'
+import { SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_SETTINGS_OPEN, SET_THEME, SET_FOLDER_STRUCTURE } from '../actions/types'
 
 const initialState = {
   isOpen: false,
   installationDirectory: "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Beat Saber",
   autoLoadMore: true,
-  theme: 'light'
+  theme: 'light',
+  folderStructure: 'idKey'
 }
 
 export default function(state=initialState, action) {
@@ -28,6 +29,11 @@ export default function(state=initialState, action) {
       return {
         ...state,
         theme: action.payload
+      }
+    case SET_FOLDER_STRUCTURE:
+      return {
+        ...state,
+        folderStructure: action.payload
       }
     default:
       return state

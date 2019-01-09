@@ -1,4 +1,4 @@
-import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_THEME } from './types'
+import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_THEME, SET_FOLDER_STRUCTURE } from './types'
 
 import { checkDownloadedSongs } from './queueActions'
 
@@ -28,5 +28,12 @@ export const setTheme = theme => dispatch => {
   dispatch({
     type: SET_THEME,
     payload: theme
+  })
+}
+
+export const setFolderStructure = structure => dispatch => {
+  dispatch({
+    type: SET_FOLDER_STRUCTURE,
+    payload: structure
   })
 }

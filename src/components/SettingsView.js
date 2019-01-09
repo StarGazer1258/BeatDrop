@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setInstallationDirectory, setAutoLoadMore, setTheme } from '../actions/settingsActions'
+import { setInstallationDirectory, setAutoLoadMore, setTheme, setFolderStructure } from '../actions/settingsActions'
 import '../css/SettingsView.css'
 import Button from './Button'
 
@@ -35,6 +35,12 @@ class SettingsView extends Component {
         <label htmlFor="dl-location"><Button type="primary">Choose Folder</Button></label><Button onClick={() => {window.require('child_process').exec('start "" "' + this.props.settings.installationDirectory + '"')}}>Open Folder</Button><br /><br />
         <h3>Song List</h3>
         <input type="checkbox" name="auto-load-more" id="auto-load-more" checked={this.props.settings.autoLoadMore} onClick={() => this.props.setAutoLoadMore(!this.props.settings.autoLoadMore)} /><label htmlFor="auto-load-more">Auto Load More</label><br />
+        <h3>Downloads</h3>
+        <label htmlFor="folder-structure-select">Folder Structure</label><br /><br />
+        <select id="folder-structure-select" name="folder-structure-select" value={this.props.settings.folderStructure} onChange={(e) => { this.props.setFolderStructure(e.target.value) }}>
+          <option value="idKey">ID/Key</option>
+          <option value="songName">Song Name</option>
+        </select>
         <h3><label htmlFor="theme-select">Theme</label></h3>
         <select id="theme-select" name="theme-select" value={this.props.settings.theme} onChange={(e) => { this.props.setTheme(e.target.value) }}>
           <option value="light">Light</option>
@@ -53,13 +59,14 @@ SettingsView.propTypes = {
   settings: PropTypes.object.isRequired,
   setInstallationDirectory: PropTypes.func.isRequired,
   setAutoLoadMore: PropTypes.func.isRequired,
-  setTheme: PropTypes.func.isRequired
+  setTheme: PropTypes.func.isRequired,
+  setFolderStructure: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
   settings: state.settings
 })
 
-export default connect(mapStateToProps, { setInstallationDirectory, setAutoLoadMore, setTheme })(SettingsView)
+export default connect(mapStateToProps, { setInstallationDirectory, setAutoLoadMore, setTheme, setFolderStructure })(SettingsView)
 
 //<input type="checkbox" name="auto-refresh" id="auto-refresh" checked={this.props.settings.autoRefresh} onClick={() => this.props.setAutoLoadMore(!this.props.settings.autoLoadMore)} /><label htmlFor="auto-refresh">Refresh feed every </label><input type="number" name="auto-refresh-interval" id="auto-refresh-interval"/><label htmlFor="auto-refresh-interval"> seconds</label>

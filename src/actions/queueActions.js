@@ -53,7 +53,8 @@ export const downloadSong = (key) => dispatch => {
         infoObject = JSON.parse(infoEntry.getData().toString('UTF8'))
         infoObject.key = key
         zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
-        zip.extractAllTo(store.getState().settings.installationDirectory + '\\CustomSongs\\' + details.song.name.replace(/[\\/:*?"<>|.]/g, ''))
+        let extractTo = (store.getState().settings.folderStructure === 'idKey' ? details.song.key : details.song.name.replace(/[\\/:*?"<>|.]/g, ''))
+        zip.extractAllTo(store.getState().settings.installationDirectory + '\\CustomSongs\\' + extractTo)
         checkDownloadedSongs()(dispatch)
       })
 

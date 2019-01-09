@@ -39,7 +39,7 @@ export const SET_SETTINGS_OPEN          = 'SET_SETTINGS_OPEN'
 export const SET_INSTALLATION_DIRECTORY = 'SET_INSTALLATION_DIRECTORY'
 export const SET_AUTO_LOAD_MORE         = 'SET_AUTO_LOAD_MORE'
 export const SET_THEME                  = 'SET_THEME'
-export const CLEAR_CACHE                = 'CLEAR_CACHE'
+export const SET_FOLDER_STRUCTURE       = 'SET_FOLDER_STRUCTURE'
 export const REPLAY_TUTORIAL            = 'REPLAY_TUTORIAL'
 
 export const DOWNLOAD_SONG              = 'DOWNLOAD_SONG'
