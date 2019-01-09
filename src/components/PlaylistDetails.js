@@ -20,7 +20,7 @@ class PlaylistDetails extends Component {
     playlistSongs = new Sortable(document.getElementById('playlist-songs'), {
       animation: 150,
       dataIdAttr: 'data-id',
-      disabled: true,
+      disabled: !this.props.editing,
       scroll: true,
       bubbleScroll: true,
       scrollSensitivity: 150
@@ -64,7 +64,7 @@ class PlaylistDetails extends Component {
             <ol id="playlist-songs">
               {this.props.playlistDetails.songs.length === 0 ? <div style={{marginTop: '10px', color: 'silver', fontStyle: 'italic'}}>This playlist is empty.</div> : ''}
               {this.props.playlistDetails.songs.map((song, i) => {
-                return <li className={`playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}`} key={i} data-id={song.key}><span><object data={`https://beatsaver.com/storage/songs/${song.key.split('-')[0]}/${song.key}.png`}><object style={{boxShadow: 'none', background: 'transparent'}} data={`https://beatsaver.com/storage/songs/${song.key.split('-')[0]}/${song.key}.jpg`} type='image/jpeg'><img style={{boxShadow: 'none', background: 'transparent'}} src={errorIcon} alt="?" /></object></object>{song.songName}</span></li>
+                return <li className={`playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}`} key={i} data-id={song.key}><span><object data={`https://beatsaver.com/storage/songs/${song.key.split('-')[0]}/${song.key}.png`}><object style={{boxShadow: 'none', background: 'transparent'}} data={`https://beatsaver.com/storage/songs/${song.key.split('-')[0]}/${song.key}.jpg`} type='image/jpeg'><img style={{boxShadow: 'none', background: 'transparent'}} src={errorIcon} alt="?" /></object></object><div className="playlist-item-title">{song.songName}</div>{this.props.editing ? <div className='delete-playlist-item' onClick={(e) => {e.target.parentNode.parentNode.remove()}}></div> : null}</span></li>
               })}
             </ol>
           </div>

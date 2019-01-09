@@ -217,6 +217,8 @@
 #playlist-details ol#playlist-songs li.playlist-song-item span {
   display: flex;
   align-items: center;
+  margin-left: 10px;
+  width: calc(100% - 20px);
 }
 
 li.playlist-song-item.draggable {
@@ -231,7 +233,7 @@ li.playlist-song-item.draggable {
   background: rgba(0, 0, 0, 0.3);
 }
 
-li.playlist-song-item img, li.playlist-song-item object {
+li.playlist-song-item img:not(.delete-playlist-item), li.playlist-song-item object {
   width: 50px;
   height: 50px;
   border-radius: 5px;
@@ -240,10 +242,18 @@ li.playlist-song-item img, li.playlist-song-item object {
   box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.175);
 }
 
-#playlist-details ol#playlist-songs li.playlist-song-item span {
+.playlist-song-item .delete-playlist-item {
+  width: 35px;
+  height: 35px;
+  margin-top: 10px;
   margin-left: 10px;
+  margin-right: 10px;
+  display: block;
+  background: url(../assets/close.png);
+  background-size: 25px;
+  background-repeat: no-repeat;
+  cursor: pointer;
 }
-
 
 #playlist-details .details-split {
   width: 100%;
