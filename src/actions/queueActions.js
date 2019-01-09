@@ -116,7 +116,8 @@ export const checkDownloadedSongs = () => dispatch => {
       .on('file', (file) => {
         if(file.substr(file.length-9) === 'info.json') {
           count++
-          fs.readFile(file, 'UTF-8', (_, data) => {
+          fs.readFile(file, 'UTF-8', (err, data) => {
+            if(err) { decrementCounter(); return }
             let dirs = file.split('\\')
             dirs.pop()
             let dir = dirs.join('\\')
@@ -128,7 +129,12 @@ export const checkDownloadedSongs = () => dispatch => {
             } else {
               let to_hash = ''
               for(let i = 0; i < song.difficultyLevels.length; i++) {
-                to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+                try {
+                  to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+                } catch(err) {
+                  decrementCounter()
+                  return
+                }
               }
               fetch('https://beatsaver.com/api/songs/search/hash/' + md5(to_hash))
                 .then(res => res.json())

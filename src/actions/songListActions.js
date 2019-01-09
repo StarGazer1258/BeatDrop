@@ -209,7 +209,13 @@ export const fetchLocalSongs = () => dispatch => {
           count++
           fs.readFile(file, 'UTF-8', (err, data) => {
             if(err) { decrementCounter(); return }
-            let song = JSON.parse(data)
+            let song
+            try {
+              song = JSON.parse(data)
+            } catch(err) {
+              decrementCounter()
+              return
+            }
             song.coverUrl = path.join(dir, song.coverImagePath)
             song.file = path.join(dir, 'info.json')
             songs.push(song)
