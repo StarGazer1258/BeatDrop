@@ -229,7 +229,7 @@ export const addSongToPlaylist = (song, playlistFile) => dispatch => {
     let playlist = JSON.parse(data)
     playlist.songs.push({
       key: song.key,
-      songName: song.songName
+      songName: song.name
     })
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
       if(err)  {

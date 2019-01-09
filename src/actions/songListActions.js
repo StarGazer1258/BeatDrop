@@ -1,4 +1,4 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { store } from '../store'
 
@@ -31,6 +31,10 @@ export const fetchNew = (page) => dispatch => {
     payload: true
   })
   dispatch({
+    type: SET_SCROLLTOP,
+    payload: 0
+  })
+  dispatch({
     type: SET_SOURCE,
     payload: 'beatsaver'
   })
@@ -56,6 +60,10 @@ export const fetchTopDownloads = () => dispatch => {
   dispatch({
     type: SET_VIEW,
     payload: SONG_LIST
+  })
+  dispatch({
+    type: SET_SCROLLTOP,
+    payload: 0
   })
   dispatch({
     type: SET_LOADING,
@@ -98,6 +106,10 @@ export const fetchTopFinished = () => dispatch => {
     payload: SONG_LIST
   })
   dispatch({
+    type: SET_SCROLLTOP,
+    payload: 0
+  })
+  dispatch({
     type: SET_LOADING,
     payload: true
   })
@@ -127,6 +139,10 @@ export const fetchLocalSongs = () => dispatch => {
   dispatch({
     type: SET_VIEW,
     payload: SONG_LIST
+  })
+  dispatch({
+    type: SET_SCROLLTOP,
+    payload: 0
   })
   let state = store.getState()
   dispatch({
@@ -191,7 +207,8 @@ export const fetchLocalSongs = () => dispatch => {
         let dir = dirs.join('\\')
         if(file.substr(file.length-9) === 'info.json') {
           count++
-          fs.readFile(file, 'UTF-8', (_, data) => {
+          fs.readFile(file, 'UTF-8', (err, data) => {
+            if(err) { decrementCounter(); return }
             let song = JSON.parse(data)
             song.coverUrl = path.join(dir, song.coverImagePath)
             song.file = path.join(dir, 'info.json')
@@ -261,4 +278,11 @@ export const refresh = () => dispatch => {
           })
         })
   }
+}
+
+export const setScrollTop = scrollTop => dispatch => {
+  dispatch({
+    type: SET_SCROLLTOP,
+    payload: scrollTop
+  })
 }

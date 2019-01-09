@@ -25,11 +25,9 @@ function MapSongs(props) {
 
 class CoverGrid extends Component {
 
-  componentWillMount() {
-  }
-
   componentDidMount() {
     document.getElementById('cover-grid-container').addEventListener('scroll', this.onScroll.bind(this))
+    document.getElementById('cover-grid-container').scrollTop = this.props.scrollTop
   }
   
   componentWillUnmount() {
@@ -60,6 +58,7 @@ class CoverGrid extends Component {
 
 CoverGrid.propTypes = {
   songs: PropTypes.object.isRequired,
+  scrollTop: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
   refresh: PropTypes.func.isRequired,
   loadMore: PropTypes.func.isRequired
@@ -67,6 +66,7 @@ CoverGrid.propTypes = {
 
 const mapStateToProps = state => ({
   songs: state.songs,
+  scrollTop: state.songs.scrollTop,
   loading: state.loading,
   autoLoadMore: state.settings.autoLoadMore
 })

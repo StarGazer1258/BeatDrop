@@ -25,12 +25,9 @@ function MapsSongs(props) {
 
 class CompactSongList extends Component {
 
-  componentWillMount() {
-    this.props.refresh()
-  }
-
   componentDidMount() {
     document.getElementById('song-list').addEventListener('scroll', this.onScroll.bind(this))
+    document.getElementById('song-list').scrollTop = this.props.scrollTop
   }
   
   componentWillUnmount() {
@@ -64,12 +61,14 @@ class CompactSongList extends Component {
 CompactSongList.propTypes = {
   loading: PropTypes.bool.isRequired,
   songs: PropTypes.object.isRequired,
+  scrollTop: PropTypes.number.isRequired,
   refresh: PropTypes.func.refresh,
   autoLoadMore: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({
   songs: state.songs,
+  scrollTop: state.songs.scrollTop,
   loading: state.loading,
   loadingMore: state.loadingMore,
   autoLoadMore: state.settings.autoLoadMore

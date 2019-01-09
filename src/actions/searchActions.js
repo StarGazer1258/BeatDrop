@@ -62,7 +62,7 @@ export const submitSearch = keywords => dispatch => {
         if (file.substr(file.length - 9) === 'info.json') {
           localSongCount++
           fs.readFile(file, 'UTF-8', (err, data) => {
-            if(err) return
+            if(err) { decrementCounter(); return }
             let song = JSON.parse(data)
             song.coverUrl = path.join(dir, song.coverImagePath)
             song.file = file

@@ -6,6 +6,7 @@ import Loader from '../assets/loading.gif'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { loadDetails } from '../actions/detailsActions'
+import { setScrollTop } from '../actions/songListActions'
 
 const getColors = window.require('get-image-colors')
 
@@ -93,7 +94,7 @@ componentWillReceiveProps(props) {
       )
     } else {
       return (
-        <div key={this.props.key} className='cover-grid-item' onClick={() => { this.props.loadDetails(this.props.file || this.props.songKey) }}>
+        <div key={this.props.key} className='cover-grid-item' onClick={() => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
           <img src={this.props.coverImage} alt=""/>
           <div style={{backgroundColor: this.state.bgc, color: this.state.textColor}} className="cover-grid-info-tab">
             <div className="cover-grid-title">{this.props.title}</div>
@@ -112,4 +113,4 @@ CoverGridItem.propTypes = ({
   loadDetails: PropTypes.func.isRequired
 })
 
-export default connect(null, { loadDetails })(CoverGridItem)
+export default connect(null, { loadDetails, setScrollTop })(CoverGridItem)

@@ -6,6 +6,7 @@ import Badge from './Badge'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { loadDetails } from '../actions/detailsActions'
+import { setScrollTop } from '../actions/songListActions'
 
 function Uploader(props) {
   if(!!props.uploader) return (
@@ -80,7 +81,7 @@ class CompactSongListItem extends Component {
       )
     } else {
        return (
-        <li className='compact-song-list-item' onClick={() => { this.props.loadDetails(this.props.songKey || this.props.file) }}>
+        <li className='compact-song-list-item' onClick={() => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.songKey || this.props.file) }}>
           <div className="song-details">
             <span className="song-title">{this.props.title}</span>
             <span className="song-artist">{this.props.artist}</span>
@@ -96,11 +97,12 @@ class CompactSongListItem extends Component {
 
 CompactSongListItem.propTypes = ({
   loadDetails: PropTypes.func.isRequired,
-  details: PropTypes.object.isRequired
+  details: PropTypes.object.isRequired,
+  setScrollTop: PropTypes.func.isRequired
 })
 
 const mapStateToProps = state => ({
   details: state.details
 })
 
-export default connect(mapStateToProps, { loadDetails })(CompactSongListItem)
+export default connect(mapStateToProps, { loadDetails, setScrollTop })(CompactSongListItem)

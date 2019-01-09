@@ -24,12 +24,9 @@ function MapsSongs(props) {
 
 class SongList extends Component {
 
-  componentWillMount() {
-    this.props.refresh()
-  }
-
   componentDidMount() {
     document.getElementById('song-list').addEventListener('scroll', this.onScroll.bind(this))
+    document.getElementById('song-list').scrollTop = this.props.scrollTop
   }
   
   componentWillUnmount() {
@@ -60,6 +57,7 @@ SongList.propTypes = {
   loading: PropTypes.bool.isRequired,
   loadingMore: PropTypes.bool.isRequired,
   songs: PropTypes.object.isRequired,
+  scrollTop: PropTypes.number.isRequired,
   refresh: PropTypes.func.isRequired,
   loadMore: PropTypes.func.isRequired,
   autoLoadMore: PropTypes.bool.isRequired,
@@ -68,6 +66,7 @@ SongList.propTypes = {
 
 const mapStateToProps = state => ({
   songs: state.songs,
+  scrollTop: state.songs.scrollTop,
   loading: state.loading,
   loadingMore: state.loadingMore,
   autoLoadMore: state.settings.autoLoadMore,
