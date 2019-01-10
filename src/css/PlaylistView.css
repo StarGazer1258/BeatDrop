@@ -92,7 +92,7 @@
   left: 0;
   width: 100vw;
   height: calc(100vh - 35px);
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
   animation: new-playlist-fade-in .2s forwards ease-out;
   perspective: 1000;
 }

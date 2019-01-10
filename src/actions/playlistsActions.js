@@ -9,7 +9,7 @@ const path = remote.require('path')
 export const fetchLocalPlaylists = (doSetView) => dispatch => {
   let state = store.getState()
   console.log(typeof doSetView)
-  if(typeof doSetView === 'object') { doSetView = true } else { doSetView = false }
+  if(typeof doSetView === 'object' || doSetView === undefined) { doSetView = true } else { doSetView = false }
   if(doSetView === true) {
     dispatch({
       type: SET_VIEW,
@@ -90,7 +90,7 @@ export const createNewPlaylist = playlistInfo => dispatch => {
   }
   playlistInfo.songs = []
   fs.writeFile(path.join(state.settings.installationDirectory, 'Playlists', `${playlistInfo.playlistTitle.replace(/[\\/:*?"<>|. ]/g, '')}${Date.now()}.json`), JSON.stringify(playlistInfo), 'UTF8', () => {
-    fetchLocalPlaylists()(dispatch)
+    fetchLocalPlaylists(false)(dispatch)
   })
 }
 
@@ -229,7 +229,7 @@ export const addSongToPlaylist = (song, playlistFile) => dispatch => {
     let playlist = JSON.parse(data)
     playlist.songs.push({
       key: song.key,
-      songName: song.name
+      songName: song.name || song.songName
     })
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
       if(err)  {
@@ -242,7 +242,7 @@ export const addSongToPlaylist = (song, playlistFile) => dispatch => {
         })
         return
       }
-      fetchLocalPlaylists()(dispatch)
+      fetchLocalPlaylists(false)(dispatch)
     })
   })
 }
