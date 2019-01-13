@@ -11,6 +11,7 @@
   background-size: 100px;
   background-position: 20px 0;
   border-bottom: 1px solid silver;
+  z-index: 999;
 }
 
 #titlebar.theme-dark {
