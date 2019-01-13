@@ -1,4 +1,4 @@
-import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
+import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
 import { store } from '../store'
 import { defaultPlaylistIcon } from '../b64Assets'
@@ -160,13 +160,55 @@ export const loadPlaylistDetails = playlistFile => dispatch => {
         })
         return
       }
+      let playlist = JSON.parse(data)
       dispatch({
         type: CLEAR_PLAYLIST_DETAILS
       })
       dispatch({
         type: LOAD_PLAYLIST_DETAILS,
-        payload: {...JSON.parse(data), playlistFile}
+        payload: {...playlist, songs: [], playlistFile}
       })
+      let state = store.getState()
+      for(let i = 0; i < playlist.songs.length; i++) {
+        if(state.songs.downloadedSongs.songKeys.includes(playlist.songs[i].key)) {
+          let file = state.songs.downloadedSongs.songFiles[state.songs.downloadedSongs.songKeys.indexOf(playlist.songs[i].key)]
+          fs.readFile(file, 'UTF8', (err, data) => {
+            if(err) {
+              dispatch({
+                type: LOAD_PLAYLIST_SONGS,
+                payload: { ...playlist.songs[i], order: i }
+              })
+              return
+            }
+            let song = JSON.parse(data)
+            let dirs = file.split('\\')
+            dirs.pop()
+            let dir = dirs.join('\\')
+            song.coverUrl = path.join(dir, song.coverImagePath)
+            dispatch({
+              type: LOAD_PLAYLIST_SONGS,
+              payload: { ...song, file, order: i }
+            })
+          })
+        } else {
+          fetch('https://beatsaver.com/api/songs/detail/' + playlist.songs[i].key)
+            .then(res => res.json())
+            .then(details => {
+              console.log(details)
+              dispatch({
+                type: LOAD_PLAYLIST_SONGS,
+                payload: { ...details.song, order: i }
+              })
+            })
+            .catch(err => {
+              dispatch({
+                type: LOAD_PLAYLIST_SONGS,
+                payload: { ...playlist.songs[i], order: i }
+              })
+              console.error(playlist.songs[i])
+            })
+        }
+      }
     })
   })
 }
@@ -184,7 +226,7 @@ export const savePlaylistDetails = details => dispatch => {
     return -1;
   }
   for(let i = 0; i < details.newOrder.length; i++) {
-    newSongs.push(details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])])
+    newSongs.push({key: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].key, songName: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].songName})
   }
   details.songs = newSongs
   delete details.newOrder

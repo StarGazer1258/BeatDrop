@@ -60,7 +60,7 @@
   margin-bottom: -3px;
   padding-left: 5px;
   max-width: 20vw;
-  max-height: 60px;
+  max-height: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   flex-shrink: 0;
@@ -169,6 +169,21 @@
   height: 15px;
 }
 
+#playlist-details #more-actions {
+  position: absolute;
+  top: 370px;
+  left: 190px;
+}
+
+#playlist-details #more-actions .more-action {
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#playlist-details #more-actions .more-action:hover {
+
+}
+
 #playlist-details.loading .details-description {
   background-color: silver;
   width: 30vw;
@@ -253,6 +268,24 @@ li.playlist-song-item img:not(.delete-playlist-item), li.playlist-song-item obje
   background-size: 25px;
   background-repeat: no-repeat;
   cursor: pointer;
+}
+
+.playlist-song-item .playlist-item-downloaded {
+  width: 35px;
+  height: 35px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: block;
+  background: url(../assets/check.png);
+  background-size: 25px;
+  background-repeat: no-repeat;
+}
+
+.theme-dark .playlist-song-item .delete-playlist-item {
+  background: url(../assets/dark/close.png);
+  background-size: 25px;
+  background-repeat: no-repeat;
 }
 
 #playlist-details .details-split {
