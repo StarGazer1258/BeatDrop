@@ -13,7 +13,7 @@ export default function(state=initialState, action) {
         isOpen: action.payload
       }
     case ADD_TO_QUEUE:
-      let items = state.items
+      let items = [...state.items]
       if(items.length >= 25) items.pop()
       return {
         ...state,
@@ -29,7 +29,7 @@ export default function(state=initialState, action) {
         ]
       }
     case UPDATE_PROGRESS: {
-      let items = state.items
+      let items = [...state.items]
       for(let i=0;i<items.length;i++) {
         if(items[i].key === action.payload.key) {
           items[i].progress = action.payload.progress
