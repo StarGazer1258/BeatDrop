@@ -12,6 +12,8 @@ const initialState = {
   },
   songs: {
     songs: [],
+    downloadingCount: 0,
+    waitingToDownload: [],
     downloadedSongs: {
       songKeys: [],
       songFiles: []

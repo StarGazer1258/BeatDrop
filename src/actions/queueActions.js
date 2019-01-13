@@ -1,4 +1,4 @@
-import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, CHECK_DOWNLOADED_SONGS } from './types'
+import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, CHECK_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING } from './types'
 import { store } from '../store';
 
 import { fetchLocalSongs } from './songListActions'
@@ -21,6 +21,19 @@ export const setQueueOpen = open => dispatch => {
 }
 
 export const downloadSong = (key) => dispatch => {
+  let state = store.getState()
+  if(state.songs.downloadingCount >= 3) {
+    console.log(state.songs.waitingToDownload)
+    dispatch({
+      type: SET_WAIT_LIST,
+      payload: [...state.songs.waitingToDownload, key]
+    })
+    return
+  }
+  dispatch({
+    type: SET_DOWNLOADING_COUNT,
+    payload: ++state.songs.downloadingCount
+  })
   document.getElementById('queue-button').classList.add('notify')
   setTimeout(() => {
     document.getElementById('queue-button').classList.remove('notify')
@@ -37,10 +50,30 @@ export const downloadSong = (key) => dispatch => {
         url: details.song.downloadUrl,
         encoding: null
       }, (err, r, data) => {
-        if(err) return
-        if(r.statusCode !== 200) {
-          console.error('Cannot Download Song - Status Code' + r.statusCode)
-          return
+        try {
+          // eslint-disable-next-line
+          if(err || r.statusCode !== 200) throw 'Error downloading!'
+        } catch(err) {
+          state = store.getState()
+            dispatch({
+              type: SET_DOWNLOADING_COUNT,
+              payload: --state.songs.downloadingCount
+            })
+            if(state.songs.waitingToDownload.length > 0) {
+              let toDownload = state.songs.waitingToDownload.pop()
+              dispatch({
+                type: SET_WAIT_LIST,
+                payload: state.songs.waitingToDownload
+              })
+              downloadSong(toDownload)(dispatch)
+            }
+            dispatch({
+              type: DISPLAY_WARNING,
+              payload: {
+                text: `There was an error downloading the song with key ${key}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+              }
+            })
+            return
         }
         let zip = new AdmZip(data)
         let zipEntries = zip.getEntries()
@@ -50,12 +83,35 @@ export const downloadSong = (key) => dispatch => {
             infoEntry  = zipEntries[i]
           }
         }
-        infoObject = JSON.parse(infoEntry.getData().toString('UTF8'))
+        try {
+          infoObject = JSON.parse(infoEntry.getData().toString('UTF8'))
+        } catch(err) {
+          dispatch({
+            type: DISPLAY_WARNING,
+            payload: {
+              text: `There was an error unpacking the song "${details.song.songName}." The song's files may be corrupt or use formatting other than UTF8. Please try again and contact the song's uploader, ${details.song.uploader}, if problem persists.`
+            }
+          })
+          return
+        }
         infoObject.key = key
         zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
         let extractTo = (store.getState().settings.folderStructure === 'idKey' ? details.song.key : details.song.name.replace(/[\\/:*?"<>|.]/g, ''))
         zip.extractAllTo(store.getState().settings.installationDirectory + '\\CustomSongs\\' + extractTo)
         checkDownloadedSongs()(dispatch)
+        state = store.getState()
+        dispatch({
+          type: SET_DOWNLOADING_COUNT,
+          payload: --state.songs.downloadingCount
+        })
+        if(state.songs.waitingToDownload.length > 0) {
+          let toDownload = state.songs.waitingToDownload.pop()
+          dispatch({
+            type: SET_WAIT_LIST,
+            payload: state.songs.waitingToDownload
+          })
+          downloadSong(toDownload)(dispatch)
+        }
       })
 
       let len = 0
@@ -74,6 +130,27 @@ export const downloadSong = (key) => dispatch => {
             progress: Math.trunc((chunks / len) * 100)
           }
         })
+      })
+    })
+    .catch(err => {
+      state = store.getState()
+      dispatch({
+        type: SET_DOWNLOADING_COUNT,
+        payload: --state.songs.downloadingCount
+      })
+      if(state.songs.waitingToDownload.length > 0) {
+        let toDownload = state.songs.waitingToDownload.pop()
+        dispatch({
+          type: SET_WAIT_LIST,
+          payload: state.songs.waitingToDownload
+        })
+        downloadSong(toDownload)(dispatch)
+      }
+      dispatch({
+        type: DISPLAY_WARNING,
+        payload: {
+          text: `There was an error downloading the song with key ${key}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+        }
       })
     })
 }
@@ -167,5 +244,16 @@ export const checkDownloadedSongs = () => dispatch => {
 export const clearQueue = () => dispatch => {
   dispatch({
     type: CLEAR_QUEUE
+  })
+}
+
+export const resetDownloads = () => dispatch => {
+  dispatch({
+    type: SET_DOWNLOADING_COUNT,
+    payload: 0
+  })
+  dispatch({
+    type: SET_WAIT_LIST,
+    payload: []
   })
 }

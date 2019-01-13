@@ -7,6 +7,8 @@ export const REFRESH                    = 'REFRESH'
 export const LOAD_MORE                  = 'LOAD_MORE'
 export const ADD_BSABER_RATING          = 'ADD_BSABER_RATING'
 export const SET_SCROLLTOP              = 'SET_SCROLLTOP'
+export const SET_DOWNLOADING_COUNT      = 'SET_DOWNLOADING_COUNT'
+export const SET_WAIT_LIST              = 'EST_WAIT_LIST'
 
 export const LOAD_NEW_PLAYLIST_IMAGE    = 'LOAD_NEW_PLAYLIST_IMAGE'
 export const CREATE_NEW_PLAYLIST        = 'CREATE_NEW_PLAYLIST'
