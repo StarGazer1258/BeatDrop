@@ -4,7 +4,7 @@ import '../css/SongDetails.css'
 import { connect } from 'react-redux'
 import { setDetailsOpen } from '../actions/detailsActions'
 import { downloadSong, deleteSong } from '../actions/queueActions'
-import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, fetchLocalPlaylists } from '../actions/playlistsActions'
+import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
 import { setView } from '../actions/viewActions'
 
 import Badge from './Badge'
@@ -131,7 +131,7 @@ class SongDetails extends Component {
             {this.props.downloadedSongs.songKeys.includes(this.props.details.song.key) ? <div className="song-in-library">This song is in your library.</div> : null}
             <div className="action-buttons">
               <PrimeAction details={this.props.details} downloadedSongs={this.props.downloadedSongs} downloadSong={this.props.downloadSong} deleteSong={this.props.deleteSong} queueItems={this.props.queueItems} />
-              <span className="action-button playlist-add-button" onClick={() => { this.props.setPlaylistPickerOpen(true) }}><img src={addIcon} alt='' />ADD TO PLAYLIST</span>
+              <span className={`action-button playlist-add-button${this.props.details.song.key  ? '' : ' disabled'}`} title={this.props.details.song.key  ? 'Add to Playlist' : 'This song cannot be added to a playlist as it is not available on BeatSaver.'} onClick={() => { if(this.props.details.song.key) this.props.setPlaylistPickerOpen(true) }}><img src={addIcon} alt='' />ADD TO PLAYLIST</span>
               <span className="action-button more-button"><img src={moreIcon} alt='' /></span>
             </div>
             <Description details={this.props.details} />

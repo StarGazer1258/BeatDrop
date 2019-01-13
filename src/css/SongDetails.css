@@ -179,6 +179,15 @@
   width: 110px;
 }
 
+#song-details .action-buttons .action-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#song-details .action-buttons .action-button.disabled:hover {
+  background: rgb(42, 77, 163);
+}
+
 #song-details .action-buttons .action-button.more-button img {
   width: 15px;
   height: 15px;
