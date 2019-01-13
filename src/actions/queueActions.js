@@ -198,7 +198,13 @@ export const checkDownloadedSongs = () => dispatch => {
             let dirs = file.split('\\')
             dirs.pop()
             let dir = dirs.join('\\')
-            let song = JSON.parse(data)
+            let song
+            try {
+              song = JSON.parse(data)
+            } catch(err) {
+              decrementCounter()
+              return
+            }
             if(song.hasOwnProperty('key')) {
               songKeys.push(song.key)
               songFiles.push(file)
@@ -223,6 +229,10 @@ export const checkDownloadedSongs = () => dispatch => {
                     songFiles.push(file)
                   }
                   decrementCounter()
+                })
+                .catch(err => {
+                  decrementCounter()
+                  return
                 })
             }
           })
