@@ -6,7 +6,6 @@
   width: 100%;
   height: calc(100vh - 35px);
   overflow: hidden;
-  border-radius: 0 0 5px 5px;
   display: flex;
   flex-flow: row wrap;
 }
