@@ -55,7 +55,7 @@ function Warnings(props) {
   return (
     <div className='warnings'>
       {props.warnings.map((warning, i) => {
-        return <Warning text={warning.text} index={i} key={i} />
+        return <Warning text={warning.text} color={warning.color} timeout={warning.timeout} index={i} key={i} />
       })}
     </div>
   )
