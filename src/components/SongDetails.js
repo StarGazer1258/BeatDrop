@@ -122,7 +122,7 @@ class SongDetails extends Component {
     } else {
       return (
         <div id="song-details">
-          <div className="close-icon" onClick={() => {this.props.setView(this.props.previousView)}}></div>
+          <div className="close-icon" title="Close" onClick={() => {this.props.setView(this.props.previousView)}}></div>
           <img className="cover-image" src={this.props.details.song.coverUrl} alt='' />
           <div className="details-info">
             <span className="details-title" title={this.props.details.song.songName}>{this.props.details.song.songName}</span>

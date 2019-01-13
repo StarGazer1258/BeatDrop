@@ -18,7 +18,7 @@ class SideBar extends Component {
   render() {
     return (
       <div id='sidebar' className={this.props.sidebarOpen ? '' : 'collapsed'}>
-        <div className='resize-sidebar' onClick={this.props.resizeSidebar}></div>
+        <div className='resize-sidebar' title={this.props.sidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'} onClick={this.props.resizeSidebar}></div>
         <h5>LIBRARY</h5>
         <ul>
           <li className={`fetch-local-songs ${this.props.view === SONG_LIST && this.props.source.source === 'local' && this.props.source.resource === 'songs' ? 'selected' : ''}`} onClick={this.props.fetchLocalSongs}>Songs</li>

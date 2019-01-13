@@ -12,7 +12,7 @@ class PlaylistView extends Component {
   render() {
     return (
       <div id="playlists-view">
-        <h1>Playlists</h1><span id="new-playlist-button" onClick={() => { this.props.setNewPlaylistDialogOpen(true) }}>+</span>
+        <h1>Playlists</h1><span id="new-playlist-button" title="New Playlist" onClick={() => { this.props.setNewPlaylistDialogOpen(true) }}>+</span>
 
         {this.props.playlists.map((playlist) => {
           return (
