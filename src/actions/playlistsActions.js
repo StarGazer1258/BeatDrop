@@ -48,7 +48,7 @@ export const fetchLocalPlaylists = (doSetView) => dispatch => {
       }
       let playlistsFound = 0
       for(let f in files) {
-        if(files[f].split('.')[files[f].split('.').length-1] === 'json') playlistsFound++
+        if(files[f].split('.')[files[f].split('.').length-1] === 'json' || files[f].split('.')[files[f].split('.').length-1] === 'bplist') playlistsFound++
       }
       let pushPlaylist = playlist => {
         playlists.push(playlist)
@@ -90,7 +90,7 @@ export const createNewPlaylist = playlistInfo => dispatch => {
     playlistInfo.image = defaultPlaylistIcon
   }
   playlistInfo.songs = []
-  fs.writeFile(path.join(state.settings.installationDirectory, 'Playlists', `${playlistInfo.playlistTitle.replace(/[\\/:*?"<>|. ]/g, '')}${Date.now()}.json`), JSON.stringify(playlistInfo), 'UTF8', () => {
+  fs.writeFile(path.join(state.settings.installationDirectory, 'Playlists', `${playlistInfo.playlistTitle.replace(/[\\/:*?"<>|. ]/g, '')}${Date.now()}.bplist`), JSON.stringify(playlistInfo), 'UTF8', () => {
     fetchLocalPlaylists(false)(dispatch)
   })
 }
