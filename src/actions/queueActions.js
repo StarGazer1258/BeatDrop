@@ -13,7 +13,6 @@ const request = remote.require('request')
 const rimraf = remote.require('rimraf')
 
 export const setQueueOpen = open => dispatch => {
-  console.log(open)
   dispatch({
     type: SET_QUEUE_OPEN,
     payload: open
@@ -186,7 +185,12 @@ export const checkDownloadedSongs = () => dispatch => {
   }
   fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
     if(err) {
-      alert('Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
+      dispatch({
+        type: DISPLAY_WARNING,
+        payload: {
+          text: `Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.`
+        }
+      })
       return false
     }
     Walker(path.join(store.getState().settings.installationDirectory, 'CustomSongs'))
