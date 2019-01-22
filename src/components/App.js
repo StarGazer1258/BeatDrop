@@ -9,6 +9,7 @@ import ViewSwitcher from './ViewSwitcher';
 import { PersistGate } from 'redux-persist/integration/react';
 import DownloadQueue from './DownloadQueue';
 import UpdateDialog from './UpdateDialog';
+import SongScanningDialog from './SongScanningDialog';
 
 class App extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ class App extends Component {
             <ViewSwitcher />
             <DownloadQueue />
             <UpdateDialog />
+            <SongScanningDialog />
           </div>
         </PersistGate>
       </Provider>

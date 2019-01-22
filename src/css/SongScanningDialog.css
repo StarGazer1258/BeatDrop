@@ -1,0 +1,81 @@
+#song-scanning-dialog {
+  position: absolute;
+  top: 35px;
+  width: 100%;
+  height: calc(100% - 35px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  animation: dialog-fade-in .2s forwards ease-out;
+}
+
+#song-scanning-dialog-inner {
+  background: white;
+  width: 575px;
+  height: 330px;
+  max-width: 575px;
+  max-height: 330px;
+  border-radius: 5px;
+  padding: 10px;
+  animation: dialog-drop-in .2s forwards ease-out;
+}
+
+.theme-dark #song-scanning-dialog-inner {
+  background: #303030;
+  color: white;
+}
+
+#song-scanning-dialog-inner h1, #song-scanning-dialog-inner div {
+  text-align: center;
+}
+
+#song-scanning-dialog h1:before {
+  content: "";
+  display: block;
+  position: relative;
+  left: calc(50% - 50px);
+  top: 20px;
+  width: 100px;
+  height: 100px;
+  padding: 30px 0;
+  background: url(../assets/update.png);
+  background-repeat: no-repeat;
+  transition: .5s;
+}
+
+#song-scanning-dialog.theme-dark h1:before {
+  background: url(../assets/dark/update.png);
+  background-repeat: no-repeat;
+}
+
+#song-scanning-dialog #song-scanning-progress {
+  background: silver;
+  height: 10px;
+  border-radius: 5px;
+  width: 80%;
+  margin: 0 10%;
+  margin-top: 50px;
+  overflow: hidden;
+}
+
+#song-scanning-dialog #song-scanning-progress-inner {
+  background: #2a4da3;
+    background: repeating-linear-gradient(
+    -45deg,
+    #2a4da3,
+    #2a4da3 10px,
+    #6986d1 10px,
+    #6986d1 20px
+  );
+  background-size: calc(80% + 29px) 11px;
+  height: inherit;
+  transition: width 1s linear;
+  animation: progress-indeterminate .2s linear forwards infinite;
+}
+
+@keyframes progress-indeterminate {
+  to {
+    background-position-x: 29px;
+  }
+}

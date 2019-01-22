@@ -9,6 +9,7 @@ export const ADD_BSABER_RATING          = 'ADD_BSABER_RATING'
 export const SET_SCROLLTOP              = 'SET_SCROLLTOP'
 export const SET_DOWNLOADING_COUNT      = 'SET_DOWNLOADING_COUNT'
 export const SET_WAIT_LIST              = 'EST_WAIT_LIST'
+export const SET_SCANNING_FOR_SONGS     = 'SET_SCANNING_FOR SONGS'
 
 export const LOAD_NEW_PLAYLIST_IMAGE    = 'LOAD_NEW_PLAYLIST_IMAGE'
 export const CREATE_NEW_PLAYLIST        = 'CREATE_NEW_PLAYLIST'
@@ -47,7 +48,7 @@ export const REPLAY_TUTORIAL            = 'REPLAY_TUTORIAL'
 
 export const DOWNLOAD_SONG              = 'DOWNLOAD_SONG'
 export const DELETE_SONG                = 'DELETE_SONG'
-export const CHECK_DOWNLOADED_SONGS     = 'CHECK_DOWNLOADED_SONGS'
+export const SET_DOWNLOADED_SONGS       = 'SET_DOWNLOADED_SONGS'
 
 export const SET_DETAILS_OPEN           = 'SET_DETAILS_OPEN'
 export const LOAD_DETAILS               = 'LOAD_DETAILS'

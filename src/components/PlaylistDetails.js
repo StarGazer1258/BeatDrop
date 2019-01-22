@@ -78,14 +78,48 @@ class PlaylistDetails extends Component {
                 <span id="more-button" className={`action-button more-button i-more-actions${this.props.editing ? ' hidden': ''}`} onClick={() => { this.setState({moreOpen: !this.state.moreOpen}) }}><img className="i-more-actions" src={moreIcon} alt='' /></span>
               </div>
               {this.state.moreOpen ? <div className="i-more-actions" id="more-actions" style={{top: document.getElementById('more-button').offsetTop + 30 + 'px', left: document.getElementById('more-button').offsetLeft + 'px'}}>
-                <div className="more-action i-more-actions button primary" onClick={() => { let neededSongs = 0; for(let i = 0; i < this.props.playlistDetails.songs.length; i++) { if(!this.props.downloadedSongs.songKeys.includes(this.props.playlistDetails.songs[i].key)) { this.props.downloadSong(this.props.playlistDetails.songs[i].key); neededSongs++ } } if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false}) } }>Download Missing Songs</div>
+                <div style={{zIndex: 1, position: "relative"}} className="more-action i-more-actions button primary" onClick={() => {
+                  let neededSongs = 0
+                  let checkedSongs = 0
+                  for(let i = 0; i < this.props.playlistDetails.songs.length; i++) {
+                    if(!this.props.playlistDetails.songs[i].hash) {
+                      try {
+                        fetch(`https://beatsaver.com/api/songs/detail/${this.props.playlistDetails.songs[i].key}`)
+                          .then(res => res.json())
+                          // eslint-disable-next-line
+                          .then(data => {
+                            if(!this.props.downloadedSongs.some(song => song.hash === data.song.hashMd5)) {
+                              this.props.downloadSong(data.song.hashMd5)
+                              neededSongs++
+                            }
+                            checkedSongs++
+                            if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
+                          })
+                          .catch(err => {
+                            this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.`})
+                            return
+                          })
+                      } catch(err) {
+                        this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try again.`})
+                        return
+                      }
+                    } else {
+                      if(!this.props.downloadedSongs.some(song => song.hash === this.props.playlistDetails.songs[i].hash)) {
+                        this.props.downloadSong(this.props.playlistDetails.songs[i].hash)
+                        neededSongs++
+                      }
+                      checkedSongs++
+                      if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
+                    }
+                  }
+                } }>Download Missing Songs</div>
               </div> : null}
               {this.props.editing ? <textarea id="editing-playlist-description" className="text-area" placeholder="Description" defaultValue={this.props.playlistDetails.playlistDescription}></textarea> : this.props.playlistDetails.playlistDescription ? <div className="details-description"><b>{'Description: '}</b><Linkify properties={{onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you link to continue?`)) { shell.openExternal(e.target.href) }}}}>{this.props.playlistDetails.playlistDescription}</Linkify></div> : ''}
             </div>
             <ol id="playlist-songs">
               {this.props.playlistDetails.songs.length === 0 ? <div style={{marginTop: '10px', color: 'silver', fontStyle: 'italic'}}>This playlist is empty.</div> : ''}
               {this.props.playlistDetails.songs.map((song, i) => {
-                return <li className={`playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}`} key={i} data-id={song.key}><span><img style={{boxShadow: 'none', background: 'transparent'}} src={song.coverUrl || errorIcon} alt="?" /><div className="playlist-item-title">{song.name || song.songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.songKeys.includes(song.key) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={(e) => {e.target.parentNode.parentNode.remove()}}></div> : null}</span></li>
+                return <li className={`playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}`} key={i} data-id={song.hash || song.key}><span><img style={{boxShadow: 'none', background: 'transparent'}} src={song.coverUrl || errorIcon} alt="?" /><div className="playlist-item-title">{song.name || song.songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={(e) => {e.target.parentNode.parentNode.remove()}}></div> : null}</span></li>
               })}
             </ol>
           </div>

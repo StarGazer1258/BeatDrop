@@ -19,10 +19,10 @@ export default function(state=initialState, action) {
         ...state,
         items: [
           {
-            key: action.payload.song.key,
-            image: action.payload.song.coverUrl,
-            title: action.payload.song.songName,
-            artist: action.payload.song.authorName,
+            hash: action.payload.hashMd5,
+            image: action.payload.coverUrl,
+            title: action.payload.songName,
+            artist: action.payload.authorName,
             progress: 0
           },
           ...items
@@ -31,7 +31,7 @@ export default function(state=initialState, action) {
     case UPDATE_PROGRESS: {
       let items = [...state.items]
       for(let i=0;i<items.length;i++) {
-        if(items[i].key === action.payload.key) {
+        if(items[i].hash === action.payload.hash) {
           items[i].progress = action.payload.progress
         }
       }

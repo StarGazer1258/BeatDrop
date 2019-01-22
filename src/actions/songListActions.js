@@ -1,6 +1,5 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
-import { store } from '../store'
 
 const { remote } = window.require('electron')
 const Walker = remote.require('walker')
@@ -21,7 +20,7 @@ const resourceUrl = {
   }
 }
 
-export const fetchNew = (page) => dispatch => {
+export const fetchNew = () => dispatch => {
   dispatch({
     type: SET_VIEW,
     payload: SONG_LIST
@@ -135,7 +134,7 @@ export const fetchTopFinished = () => dispatch => {
     })
 }
 
-export const fetchLocalSongs = () => dispatch => {
+export const fetchLocalSongs = () => (dispatch, getState) => {
   dispatch({
     type: SET_VIEW,
     payload: SONG_LIST
@@ -144,7 +143,7 @@ export const fetchLocalSongs = () => dispatch => {
     type: SET_SCROLLTOP,
     payload: 0
   })
-  let state = store.getState()
+  let state = getState()
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -200,7 +199,7 @@ export const fetchLocalSongs = () => dispatch => {
         })
       }
     })
-    Walker(path.join(store.getState().settings.installationDirectory, 'CustomSongs'))
+    Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
       .on('file', (file) => {
         let dirs = file.split('\\')
         dirs.pop()
@@ -240,12 +239,12 @@ export const fetchLocalSongs = () => dispatch => {
   })
 }
 
-export const loadMore = () => (dispatch) => {
+export const loadMore = () => (dispatch, getState) => {
   dispatch({
     type: SET_LOADING_MORE,
     payload: true
   })
-  let state = store.getState()
+  let state = getState()
   fetch(resourceUrl[state.source.source][state.source.resource] + '/' + state.songs.songs.length)
     .then(res => res.json())
     .then(data => {
@@ -260,8 +259,8 @@ export const loadMore = () => (dispatch) => {
     })
 }
 
-export const refresh = () => dispatch => {
-  switch(store.getState().source.source + store.getState().source.resource) {
+export const refresh = () => (dispatch, getState) => {
+  switch(getState().source.source + getState().source.resource) {
     case 'localsongs':
       fetchLocalSongs()
       return
@@ -270,7 +269,7 @@ export const refresh = () => dispatch => {
         type: SET_LOADING,
         payload: true
       })
-      let state = store.getState()
+      let state = getState()
       fetch(resourceUrl[state.source.source][state.source.resource] + '/0')
         .then(res => res.json())
         .then(data => {

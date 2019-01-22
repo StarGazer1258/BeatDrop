@@ -9,12 +9,12 @@ export const setSettingsOpen = isOpen => dispatch => {
   })
 }
 
-export const setInstallationDirectory = directory => dispatch => {
+export const setInstallationDirectory = directory => (dispatch, getState) => {
   dispatch({
     type: SET_INSTALLATION_DIRECTORY,
     payload: directory
   })
-  checkDownloadedSongs()(dispatch)
+  checkDownloadedSongs()(dispatch, getState)
 }
 
 export const setAutoLoadMore = willAutoLoadMore => dispatch => {

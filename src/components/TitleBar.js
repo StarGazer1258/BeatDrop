@@ -5,13 +5,12 @@ import BlueDrop from '../assets/appicons/png/BeatDropNoOutlineInvert.png'
 import WhiteDrop from '../assets/appicons/png/BeatDropNoOutlineWhite.png'
 import { connect } from 'react-redux'
 import { resizeWindow } from '../actions/windowActions'
-import { checkDownloadedSongs, resetDownloads } from '../actions/queueActions'
+import { resetDownloads } from '../actions/queueActions'
 const remote = window.require("electron").remote
 
 class TitleBar extends Component {
 
   componentDidMount() {
-    this.props.checkDownloadedSongs()
     this.props.resetDownloads()
   }
 
@@ -39,7 +38,6 @@ TitleBar.propTypes = {
   resizeWindow: PropTypes.func.isRequired,
   window: PropTypes.object.isRequired,
   theme: PropTypes.string.isRequired,
-  checkDownloadedSongs: PropTypes.func.isRequired,
   resetDownloads: PropTypes.func.isRequired
 }
 
@@ -48,4 +46,4 @@ const mapStateToProps = state => ({
   theme: state.settings.theme
 })
 
-export default connect(mapStateToProps, { resizeWindow, checkDownloadedSongs, resetDownloads })(TitleBar)
+export default connect(mapStateToProps, { resizeWindow, resetDownloads })(TitleBar)

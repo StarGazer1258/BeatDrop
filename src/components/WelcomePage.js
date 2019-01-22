@@ -4,9 +4,9 @@ import '../css/WelcomePage.css'
 import WhiteDrop from '../assets/img/icon-0.png'
 import Button from './Button';
 
-import { setView } from '../actions/viewActions'
+import { checkDownloadedSongs } from '../actions/queueActions'
+import { fetchNew } from '../actions/songListActions'
 import { connect } from 'react-redux'
-import { SONG_LIST } from '../views'
 
 class WelcomePage extends Component {
 
@@ -16,11 +16,11 @@ class WelcomePage extends Component {
         <img src={WhiteDrop} alt="BeatDrop Logo"/>
         <h1>Welcome to BeatDrop!</h1>
         <Button type="primary">View Tutorial</Button><div className="flex-br"></div>
-        <Button onClick={() => { this.props.setView(SONG_LIST) }}>Get Started</Button>
+        <Button onClick={() => { this.props.checkDownloadedSongs(); this.props.fetchNew() }}>Get Started</Button>
       </div>
     )
   }
 
 }
 
-export default connect(null, { setView })(WelcomePage)
+export default connect(null, { fetchNew, checkDownloadedSongs })(WelcomePage)

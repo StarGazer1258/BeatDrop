@@ -91,15 +91,16 @@ function BeatSaver(props) {
   )
 }
 
-function PrimeAction(props) {
-  if(!!props.details.song.file || props.downloadedSongs.songKeys.includes(props.details.song.key)) {
-    return <span className="action-button delete-button" onClick={() => {props.deleteSong(props.details.song.file || props.downloadedSongs.songFiles[props.downloadedSongs.songKeys.indexOf(props.details.song.key)])}}><img src={deleteIcon} alt='' />DELETE</span>
-  } else {
-    return <span className="action-button download-button" onClick={() => {props.downloadSong(props.details.song.key)}}><span style={{width: props.queueItems[0] === undefined ? '101%' : props.queueItems[0].progress + 5}}></span><img src={downloadIcon} alt='' /><span>{props.queueItems[0] === undefined ? 'DOWNLOAD' : props.queueItems[0].progress === 100 ? 'DOWNLOAD' : props.queueItems[0].progress + '%'}</span></span>
-  }
-}
-
 class SongDetails extends Component {
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      previewEnabled: true,
+      deletionStatus: 'DELETE'
+    }
+  }
 
   render() {
     if(this.props.details.loading) {
@@ -131,10 +132,14 @@ class SongDetails extends Component {
             <span className="details-title" title={this.props.details.song.songName}>{this.props.details.song.songName}</span>
             <div className="details-subtitle" title={this.props.details.song.songSubName}>{this.props.details.song.songSubName}</div>
             <div className="details-artist" title={this.props.details.song.authorName}>{this.props.details.song.authorName}</div>
-            {this.props.downloadedSongs.songKeys.includes(this.props.details.song.key) ? <div className="song-in-library">This song is in your library.</div> : null}
+            {this.props.downloadedSongs.some(song => song.hash === this.props.details.song.hashMd5) ? <div className="song-in-library">This song is in your library.</div> : null}
             <div className="action-buttons">
-              <PrimeAction details={this.props.details} downloadedSongs={this.props.downloadedSongs} downloadSong={this.props.downloadSong} deleteSong={this.props.deleteSong} queueItems={this.props.queueItems} />
-              <span className={`action-button playlist-add-button${this.props.details.song.key  ? '' : ' disabled'}`} title={this.props.details.song.key  ? 'Add to Playlist' : 'This song cannot be added to a playlist as it is not available on BeatSaver.'} onClick={() => { if(this.props.details.song.key) this.props.setPlaylistPickerOpen(true) }}><img src={addIcon} alt='' />ADD TO PLAYLIST</span>
+              {(!!this.props.details.song.file || this.props.downloadedSongs.some(song => song.hash === this.props.details.song.hashMd5)) ?
+                <span className="action-button delete-button" onClick={() => {document.getElementById('preview').src = ''; document.getElementById('preview').load(); this.props.deleteSong(this.props.details.song.file || this.props.downloadedSongs[this.props.downloadedSongs.findIndex(song => song.hash === this.props.details.song.hashMd5)].file)}}><img src={deleteIcon} alt='' />{this.state.deletionStatus}</span>
+              :
+                <span className="action-button download-button" onClick={() => {this.props.downloadSong(this.props.details.song.hashMd5)}}><span style={{width: this.props.queueItems[0] === undefined ? '101%' : this.props.queueItems[0].progress + 5}}></span><img src={downloadIcon} alt='' /><span>{this.props.queueItems[0] === undefined ? 'DOWNLOAD' : this.props.queueItems[0].progress === 100 ? 'DOWNLOAD' : this.props.queueItems[0].progress + '%'}</span></span>
+              }
+              <span className="action-button playlist-add-button" title="Add to Playlist" onClick={() => { if(this.props.details.song.key) this.props.setPlaylistPickerOpen(true) }}><img src={addIcon} alt='' />ADD TO PLAYLIST</span>
               <span className="action-button more-button"><img src={moreIcon} alt='' /></span>
             </div>
             <Description details={this.props.details} />

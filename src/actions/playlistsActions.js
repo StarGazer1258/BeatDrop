@@ -1,15 +1,13 @@
 import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
-import { store } from '../store'
 import { defaultPlaylistIcon } from '../b64Assets'
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
 
-export const fetchLocalPlaylists = (doSetView) => dispatch => {
-  let state = store.getState()
-  console.log(typeof doSetView)
+export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
+  let state = getState()
   if(typeof doSetView === 'object' || doSetView === undefined) { doSetView = true } else { doSetView = false }
   if(doSetView === true) {
     dispatch({
@@ -81,8 +79,8 @@ export const loadPlaylistCoverImage = fileLocation => dispatch => {
   })
 }
 
-export const createNewPlaylist = playlistInfo => dispatch => {
-  let state = store.getState()
+export const createNewPlaylist = playlistInfo => (dispatch, getState) => {
+  let state = getState()
   try {
     let buff = fs.readFileSync(state.playlists.newCoverImageSource)
     playlistInfo.image = `data:image/${state.playlists.newCoverImageSource.split('.')[state.playlists.newCoverImageSource.split('.').length]};base64,${buff.toString('base64')}`
@@ -91,7 +89,7 @@ export const createNewPlaylist = playlistInfo => dispatch => {
   }
   playlistInfo.songs = []
   fs.writeFile(path.join(state.settings.installationDirectory, 'Playlists', `${playlistInfo.playlistTitle.replace(/[\\/:*?"<>|. ]/g, '')}${Date.now()}.bplist`), JSON.stringify(playlistInfo), 'UTF8', () => {
-    fetchLocalPlaylists(false)(dispatch)
+    fetchLocalPlaylists(false)(dispatch, getState)
   })
 }
 
@@ -133,7 +131,7 @@ export const clearPlaylistDialog = () => dispatch => {
   })
 }
 
-export const loadPlaylistDetails = playlistFile => dispatch => {
+export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
   dispatch({
     type: SET_VIEW,
     payload: PLAYLIST_DETAILS
@@ -168,44 +166,83 @@ export const loadPlaylistDetails = playlistFile => dispatch => {
         type: LOAD_PLAYLIST_DETAILS,
         payload: {...playlist, songs: [], playlistFile}
       })
-      let state = store.getState()
+      let state = getState()
       for(let i = 0; i < playlist.songs.length; i++) {
-        if(state.songs.downloadedSongs.songKeys.includes(playlist.songs[i].key)) {
-          let file = state.songs.downloadedSongs.songFiles[state.songs.downloadedSongs.songKeys.indexOf(playlist.songs[i].key)]
-          fs.readFile(file, 'UTF8', (err, data) => {
-            if(err) {
+        if(playlist.songs[i].hash) {
+          if(state.songs.downloadedSongs.some(song => song.hash === playlist.songs[i].hash)) {
+            let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === playlist.songs[i].hash)].file
+            fs.readFile(file, 'UTF8', (err, data) => {
+              if(err) {
+                dispatch({
+                  type: LOAD_PLAYLIST_SONGS,
+                  payload: { ...playlist.songs[i], order: i }
+                })
+                return
+              }
+              let song = JSON.parse(data)
+              let dirs = file.split('\\')
+              dirs.pop()
+              let dir = dirs.join('\\')
+              song.coverUrl = path.join(dir, song.coverImagePath)
+              dispatch({
+                type: LOAD_PLAYLIST_SONGS,
+                payload: { ...song, file, order: i }
+              })
+            })
+          } else {
+            fetch(`https://beatsaver.com/api/songs/search/hash/${playlist.songs[i].hash}`)
+            .then(res => res.json())
+            .then(results => {
+              if(results.songs.length === 1) {
+                dispatch({
+                  type: LOAD_PLAYLIST_SONGS,
+                  payload: { ...results.songs[0], order: i }
+                })
+              }
+            })
+            .catch(_ => {
               dispatch({
                 type: LOAD_PLAYLIST_SONGS,
                 payload: { ...playlist.songs[i], order: i }
               })
-              return
-            }
-            let song = JSON.parse(data)
-            let dirs = file.split('\\')
-            dirs.pop()
-            let dir = dirs.join('\\')
-            song.coverUrl = path.join(dir, song.coverImagePath)
-            dispatch({
-              type: LOAD_PLAYLIST_SONGS,
-              payload: { ...song, file, order: i }
             })
-          })
+          }
         } else {
-          fetch('https://beatsaver.com/api/songs/detail/' + playlist.songs[i].key)
+          fetch(`https://beatsaver.com/api/songs/detail/${playlist.songs[i].key}`)
             .then(res => res.json())
             .then(details => {
-              console.log(details)
-              dispatch({
-                type: LOAD_PLAYLIST_SONGS,
-                payload: { ...details.song, order: i }
-              })
+              if(state.songs.downloadedSongs.some(song => song.hash === details.song.hashMd5)) {
+                let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.song.hashMd5)].file
+                fs.readFile(file, 'UTF8', (err, data) => {
+                  if(err) {
+                    dispatch({
+                      type: LOAD_PLAYLIST_SONGS,
+                      payload: { ...playlist.songs[i], order: i }
+                    })
+                    return
+                  }
+                  let song = JSON.parse(data)
+                  let dirs = file.split('\\')
+                  dirs.pop()
+                  let dir = dirs.join('\\')
+                  song.coverUrl = path.join(dir, song.coverImagePath)
+                  dispatch({
+                    type: LOAD_PLAYLIST_SONGS,
+                    payload: { ...song, file, order: i }
+                  })
+                })
+              } else {
+                dispatch({
+                  type: LOAD_PLAYLIST_SONGS,
+                  payload: { ...details.song, order: i }
+                })
+              }
             })
-            .catch(err => {
+            .catch(_ => {
               dispatch({
                 type: LOAD_PLAYLIST_SONGS,
                 payload: { ...playlist.songs[i], order: i }
               })
-              console.error(playlist.songs[i])
             })
         }
       }
@@ -213,7 +250,7 @@ export const loadPlaylistDetails = playlistFile => dispatch => {
   })
 }
 
-export const savePlaylistDetails = details => dispatch => {
+export const savePlaylistDetails = details => (dispatch, getState) => {
   let file = details.playlistFile
   delete details.playlistFile
   let newSongs = []
@@ -226,7 +263,11 @@ export const savePlaylistDetails = details => dispatch => {
     return -1;
   }
   for(let i = 0; i < details.newOrder.length; i++) {
-    newSongs.push({key: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].key, songName: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].songName})
+    if(findWithAttr(details.songs, 'hash', details.newOrder[i]) >= 0) {
+      newSongs.push({hash: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].hash, songName: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].songName})
+    } else {
+      newSongs.push({key: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].key, songName: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].songName})
+    }
   }
   details.songs = newSongs
   delete details.newOrder
@@ -246,7 +287,7 @@ export const savePlaylistDetails = details => dispatch => {
       type: LOAD_PLAYLIST_DETAILS,
       payload: details
     })
-    fetchLocalPlaylists(false)(dispatch)
+    fetchLocalPlaylists(false)(dispatch, getState)
   })
 }
 
@@ -257,7 +298,7 @@ export const setPlaylistEditing = isEditing => dispatch => {
   })
 }
 
-export const addSongToPlaylist = (song, playlistFile) => dispatch => {
+export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) => {
   fs.readFile(playlistFile, 'UTF8', (err, data) => {
     if(err) {
       dispatch({
@@ -285,7 +326,7 @@ export const addSongToPlaylist = (song, playlistFile) => dispatch => {
         })
         return
       }
-      fetchLocalPlaylists(false)(dispatch)
+      fetchLocalPlaylists(false)(dispatch, getState)
     })
   })
 }
