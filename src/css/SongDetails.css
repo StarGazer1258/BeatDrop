@@ -86,8 +86,8 @@
 
 #song-details .details-description {
   margin-bottom: 10px;
-  max-width: 30vw;
-  max-height: 20vh;
+  max-width: 80%;
+  max-height: 20%;
   overflow-y: scroll;
 }
 
@@ -198,7 +198,7 @@
 
 #song-details.loading .details-description {
   background-color: silver;
-  width: 30vw;
+  width: 50%;
   height: 16.8vw;
 }
 

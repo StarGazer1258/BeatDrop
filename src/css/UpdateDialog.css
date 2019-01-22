@@ -7,7 +7,7 @@
   justify-content: center;
   align-items: center;
   background: rgba(0, 0, 0, 0.5);
-  animation: update-dialog-fade-in .2s forwards ease-out;
+  animation: dialog-fade-in .2s forwards ease-out;
 }
 
 #update-dialog-inner {
@@ -18,7 +18,7 @@
   max-height: 500px;
   border-radius: 5px;
   padding: 10px;
-  animation: update-dialog-drop-in .2s forwards ease-out;
+  animation: dialog-drop-in .2s forwards ease-out;
 }
 
 .theme-dark #update-dialog-inner {
@@ -78,17 +78,4 @@
   background: #2a4da3;
   height: inherit;
   transition: width 1s linear;
-}
-
-@keyframes update-dialog-fade-in {
-  from {
-    background: rgba(0, 0, 0, 0.0);
-  }
-}
-
-@keyframes update-dialog-drop-in {
-  from {
-    opacity: 0;
-    transform: translateY(-500px);
-  }
 }

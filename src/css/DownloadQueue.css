@@ -44,5 +44,6 @@
   margin: 0;
   padding: 10px;
   height: calc(100% - 59px);
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }

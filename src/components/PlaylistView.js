@@ -14,9 +14,9 @@ class PlaylistView extends Component {
       <div id="playlists-view">
         <h1>Playlists</h1><span id="new-playlist-button" title="New Playlist" onClick={() => { this.props.setNewPlaylistDialogOpen(true) }}>+</span>
 
-        {this.props.playlists.map((playlist) => {
+        {this.props.playlists.map((playlist, i) => {
           return (
-            <div className="playlist-item" onClick={() => {this.props.loadPlaylistDetails(playlist.file)}}>
+            <div key={i} className="playlist-item" onClick={() => {this.props.loadPlaylistDetails(playlist.file)}}>
               <img src={playlist.image} alt=""/>
               <div className="playlist-item-info">
                 <span className="playlist-item-title">{playlist.playlistTitle}</span><span className="playlist-item-length-info">{playlist.songs.length} Songs</span>

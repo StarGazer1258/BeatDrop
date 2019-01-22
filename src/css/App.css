@@ -60,6 +60,8 @@ select {
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  font-family: "Lato", sans-serif;
+  font-size: 11pt;
 }
 
 select:hover {
@@ -79,6 +81,30 @@ select:hover {
   color: black;
 }
 
+hr {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  width: calc(100% - 80px);
+  margin-right: 80px;
+  margin-top: 20px;
+}
+
+.theme-dark hr {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .hidden {
   display: none !important;
+}
+
+@keyframes dialog-fade-in {
+  from {
+    background: rgba(0, 0, 0, 0.0);
+  }
+}
+
+@keyframes dialog-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-500px);
+  }
 }
