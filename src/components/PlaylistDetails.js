@@ -14,6 +14,9 @@ import addIcon from '../assets/add-filled.png'
 import moreIcon from '../assets/more-filled.png'
 import errorIcon from '../assets/error.png'
 
+import Linkify from 'react-linkify'
+const shell = window.require('electron').shell
+
 let playlistSongs
 
 class PlaylistDetails extends Component {
@@ -77,7 +80,7 @@ class PlaylistDetails extends Component {
               {this.state.moreOpen ? <div className="i-more-actions" id="more-actions" style={{top: document.getElementById('more-button').offsetTop + 30 + 'px', left: document.getElementById('more-button').offsetLeft + 'px'}}>
                 <div className="more-action i-more-actions button primary" onClick={() => { let neededSongs = 0; for(let i = 0; i < this.props.playlistDetails.songs.length; i++) { if(!this.props.downloadedSongs.songKeys.includes(this.props.playlistDetails.songs[i].key)) { this.props.downloadSong(this.props.playlistDetails.songs[i].key); neededSongs++ } } if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false}) } }>Download Missing Songs</div>
               </div> : null}
-              {this.props.editing ? <textarea id="editing-playlist-description" className="text-area" placeholder="Description" defaultValue={this.props.playlistDetails.playlistDescription}></textarea> : this.props.playlistDetails.playlistDescription ? <div className="details-description"><b>{'Description: '}</b>{this.props.playlistDetails.playlistDescription}</div> : ''}
+              {this.props.editing ? <textarea id="editing-playlist-description" className="text-area" placeholder="Description" defaultValue={this.props.playlistDetails.playlistDescription}></textarea> : this.props.playlistDetails.playlistDescription ? <div className="details-description"><b>{'Description: '}</b><Linkify properties={{onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you link to continue?`)) { shell.openExternal(e.target.href) }}}}>{this.props.playlistDetails.playlistDescription}</Linkify></div> : ''}
             </div>
             <ol id="playlist-songs">
               {this.props.playlistDetails.songs.length === 0 ? <div style={{marginTop: '10px', color: 'silver', fontStyle: 'italic'}}>This playlist is empty.</div> : ''}
