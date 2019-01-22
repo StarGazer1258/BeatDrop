@@ -70,7 +70,7 @@ function Difficulties(props) {
 
 function Description(props) {
   if(!props.details.song.description) return null
-  return <div className="details-description"><b>Description:</b><br /><Linkify properties={{onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you link to continue?`)) { shell.openExternal(e.target.href) }}}}>{props.details.song.description}</Linkify></div>
+  return <div className="details-description"><b>Description:</b><br /><Linkify properties={{onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you like to continue?`)) { shell.openExternal(e.target.href) }}}}>{props.details.song.description}</Linkify></div>
 }
 
 function Uploader(props) {
