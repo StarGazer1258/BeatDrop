@@ -6,8 +6,14 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>BeatDrop</title>
   <style>
+    @import "https://fonts.googleapis.com/css?family=Lato:300,700,900";
+    @import "https://fonts.googleapis.com/css?family=Montserrat:700";
+
     body {
       overflow: hidden;
+      background: rgba(0, 0, 0, 0.85);
+      color: white;
+      font-family: "Lato", sans-serif;
     }
     
     #loading-page {
@@ -19,22 +25,27 @@
       font-family: 'Lato', sans-serif
     }
 
-    #loading-page img {
-      width: 200px;
+    #loading-page #loader {
+      display: block;
+      background: url(./beatdrop-loader.gif);
+      width: 100%;
       height: 200px;
+      background-position: center;
+      background-size: 330%;
     }
 
     #loading-page h1 {
       width: 100%;
       text-align: center;
+      font-family: "Montserrat", "Lato", sans-serif;
     }
   </style>
 </head>
 <body>
   <div id="loading-page">
-    <img src="./icon-0.png" alt="BeatDrop Logo"/>
+    <div id="loader"></div>
     <h1>BeatDrop</h1>
-    <h3>Loading...</h3>
+    <div>Loading...</div>
   </div>
 </body>
 </html>

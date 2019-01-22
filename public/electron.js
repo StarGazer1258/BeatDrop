@@ -32,7 +32,7 @@ function createWindow() {
 }
 
 app.on('ready', () => {
-  let loading = new BrowserWindow({width: 400, height: 400, show: false, frame: false, webPreferences: {webSecurity: false}})
+  let loading = new BrowserWindow({width: 400, height: 400, show: false, frame: false, resizable: false, webPreferences: {webSecurity: false}})
 
   loading.once('show', () => {
     let main = createWindow()
