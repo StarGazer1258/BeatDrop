@@ -19,7 +19,7 @@ function Details(props) {
   if(!props.downloads) return null
   return (
     <div className="beatmap-details">
-      <div className="downloads">{props.downloads} Download{(props.downloads === 1 ? '' : 's')}</div>
+      <div className="downloads">{props.downloads} <span role="img" aria-label="downloads">⏬</span>{(props.downloads === 1 ? '' : '')}</div>
       <div className="upvotes">{props.upvotes} <span role="img" aria-label="upvotes">👍</span>/{props.downvotes} <span role="img" aria-label="downvotes">👎</span></div>
       <div className="plays">{props.plays} <span role="img" aria-label="finishes">🏁</span></div>
     </div>

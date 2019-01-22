@@ -83,9 +83,10 @@ function BeatSaver(props) {
   return (
     <div className="details-ratings">
       <b>BeatSaver Details:</b>
-      <div className="details-downloads">&nbsp;&nbsp;&nbsp;&nbsp;<b>Downloads: </b>{props.details.song.downloadCount}</div>
-      <div className="details-updownvotes">&nbsp;&nbsp;&nbsp;&nbsp;<b>Upvotes: </b>{props.details.song.upVotes} <b>Downvotes: </b>{props.details.song.downVotes}</div>
-      <div className="details-finishes">&nbsp;&nbsp;&nbsp;&nbsp;<b>Finishes: </b>{props.details.song.playedCount}</div>
+      <div className="details-downloads">&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="downloads">⏬</span> Downloads: </b>{props.details.song.downloadCount}</div>
+      <div className="details-updownvotes">&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="upvotes">👍</span>Upvotes: </b>{props.details.song.upVotes}</div>
+      <div className="details-updownvotes">&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="downvotes">👎</span> Downvotes: </b>{props.details.song.downVotes}</div>
+      <div className="details-finishes">&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="finises">🏁</span> Finishes: </b>{props.details.song.playedCount}</div>
       <br />
     </div>
   )

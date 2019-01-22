@@ -103,7 +103,11 @@
 
 #song-details .details-ratings {
   position: absolute;
-  right: 8vw;
+  right: 6vw;
+  display: flex;
+  align-items: flex-start;
+  width: 200px;
+  flex-flow: row wrap;
 }
 
 #song-details .action-buttons {
