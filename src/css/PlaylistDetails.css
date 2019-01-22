@@ -10,9 +10,8 @@
 #playlist-details .cover-image {
   width: 20vw;
   height: 20vw;
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.25));
   border-radius: 5px;
-  background:  silver;
 }
 
 #playlist-details.loading .cover-image {
@@ -248,13 +247,12 @@ li.playlist-song-item.draggable {
   background: rgba(0, 0, 0, 0.3);
 }
 
-li.playlist-song-item img:not(.delete-playlist-item), li.playlist-song-item object {
+li.playlist-song-item img:not(.delete-playlist-item) {
   width: 50px;
   height: 50px;
   border-radius: 5px;
   margin-right: 10px;
-  background: silver;
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.175);
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
 }
 
 .playlist-song-item .delete-playlist-item {

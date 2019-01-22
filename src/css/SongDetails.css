@@ -9,9 +9,8 @@
 #song-details .cover-image {
   width: 15vw;
   height: 15vw;
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
   border-radius: 5px;
-  background:  silver;
 }
 
 #song-details.loading .cover-image {
