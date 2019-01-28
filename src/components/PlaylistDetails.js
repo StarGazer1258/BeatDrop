@@ -14,20 +14,14 @@ import addIcon from '../assets/add-filled.png'
 import moreIcon from '../assets/more-filled.png'
 import errorIcon from '../assets/error.png'
 
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+
 import Linkify from 'react-linkify'
 const shell = window.require('electron').shell
 
 let playlistSongs
 
 class PlaylistDetails extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      moreOpen: false
-    }
-  }
 
   componentDidMount() {
     playlistSongs = new Sortable(document.getElementById('playlist-songs'), {
@@ -75,45 +69,44 @@ class PlaylistDetails extends Component {
               <div className="action-buttons">
               <span className={`action-button delete-button${this.props.editing ? ' hidden': ''}`} onClick={() => { this.props.deletePlaylist(this.props.playlistDetails.playlistFile); this.props.fetchLocalPlaylists() }}><img src={deleteIcon} alt='' />DELETE</span>
                 <span className="action-button edit-button" onClick={() => { if(this.props.editing) { this.props.savePlaylistDetails({...this.props.playlistDetails, playlistTitle: document.getElementById('editing-playlist-title').value, playlistAuthor: document.getElementById('editing-playlist-author').value, playlistDescription: document.getElementById('editing-playlist-description').value, newOrder: playlistSongs.toArray()}) } this.props.setPlaylistEditing(!this.props.editing); playlistSongs.option('disabled', !playlistSongs.option('disabled')) }}><img src={addIcon} alt='' />{this.props.editing ? 'FINISH EDITING' : 'EDIT'}</span>
-                <span id="more-button" className={`action-button more-button i-more-actions${this.props.editing ? ' hidden': ''}`} onClick={() => { this.setState({moreOpen: !this.state.moreOpen}) }}><img className="i-more-actions" src={moreIcon} alt='' /></span>
-              </div>
-              {this.state.moreOpen ? <div className="i-more-actions" id="more-actions" style={{top: document.getElementById('more-button').offsetTop + 30 + 'px', left: document.getElementById('more-button').offsetLeft + 'px'}}>
-                <div style={{zIndex: 1, position: "relative"}} className="more-action i-more-actions button primary" onClick={() => {
-                  let neededSongs = 0
-                  let checkedSongs = 0
-                  for(let i = 0; i < this.props.playlistDetails.songs.length; i++) {
-                    if(!this.props.playlistDetails.songs[i].hash) {
-                      try {
-                        fetch(`https://beatsaver.com/api/songs/detail/${this.props.playlistDetails.songs[i].key}`)
-                          .then(res => res.json())
-                          // eslint-disable-next-line
-                          .then(data => {
-                            if(!this.props.downloadedSongs.some(song => song.hash === data.song.hashMd5)) {
-                              this.props.downloadSong(data.song.hashMd5)
-                              neededSongs++
-                            }
-                            checkedSongs++
-                            if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
-                          })
-                          .catch(err => {
-                            this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.`})
-                            return
-                          })
-                      } catch(err) {
-                        this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try again.`})
-                        return
+                <ContextMenuTrigger id="playlist-details-more" holdToDisplay={0}><span id="more-button" className={`action-button more-button i-more-actions${this.props.editing ? ' hidden': ''}`}><img className="i-more-actions" src={moreIcon} alt='' /></span></ContextMenuTrigger>
+                <ContextMenu id="playlist-details-more"><MenuItem onClick={(e) => {
+                    e.stopPropagation()
+                    let neededSongs = 0
+                    let checkedSongs = 0
+                    for(let i = 0; i < this.props.playlistDetails.songs.length; i++) {
+                      if(!this.props.playlistDetails.songs[i].hash) {
+                        try {
+                          fetch(`https://beatsaver.com/api/songs/detail/${this.props.playlistDetails.songs[i].key}`)
+                            .then(res => res.json())
+                            // eslint-disable-next-line
+                            .then(data => {
+                              if(!this.props.downloadedSongs.some(song => song.hash === data.song.hashMd5)) {
+                                this.props.downloadSong(data.song.hashMd5)
+                                neededSongs++
+                              }
+                              checkedSongs++
+                              if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
+                            })
+                            .catch(err => {
+                              this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.`})
+                              return
+                            })
+                        } catch(err) {
+                          this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try again.`})
+                          return
+                        }
+                      } else {
+                        if(!this.props.downloadedSongs.some(song => song.hash === this.props.playlistDetails.songs[i].hash)) {
+                          this.props.downloadSong(this.props.playlistDetails.songs[i].hash)
+                          neededSongs++
+                        }
+                        checkedSongs++
+                        if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
                       }
-                    } else {
-                      if(!this.props.downloadedSongs.some(song => song.hash === this.props.playlistDetails.songs[i].hash)) {
-                        this.props.downloadSong(this.props.playlistDetails.songs[i].hash)
-                        neededSongs++
-                      }
-                      checkedSongs++
-                      if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
                     }
-                  }
-                } }>Download Missing Songs</div>
-              </div> : null}
+                  }}>Download Missing Songs</MenuItem></ContextMenu>
+              </div>
               {this.props.editing ? <textarea id="editing-playlist-description" className="text-area" placeholder="Description" defaultValue={this.props.playlistDetails.playlistDescription}></textarea> : this.props.playlistDetails.playlistDescription ? <div className="details-description"><b>{'Description: '}</b><Linkify properties={{onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you like to continue?`)) { shell.openExternal(e.target.href) }}}}>{this.props.playlistDetails.playlistDescription}</Linkify></div> : ''}
             </div>
             <ol id="playlist-songs">

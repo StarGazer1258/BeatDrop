@@ -6,6 +6,7 @@ import { setDetailsOpen } from '../actions/detailsActions'
 import { downloadSong, deleteSong } from '../actions/queueActions'
 import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
 import { setView } from '../actions/viewActions'
+import { displayWarning } from '../actions/warningActions'
 
 import Badge from './Badge'
 import Button from './Button'
@@ -15,8 +16,10 @@ import addIcon from '../assets/add-filled.png'
 import moreIcon from '../assets/more-filled.png'
 import { defaultPlaylistIcon } from '../b64Assets'
 
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+
 import Linkify from 'react-linkify'
-const shell = window.require('electron').shell
+const { shell, clipboard } = window.require('electron')
 
 function Difficulties(props) {
   if(!props.difficulties) return null
@@ -138,10 +141,13 @@ class SongDetails extends Component {
               {(!!this.props.details.song.file || this.props.downloadedSongs.some(song => song.hash === this.props.details.song.hashMd5)) ?
                 <span className="action-button delete-button" onClick={() => {document.getElementById('preview').src = ''; document.getElementById('preview').load(); this.props.deleteSong(this.props.details.song.file || this.props.downloadedSongs[this.props.downloadedSongs.findIndex(song => song.hash === this.props.details.song.hashMd5)].file)}}><img src={deleteIcon} alt='' />{this.state.deletionStatus}</span>
               :
-                <span className="action-button download-button" onClick={() => {this.props.downloadSong(this.props.details.song.hashMd5)}}><span style={{width: this.props.queueItems[0] === undefined ? '101%' : this.props.queueItems[0].progress + 5}}></span><img src={downloadIcon} alt='' /><span>{this.props.queueItems[0] === undefined ? 'DOWNLOAD' : this.props.queueItems[0].progress === 100 ? 'DOWNLOAD' : this.props.queueItems[0].progress + '%'}</span></span>
+                <span className="action-button download-button" onClick={() => {this.props.downloadSong(this.props.details.song.hashMd5)}}><span style={{width: this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.song.hashMd5)] === undefined ? '101%' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.song.hashMd5)].progress + 5}}></span><img src={downloadIcon} alt='' /><span>{this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.song.hashMd5)] === undefined ? 'DOWNLOAD' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.song.hashMd5)].progress === 100 ? 'DOWNLOAD' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.song.hashMd5)].progress + '%'}</span></span>
               }
               <span className="action-button playlist-add-button" title="Add to Playlist" onClick={() => { if(this.props.details.song.key) this.props.setPlaylistPickerOpen(true) }}><img src={addIcon} alt='' />ADD TO PLAYLIST</span>
-              <span className="action-button more-button"><img src={moreIcon} alt='' /></span>
+              <ContextMenuTrigger id={this.props.details.hash || this.props.details.hashMd5} holdToDisplay={0}><span className="action-button more-button"><img src={moreIcon} alt='' /></span></ContextMenuTrigger>
+              <ContextMenu id={this.props.details.hash || this.props.details.hashMd5}>
+                <MenuItem onClick={(e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://songs/details/${this.props.details.song.hash || this.props.details.song.hashMd5}`); this.props.displayWarning({timeout: 5000, color:'lightgreen', text: `Sharable Link for ${this.props.details.song.songName} copied to clipboard!`})}}>Share</MenuItem>
+              </ContextMenu>
             </div>
             <Description details={this.props.details} />
             <Uploader details={this.props.details} />
@@ -196,4 +202,4 @@ const mapStateToProps = (state) => ({
   newPlaylistDialogOpen: state.playlists.newPlaylistDialogOpen
 })
 
-export default connect(mapStateToProps, { setDetailsOpen, downloadSong, deleteSong, setView, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist })(SongDetails)
+export default connect(mapStateToProps, { setDetailsOpen, downloadSong, deleteSong, setView, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning })(SongDetails)
