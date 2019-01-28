@@ -68,6 +68,12 @@
         "owner": "StarGazer1258",
         "private": true,
         "token": "***REMOVED***"
+      },
+      "protocols": {
+        "name": "BeatDrop Protocol",
+        "schemes": [
+          "beatdrop"
+        ]
       }
     }
   },
