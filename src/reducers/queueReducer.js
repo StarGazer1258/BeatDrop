@@ -19,6 +19,7 @@ export default function(state=initialState, action) {
         ...state,
         items: [
           {
+            utc: action.payload.utc,
             hash: action.payload.hashMd5,
             image: action.payload.coverUrl,
             title: action.payload.songName,
@@ -31,7 +32,7 @@ export default function(state=initialState, action) {
     case UPDATE_PROGRESS: {
       let items = [...state.items]
       for(let i=0;i<items.length;i++) {
-        if(items[i].hash === action.payload.hash) {
+        if(items[i].hash === action.payload.hash && items[i].utc === action.payload.utc) {
           items[i].progress = action.payload.progress
         }
       }

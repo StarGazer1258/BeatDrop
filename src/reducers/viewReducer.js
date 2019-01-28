@@ -1,7 +1,13 @@
 import  { SET_VIEW, SET_SONG_VIEW } from '../actions/types'
 import { WELCOME, SONG_LIST } from '../views'
 
-export default function(state={previousView: SONG_LIST, view: WELCOME, songView: 'list'}, action) {
+const initialState = {
+  previousView: SONG_LIST,
+  view: WELCOME,
+  songView: 'list'
+}
+
+export default function(state=initialState, action) {
   switch(action.type) {
     case SET_VIEW:
       return {

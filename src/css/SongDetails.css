@@ -256,10 +256,14 @@
 #playlist-picker #playlist-picker-table {
   display: flex;
   flex-flow: row wrap;
+  align-content: flex-start;
+  overflow-y: scroll;
+  height: 415px;
 }
 
 .playlist-picker-item {
   width: calc(50% - 30px);
+  height: 50px;
   list-style: none;
   display: flex;
   align-items: flex-start;

@@ -312,7 +312,7 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
     }
     let playlist = JSON.parse(data)
     playlist.songs.push({
-      key: song.key,
+      hash: song.hash || song.hashMd5,
       songName: song.name || song.songName
     })
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
