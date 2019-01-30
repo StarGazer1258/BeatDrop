@@ -19,7 +19,7 @@ import { displayWarning } from '../actions/warningActions'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
-const { clipboard } = window.require('electron')
+const { clipboard, shell } = window.require('electron')
 
 class CompactSongList extends Component {
 
@@ -75,6 +75,7 @@ class CompactSongList extends Component {
                   <MenuItem onClick={(e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5}`); this.props.displayWarning({timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!`})}}>
                     Share
                   </MenuItem>
+                  {(!!song.key ? <MenuItem onClick={(e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.key}#review`)}}>Review on BeastSaber</MenuItem> : null)}
                 </ContextMenu>
               </ContextMenuTrigger>
             )

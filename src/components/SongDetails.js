@@ -147,6 +147,7 @@ class SongDetails extends Component {
               <ContextMenuTrigger id={this.props.details.hash || this.props.details.hashMd5} holdToDisplay={0}><span className="action-button more-button"><img src={moreIcon} alt='' /></span></ContextMenuTrigger>
               <ContextMenu id={this.props.details.hash || this.props.details.hashMd5}>
                 <MenuItem onClick={(e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://songs/details/${this.props.details.song.hash || this.props.details.song.hashMd5}`); this.props.displayWarning({timeout: 5000, color:'lightgreen', text: `Sharable Link for ${this.props.details.song.songName} copied to clipboard!`})}}>Share</MenuItem>
+                {(!!this.props.details.song.key ? <MenuItem onClick={(e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${this.props.details.song.key}#review`)}}>Review on BeastSaber</MenuItem> : null)}
               </ContextMenu>
             </div>
             <Description details={this.props.details} />
