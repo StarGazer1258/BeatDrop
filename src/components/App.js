@@ -14,6 +14,8 @@ import SongScanningDialog from './SongScanningDialog';
 import { downloadSong } from '../actions/queueActions'
 import { loadDetails } from '../actions/detailsActions'
 
+import '../sentry'
+
 const { ipcRenderer } = window.require('electron')
 
 class App extends Component {
