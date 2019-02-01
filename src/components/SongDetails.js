@@ -4,7 +4,7 @@ import '../css/SongDetails.css'
 import { connect } from 'react-redux'
 import { setDetailsOpen } from '../actions/detailsActions'
 import { downloadSong, deleteSong } from '../actions/queueActions'
-import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
+import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, loadPlaylistCoverImage } from '../actions/playlistsActions'
 import { setView } from '../actions/viewActions'
 import { displayWarning } from '../actions/warningActions'
 
@@ -22,37 +22,44 @@ import Linkify from 'react-linkify'
 const { shell, clipboard } = window.require('electron')
 
 function Difficulties(props) {
-  if(!props.difficulties) return null
+  let difficulties = props.difficulties
+  if(typeof props.difficulties[0] === 'object') {
+    difficulties = {}
+    for(let i = 0; i < props.difficulties.length; i++) {
+      difficulties[props.difficulties[i].difficulty] = props.difficulties[i]
+    }
+  }
+  console.log(difficulties)
   let badges = []
-  if(Object.keys(props.difficulties).includes('Easy')) {
+  if(Object.keys(difficulties).includes('Easy')) {
     badges.push({
       text: 'Easy',
       backgroundColor: 'teal',
       color: 'white'
     })
   }
-  if(Object.keys(props.difficulties).includes('Normal')) {
+  if(Object.keys(difficulties).includes('Normal')) {
     badges.push({
       text: 'Normal',
       backgroundColor: 'green',
       color: 'white'
     })
   }
-  if(Object.keys(props.difficulties).includes('Hard')) {
+  if(Object.keys(difficulties).includes('Hard')) {
     badges.push({
       text: 'Hard',
       backgroundColor: 'orange',
       color: 'white'
     })
   }
-  if(Object.keys(props.difficulties).includes('Expert')) {
+  if(Object.keys(difficulties).includes('Expert')) {
     badges.push({
       text: 'Expert',
       backgroundColor: 'darkred',
       color: 'white'
     })
   }
-  if(Object.keys(props.difficulties).includes('ExpertPlus')) {
+  if(Object.keys(difficulties).includes('ExpertPlus')) {
     badges.push({
       text: 'Expert+',
       backgroundColor: 'purple',
@@ -152,7 +159,7 @@ class SongDetails extends Component {
             </div>
             <Description details={this.props.details} />
             <Uploader details={this.props.details} />
-            <Difficulties difficulties={this.props.details.song.difficulties} />
+            <Difficulties difficulties={this.props.details.song.difficulties || this.props.details.song.difficultyLevels} />
             <div className="preview"><b>Preview:</b><br /><audio id="preview" src={this.props.details.audioSource} controls controlsList="nodownload" /></div>
           </div>
           <BeatSaver details={this.props.details} />
@@ -200,7 +207,8 @@ const mapStateToProps = (state) => ({
   playlistPickerOpen: state.playlists.pickerOpen,
   playlists: state.playlists.playlists,
   downloadedSongs: state.songs.downloadedSongs,
-  newPlaylistDialogOpen: state.playlists.newPlaylistDialogOpen
+  newPlaylistDialogOpen: state.playlists.newPlaylistDialogOpen,
+  newCoverImageSource: state.playlists.newCoverImageSource
 })
 
-export default connect(mapStateToProps, { setDetailsOpen, downloadSong, deleteSong, setView, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning })(SongDetails)
+export default connect(mapStateToProps, { setDetailsOpen, downloadSong, deleteSong, setView, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, loadPlaylistCoverImage, displayWarning })(SongDetails)
