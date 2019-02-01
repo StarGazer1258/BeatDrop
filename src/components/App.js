@@ -13,6 +13,9 @@ import SongScanningDialog from './SongScanningDialog';
 
 import { downloadSong } from '../actions/queueActions'
 import { loadDetails } from '../actions/detailsActions'
+import { setView } from '../actions/viewActions'
+
+import { SONG_DETAILS, SONG_LIST } from '../views'
 
 import '../sentry'
 
@@ -38,6 +41,11 @@ class App extends Component {
       switch(event) {
         case 'launch-events':
           for(let i = 0; i < message.songs.details.length; i++) {
+            if(store.getState().view.view === SONG_DETAILS && store.getState().view.previousView !== SONG_DETAILS) {
+              setView(store.getState().view.previousView)(store.dispatch, store.getState)
+            } else {
+              setView(SONG_LIST)(store.dispatch, store.getState)
+            }
             loadDetails(message.songs.details[i])(store.dispatch, store.getState)
           }
           for(let i = 0; i < message.songs.download.length; i++) {
