@@ -332,10 +332,9 @@
   width: 200px;
   height: 200px;
   margin-bottom: 5px;
-  background:  silver;
+  background:  rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   cursor: pointer;
-  box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
   overflow: hidden;
 }
 

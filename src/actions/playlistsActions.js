@@ -123,9 +123,11 @@ export const setPlaylistPickerOpen = open => dispatch => {
 }
 
 export const clearPlaylistDialog = () => dispatch => {
-  document.getElementById('new-playlist-title').value = ''
-  document.getElementById('new-playlist-author').value = ''
-  document.getElementById('new-playlist-description').value = ''
+  try {
+    document.getElementById('new-playlist-title').value = ''
+    document.getElementById('new-playlist-author').value = ''
+    document.getElementById('new-playlist-description').value = ''
+  } catch(_){}
   dispatch({
     type: CLEAR_PLAYLIST_DIALOG
   })
@@ -271,6 +273,11 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
   }
   details.songs = newSongs
   delete details.newOrder
+  try {
+    let state = getState()
+    let buff = fs.readFileSync(state.playlists.newCoverImageSource)
+    details.image = `data:image/${state.playlists.newCoverImageSource.split('.')[state.playlists.newCoverImageSource.split('.').length]};base64,${buff.toString('base64')}`
+  } catch(_){}
   fs.writeFile(file, JSON.stringify(details), 'UTF8', (err) => {
     if(err)  {
       dispatch({

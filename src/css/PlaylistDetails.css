@@ -293,6 +293,31 @@ li.playlist-song-item img:not(.delete-playlist-item) {
   margin-right: 40px;
 }
 
+#edit-playlist-cover-image {
+  display: none;
+}
+
+#edit-playlist-add-cover-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32pt;
+  font-weight: bold;
+  color: white;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 5px;
+  background:  rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+#edit-playlist-add-cover-image img {
+  width: 200px;
+  height: 200px;
+}
+
 @keyframes playlist-details-fade-in {
   from {
     opacity: 0;

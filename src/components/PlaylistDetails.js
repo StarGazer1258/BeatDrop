@@ -4,7 +4,7 @@ import Sortable from 'sortablejs'
 
 import { connect } from 'react-redux'
 import { setView } from '../actions/viewActions'
-import { setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists } from '../actions/playlistsActions'
+import { setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists, loadPlaylistCoverImage, clearPlaylistDialog } from '../actions/playlistsActions'
 import { downloadSong } from '../actions/queueActions'
 import { displayWarning } from '../actions/warningActions'
 import PropTypes from 'prop-types'
@@ -60,10 +60,17 @@ class PlaylistDetails extends Component {
     } else {
       return (
         <div id="playlist-details">
-          <div className="close-icon" title="Close" onClick={() => { this.props.setPlaylistEditing(false); this.props.setView(this.props.previousView) }}></div>
+          <div className="close-icon" title="Close" onClick={() => { this.props.setPlaylistEditing(false); this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) }}></div>
           <div className="details-split">
             <div className="details-info">
-              <img className="cover-image" src={this.props.playlistDetails.image} alt='' />
+              {this.props.editing ? 
+                <div>
+                  <label htmlFor="edit-playlist-cover-image" id="edit-playlist-add-cover-image"><img src={this.props.newCoverImageSource || this.props.playlistDetails.image} alt="" /></label>
+                  <input type="file" name="edit-playlist-cover-image" id="edit-playlist-cover-image" accept=".jpg,.jpeg,.png,.gif" onChange={(e) => {this.props.loadPlaylistCoverImage(e.target.files[0].path || this.props.settings.newCoverImageSource)}} />
+                </div>
+              :
+                <img className="cover-image" src={this.props.playlistDetails.image} alt='' />
+              }
               {this.props.editing ? <input id="editing-playlist-title" className="text-box" placeholder="Title" defaultValue={this.props.playlistDetails.playlistTitle} /> : <span className="details-title" title={this.props.playlistDetails.playlistTitle}>{this.props.playlistDetails.playlistTitle}</span>}
               {this.props.editing ? <input id="editing-playlist-author" className="text-box editing-playlist-author" placeholder="Author" defaultValue={this.props.playlistDetails.playlistAuthor} /> : <div className="details-author" title={this.props.playlistDetails.playlistAuthor}>{this.props.playlistDetails.playlistAuthor}</div>}
               <div className="action-buttons">
@@ -140,7 +147,8 @@ const mapStateToProps = state => ({
   previousView: state.view.previousView,
   playlistDetails: state.playlists.playlistDetails,
   editing: state.playlists.editing,
-  downloadedSongs: state.songs.downloadedSongs
+  downloadedSongs: state.songs.downloadedSongs,
+  newCoverImageSource: state.playlists.newCoverImageSource
 })
 
-export default connect(mapStateToProps, { setView, setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists, downloadSong, displayWarning })(PlaylistDetails)
+export default connect(mapStateToProps, { setView, setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists, loadPlaylistCoverImage, clearPlaylistDialog, downloadSong, displayWarning })(PlaylistDetails)
