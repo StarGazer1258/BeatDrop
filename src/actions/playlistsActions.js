@@ -5,6 +5,7 @@ import { defaultPlaylistIcon } from '../b64Assets'
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
+const md5 = remote.require('md5')
 
 export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let state = getState()
@@ -318,10 +319,40 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
       return
     }
     let playlist = JSON.parse(data)
-    playlist.songs.push({
-      hash: song.hash || song.hashMd5,
-      songName: song.name || song.songName
-    })
+    if(song.hash || song.hashMd5) {
+      playlist.songs.push({
+        hash: song.hash || song.hashMd5,
+        songName: song.name || song.songName
+      })
+    } else {
+      if(song.file) {
+        let file = song.file
+        delete song.file
+        let dirs = file.split('\\')
+        dirs.pop()
+        let dir = dirs.join('\\')
+        let to_hash = ''
+        for(let i = 0; i < song.difficultyLevels.length; i++) {
+          try {
+            to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+          } catch(err) {
+            dispatch({
+              type: DISPLAY_WARNING,
+              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.' }
+            })
+            return
+          }
+        }
+        let hash = md5(to_hash)
+        song.hash = hash
+        fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+        playlist.songs.push({
+          hash: hash,
+          songName: song.name || song.songName
+        })
+      }
+    }
+    
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
       if(err)  {
         dispatch({
