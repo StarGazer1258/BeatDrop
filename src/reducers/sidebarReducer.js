@@ -5,7 +5,7 @@ export default function(state = {isOpen: true}, action) {
     case RESIZE_SIDEBAR:
       return {
         ...state,
-       isOpen: action.payload.isOpen
+       isOpen: action.payload
       }
     default:
       return state

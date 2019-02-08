@@ -1,10 +1,8 @@
 import { RESIZE_SIDEBAR } from './types'
 
-export const resizeSidebar = (sidebar) => (dispatch) => {
-  sidebar.isOpen = !sidebar.isOpen
-  
+export const resizeSidebar = () => (dispatch, getState) => {
   dispatch({
     type: RESIZE_SIDEBAR,
-    payload: sidebar
+    payload: !getState().sidebar.isOpen
   })
 }
