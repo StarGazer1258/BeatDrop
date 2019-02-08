@@ -1,4 +1,4 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING, SET_SELECTING, SELECT_ITEM,  DESELECT_ITEM, SELECT_ALL, DESELECT_ALL } from './types'
 import { SONG_LIST } from '../views'
 
 const { remote } = window.require('electron')
@@ -289,5 +289,38 @@ export const setScrollTop = scrollTop => dispatch => {
   dispatch({
     type: SET_SCROLLTOP,
     payload: scrollTop
+  })
+}
+
+export const setSelecting = selecting => dispatch => {
+  dispatch({
+    type: SET_SELECTING,
+    payload: selecting
+  })
+}
+
+export const selectItem = item => dispatch => {
+  dispatch({
+    type: SELECT_ITEM,
+    payload: item
+  })
+}
+
+export const deselectItem = item => dispatch => {
+  dispatch({
+    type: DESELECT_ITEM,
+    payload: item
+  })
+}
+
+export const selectAll = () => dispatch => {
+  dispatch({
+    type: SELECT_ALL
+  })
+}
+
+export const deselectAll = () => dispatch => {
+  dispatch({
+    type: DESELECT_ALL
   })
 }

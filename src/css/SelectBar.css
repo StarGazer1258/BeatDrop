@@ -1,0 +1,15 @@
+#select-bar {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 10px;
+}
+
+#select-bar span {
+  margin-right: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+#select-bar span:hover {
+  color: rgba(0, 0, 0, 0.8);
+}

@@ -16,6 +16,7 @@ import SongDetails from './SongDetails'
 import Warning from './Warning'
 import { WELCOME, SONG_LIST, SONG_DETAILS, PLAYLIST_LIST, PLAYLIST_DETAILS, SETTINGS, SEARCH } from '../views';
 import PlaylistDetails from './PlaylistDetails';
+import SelectBar from './SelectBar';
 
 function Songs(props) {
   switch(props.songView) {
@@ -69,6 +70,7 @@ class ViewSwitcher extends Component {
         <SideBar />
         <div className={`view-right ${this.props.sidebarOpen ? '' : 'sidebar-collapsed'}`}>
           <SortBar hidden={this.props.view !== SONG_LIST} />
+          {this.props.selecting ? <SelectBar /> : null}
           <MainView view={this.props.view} songView={this.props.songView} />
           <Warnings warnings={this.props.warnings} />
         </div>
@@ -92,7 +94,8 @@ const mapStateToProps = state => ({
   settings: state.settings,
   details: state.details,
   warnings: state.warnings,
-  sidebarOpen: state.sidebar.isOpen
+  sidebarOpen: state.sidebar.isOpen,
+  selecting: state.songs.selecting
 })
 
 export default connect(mapStateToProps, null)(ViewSwitcher)

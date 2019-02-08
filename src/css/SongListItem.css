@@ -17,6 +17,12 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.song-list-item.selected {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  transform: scale(0.95);
+}
+
 .song-list-item .id {
   font-weight: 300;
   margin-left: 5px;

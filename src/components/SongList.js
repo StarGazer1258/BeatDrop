@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import '../css/SongList.css'
 
 import { connect } from 'react-redux'
-import { refresh, loadMore } from '../actions/songListActions'
+import { refresh, loadMore, setSelecting, selectItem } from '../actions/songListActions'
+import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
+import { displayWarning } from '../actions/warningActions'
 
 import SongListItem from './SongListItem'
 import LoadMore from './LoadMore';
@@ -12,10 +14,6 @@ import Button from './Button'
 
 import addIcon from '../assets/add-filled.png'
 import { defaultPlaylistIcon } from '../b64Assets'
-
-import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
-import { downloadSong, deleteSong } from '../actions/queueActions'
-import { displayWarning } from '../actions/warningActions'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
@@ -59,7 +57,7 @@ class SongList extends Component {
           this.props.songs.songs.map((song, i) => {
             return (
               <ContextMenuTrigger id={song.hash || song.hashMd5}>
-                <SongListItem key={i} title={song.songName} artist={song.authorName} uploader={song.uploader} difficulties={song.difficulties || song.difficultyLevels} imageSource={song.coverUrl} songKey={song.key} hash={song.hash || song.hashMd5} file={song.file} downloads={song.downloadCount} upvotes={song.upVotes} downvotes={song.downVotes} plays={song.playedCount} />
+                <SongListItem key={i} i={i} title={song.songName} artist={song.authorName} uploader={song.uploader} difficulties={song.difficulties || song.difficultyLevels} imageSource={song.coverUrl} songKey={song.key} hash={song.hash || song.hashMd5} file={song.file} downloads={song.downloadCount} upvotes={song.upVotes} downvotes={song.downVotes} plays={song.playedCount} selected={this.props.selecting && this.props.selected.includes(i)} />
                 <ContextMenu id={song.hash || song.hashMd5}>
                   <MenuItem onClick={(e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)}}>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}
@@ -67,6 +65,7 @@ class SongList extends Component {
                   <MenuItem onClick={(e) => {e.stopPropagation(); this.setState({song}); this.props.setPlaylistPickerOpen(true)}}>
                     Add to Playlist
                   </MenuItem>
+                  <MenuItem onClick={() => { this.props.setSelecting(true); this.props.selectItem(i) }}>Select</MenuItem>
                   <MenuItem divider />
                   <MenuItem onClick={(e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayWarning({timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!`})} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.`}); this.props.checkDownloadedSongs(); }}}>Share</MenuItem>
                   {(!!song.key ? <MenuItem onClick={(e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.key}#review`)}}>Review on BeastSaber</MenuItem> : null)}
@@ -130,7 +129,9 @@ const mapStateToProps = state => ({
   loadingMore: state.loadingMore,
   autoLoadMore: state.settings.autoLoadMore,
   source: state.source.source,
-  playlistPickerOpen: state.playlists.pickerOpen
+  playlistPickerOpen: state.playlists.pickerOpen,
+  selecting: state.songs.selecting,
+  selected: state.songs.selected
 })
 
-export default connect(mapStateToProps, { refresh, loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning, checkDownloadedSongs })(SongList)
+export default connect(mapStateToProps, { refresh, loadMore, setSelecting, selectItem, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning, checkDownloadedSongs })(SongList)

@@ -6,7 +6,7 @@ import Badge from './Badge';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { loadDetails } from '../actions/detailsActions'
-import { setScrollTop } from '../actions/songListActions'
+import { setScrollTop, selectItem, deselectItem } from '../actions/songListActions'
 
 function Uploader(props) {
   if(!props.isDownloaded && !!props.uploader) return (
@@ -77,8 +77,18 @@ function Difficulties(props) {
 
 class SongListItem extends Component {
 
-  shouldComponentUpdate() {
-    return this.props.bsaberRating !== undefined
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      selected: props.selected
+    }
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.selected !== state.selected) {
+      return { selected: props.selected }
+    }
   }
 
   render() {
@@ -90,7 +100,7 @@ class SongListItem extends Component {
       )
     } else {
       return (
-        <li className='song-list-item' onClick={() => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
+        <li className={`song-list-item${this.state.selected ? ' selected' : ''}`} onClick={this.props.selecting ? (e) => { if(!this.state.selected) { if(e.shiftKey) { for(let i = Math.min(this.props.i, this.props.selectedItems[0]); i < Math.max(this.props.i+1, this.props.selectedItems[0]); i++) { this.props.selectItem(i) } } else { this.props.selectItem(this.props.i) } } else { this.props.deselectItem(this.props.i) } } : () => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
           <img src={this.props.imageSource} alt={this.props.songKey} />
           <div className="song-details">
             <div className="song-title">{this.props.title}<span className="id">{!!this.props.songKey ? this.props.songKey : ''}</span></div>
@@ -111,7 +121,9 @@ SongListItem.propTypes = ({
 })
 
 const mapStateToProps = state => ({
-  details: state.details
+  details: state.details,
+  selecting: state.songs.selecting,
+  selectedItems: state.songs.selected
 })
 
-export default connect(mapStateToProps, { loadDetails, setScrollTop })(SongListItem)
+export default connect(mapStateToProps, { loadDetails, setScrollTop, selectItem, deselectItem })(SongListItem)
