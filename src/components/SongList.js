@@ -4,6 +4,7 @@ import '../css/SongList.css'
 
 import { connect } from 'react-redux'
 import { refresh, loadMore } from '../actions/songListActions'
+import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
 
 import SongListItem from './SongListItem'
 import LoadMore from './LoadMore';
@@ -67,9 +68,7 @@ class SongList extends Component {
                     Add to Playlist
                   </MenuItem>
                   <MenuItem divider />
-                  <MenuItem onClick={(e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5}`); this.props.displayWarning({timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!`})}}>
-                    Share
-                  </MenuItem>
+                  <MenuItem onClick={(e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayWarning({timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!`})} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.`}); this.props.checkDownloadedSongs(); }}}>Share</MenuItem>
                   {(!!song.key ? <MenuItem onClick={(e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.key}#review`)}}>Review on BeastSaber</MenuItem> : null)}
                 </ContextMenu>
               </ContextMenuTrigger>
@@ -134,4 +133,4 @@ const mapStateToProps = state => ({
   playlistPickerOpen: state.playlists.pickerOpen
 })
 
-export default connect(mapStateToProps, { refresh, loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning })(SongList)
+export default connect(mapStateToProps, { refresh, loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning, checkDownloadedSongs })(SongList)
