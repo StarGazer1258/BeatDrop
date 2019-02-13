@@ -8,6 +8,12 @@
   margin-top: 0px;
 }
 
+.load-more img {
+  width: 266px;
+  height: 150px;
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
+}
+
 .load-more.loading {
   margin-top: -40px;
 }

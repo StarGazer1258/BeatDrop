@@ -53,15 +53,17 @@ body {
 }
 
 select {
+  height: 40px;
   border: none;
   outline: none;
   padding: 10px;
-  margin-top: -10px;
+  margin-right: 10px;
   border-radius: 5px;
   background: rgba(0, 0, 0, 0.1);
   cursor: pointer;
   font-family: "Lato", sans-serif;
   font-size: 11pt;
+  transform: translateY(1px);
 }
 
 select:hover {

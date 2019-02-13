@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../css/CoverGridItem.css'
 
-import Loader from '../assets/loading.gif'
+import Loader from '../assets/loading-dots2.png'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -94,7 +94,7 @@ componentWillReceiveProps(props) {
   render() {
     if(this.props.loading) {
       return (
-        <div className="cover-grid-item">
+        <div className="cover-grid-item loading">
           <img src={Loader} alt={this.props.key} />
         </div>
       )

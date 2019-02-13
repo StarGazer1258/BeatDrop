@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Button from './Button'
-import Loader from '../assets/loading.gif'
+import Loader from '../assets/loading-dots2.png'
 import '../css/LoadMore.css'
 
 import { loadMore } from '../actions/songListActions'

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import '../css/CompactSongListItem.css'
-import Loader from '../assets/loading.gif'
+import Loader from '../assets/loading-dots2.png'
 import Badge from './Badge'
 
 import { connect } from 'react-redux'

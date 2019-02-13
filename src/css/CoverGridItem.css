@@ -6,6 +6,7 @@
   margin-bottom: 2vw;
   cursor: pointer;
   transition: transform 0.5s;
+  background: rgb(128, 128, 128);
 }
 
 .cover-grid-item:hover {
@@ -28,8 +29,12 @@
   height: 200px;
   width: 200px;
   border-radius: 5px 5px 0 0;
-  background: silver;
+  background: rgb(128, 128, 128);
   margin: 0;
+}
+
+.cover-grid-item.loading img {
+  object-fit: contain;
 }
 
 .cover-grid-item:last-child {
@@ -41,7 +46,7 @@
 
   height: 76px;
   width: 100%;
-  background-color: silver;
+  background: rgb(128, 128, 128);
   margin-top: -4px;
   padding: .5vw;
   box-sizing: border-box;

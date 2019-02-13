@@ -31,8 +31,9 @@
 }
 
 .compact-song-list-item.loading img {
-  width: 150px;
-  height: 150px;
+  width: 177px;
+  height: 100px;
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
 }
 
 .compact-song-list-item .song-title {

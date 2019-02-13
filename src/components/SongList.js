@@ -5,6 +5,8 @@ import '../css/SongList.css'
 import { connect } from 'react-redux'
 import { refresh, loadMore } from '../actions/songListActions'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
+import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
+import { displayWarning } from '../actions/warningActions'
 
 import SongListItem from './SongListItem'
 import LoadMore from './LoadMore';
@@ -12,10 +14,6 @@ import Button from './Button'
 
 import addIcon from '../assets/add-filled.png'
 import { defaultPlaylistIcon } from '../b64Assets'
-
-import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
-import { downloadSong, deleteSong } from '../actions/queueActions'
-import { displayWarning } from '../actions/warningActions'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
