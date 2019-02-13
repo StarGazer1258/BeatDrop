@@ -1,6 +1,8 @@
-import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_THEME, SET_FOLDER_STRUCTURE } from './types'
+import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_THEME, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES } from './types'
 
 import { checkDownloadedSongs } from './queueActions'
+
+const { ipcRenderer } = window.require('electron')
 
 export const setSettingsOpen = isOpen => dispatch => {
   dispatch({
@@ -35,5 +37,20 @@ export const setFolderStructure = structure => dispatch => {
   dispatch({
     type: SET_FOLDER_STRUCTURE,
     payload: structure
+  })
+}
+
+export const setUpdateChannel = channel => dispatch => {
+  ipcRenderer.send('electron-updater', 'set-update-channel', channel)
+  dispatch({
+    type: SET_UPDATE_CHANNEL,
+    payload: channel
+  })
+}
+
+export const setLatestReleaseNotes = version => dispatch => {
+  dispatch({
+    type: SET_LATEST_RELEASE_NOTES,
+    payload: version
   })
 }

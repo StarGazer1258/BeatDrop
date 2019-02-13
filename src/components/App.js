@@ -10,6 +10,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import DownloadQueue from './DownloadQueue';
 import UpdateDialog from './UpdateDialog';
 import SongScanningDialog from './SongScanningDialog';
+import ReleaseNotesModal  from './ReleaseNotesModal'
 
 import { downloadSong } from '../actions/queueActions'
 import { loadDetails } from '../actions/detailsActions'
@@ -66,6 +67,7 @@ class App extends Component {
             <TitleBar />
             <Slate />
             <ViewSwitcher />
+            <ReleaseNotesModal />
             <DownloadQueue />
             <UpdateDialog />
             <SongScanningDialog />

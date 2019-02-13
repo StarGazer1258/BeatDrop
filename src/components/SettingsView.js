@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setInstallationDirectory, setAutoLoadMore, setTheme, setFolderStructure } from '../actions/settingsActions'
+import { setInstallationDirectory, setAutoLoadMore, setTheme, setFolderStructure, setUpdateChannel } from '../actions/settingsActions'
 import { checkDownloadedSongs } from '../actions/queueActions'
 import '../css/SettingsView.css'
 import Button from './Button'
@@ -14,16 +14,31 @@ class SettingsView extends Component {
     super(props)
 
     this.state = {
-      updateStatus: 'update-available'
+      updateStatus: ''
     }
   }
 
   componentDidMount() {
     ipcRenderer.on('electron-updater', (_, event, message) => {
-      if(event === 'checking-for-update' || event === 'update-not-available' || event === 'update-available') {
+      if(event === 'checking-for-update' || event === 'update-not-available' || event === 'update-available' || event === 'error') {
         this.setState({updateStatus: event})
       }
     })
+  }
+
+  updateValue() {
+    switch(this.state.updateStatus) {
+      case 'checking-for-update':
+        return 'Checking...'
+      case 'update-not-available':
+        return 'Up to Date!'
+      case 'update-available':
+        return 'Update Available!'
+      case 'error':
+        return 'Update Error!'
+      default:
+        return 'Check for Updates'
+    }
   }
 
   render() {
@@ -54,7 +69,13 @@ class SettingsView extends Component {
         <hr />
         <h3>Updates</h3>
         <b>Current Version: </b>{require('../../package.json').version}<br /><br />
-        <Button onClick={() => { ipcRenderer.send('electron-updater', 'check-for-updates') }}>{this.state.updateStatus === 'checking-for-update' ? 'Checking...' : this.state.updateStatus === 'update-available' ? 'Check for Updates': 'Up to date!'}</Button>
+        <label htmlFor="update-channel-select">Update Channel</label><br /><br />
+        <select id="update-channel-select" name="update-channel-select" value={this.props.settings.updateChannel} onChange={(e) => { this.props.setUpdateChannel(e.target.value) }}>
+          <option value="latest">Stable</option>
+          <option value="beta">Beta</option>
+        </select><br /><br />
+        {this.props.settings.updateChannel === 'beta' ? <><span style={{fontWeight: 'bold', color: 'salmon'}}>Warning: Beta builds are unstable, untested and may result in unexpected crashes, loss of files and other adverse effects! By updating to a beta build, you understand and accept these risks.</span><br /><br /></> : null}
+        <Button type={this.state.updateStatus === 'error' ? 'destructive': null} onClick={() => { ipcRenderer.send('electron-updater', 'check-for-updates') }}>{this.updateValue()}</Button>
         <br /><br />
       </div>
     )
@@ -67,6 +88,7 @@ SettingsView.propTypes = {
   setAutoLoadMore: PropTypes.func.isRequired,
   setTheme: PropTypes.func.isRequired,
   setFolderStructure: PropTypes.func.isRequired,
+  setUpdateChannel: PropTypes.func.isRequired,
   checkDownloadedSongs: PropTypes.func.isRequired
 }
 
@@ -74,6 +96,6 @@ const mapStateToProps = state => ({
   settings: state.settings
 })
 
-export default connect(mapStateToProps, { setInstallationDirectory, setAutoLoadMore, setTheme, setFolderStructure, checkDownloadedSongs })(SettingsView)
+export default connect(mapStateToProps, { setInstallationDirectory, setAutoLoadMore, setTheme, setFolderStructure, setUpdateChannel, checkDownloadedSongs })(SettingsView)
 
 //<input type="checkbox" name="auto-refresh" id="auto-refresh" checked={this.props.settings.autoRefresh} onClick={() => this.props.setAutoLoadMore(!this.props.settings.autoLoadMore)} /><label htmlFor="auto-refresh">Refresh feed every </label><input type="number" name="auto-refresh-interval" id="auto-refresh-interval"/><label htmlFor="auto-refresh-interval"> seconds</label>

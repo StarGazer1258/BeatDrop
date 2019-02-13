@@ -2,7 +2,7 @@
   "name": "beatdrop",
   "description": "A desktop app for downloading Beat Saber songs.",
   "author": "Nathaniel Johns (StarGazer1258)",
-  "version": "2.0.0-beta.12",
+  "version": "2.0.12-beta",
   "private": true,
   "repository": {
     "type": "git",
@@ -53,6 +53,7 @@
     "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
+    "generateUpdatesFilesForAllChannels": true,
     "nsis": {
       "allowToChangeInstallationDirectory": true,
       "artifactName": "BeatDrop ${version} Setup.${ext}",

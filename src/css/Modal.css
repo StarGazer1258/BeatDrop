@@ -1,0 +1,40 @@
+.modal-under {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 35px);
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: modal-fade-in .2s forwards ease-out;
+  perspective: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  position: absolute;
+  background: white;
+  padding: 20px;
+  transform-origin: 0 0;
+  animation: modal-drop-in .2s forwards ease-out;
+  overflow-y: scroll;
+}
+
+.theme-dark .modal {
+  background: #303030;
+  color: white;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-500px);
+  }
+}

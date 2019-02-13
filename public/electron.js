@@ -68,43 +68,53 @@ if (!gotTheLock) {
   })
 
   app.on('ready', () => {
+    ipcMain.on('electron-updater', (_, event, message) => {
+      switch(event) {
+        case 'download-update':
+          autoUpdater.downloadUpdate()
+          return
+        case 'check-for-updates':
+          try {
+            autoUpdater.checkForUpdates()
+          } catch(_) {
+            main.webContents.send('electron-updater', 'error')
+          }
+          return
+        case 'set-update-channel':
+          autoUpdater.channel = message
+          return
+        default:
+          return
+      }
+    })
+    autoUpdater.autoDownload = false
+    autoUpdater.autoInstallOnAppQuit = false
+
     let loading = new BrowserWindow({width: 400, height: 400, show: false, frame: false, resizable: false, webPreferences: {webSecurity: false}})
     
     if(!isDev) handleArgs(process.argv)
     loading.once('show', () => {
       let main = createWindow()
+      autoUpdater.on('checking-for-update', () => {
+        main.webContents.send('electron-updater', 'checking-for-update')
+      })
+      autoUpdater.on('update-available', info => {
+        main.webContents.send('electron-updater', 'update-available', info)
+      })
+      autoUpdater.on('update-not-available', () => {
+        main.webContents.send('electron-updater', 'update-not-available')
+      })
+      autoUpdater.on('error', () => {
+        main.webContents.send('electron-updater', 'error')
+      })
+      autoUpdater.on('download-progress', (progress) => {
+        main.webContents.send('electron-updater', 'download-progress', progress.percent)
+      })
+      autoUpdater.on('update-downloaded', () => {
+        autoUpdater.quitAndInstall()
+      })
       main.once('ready-to-show', () => {
         main.show()
-        ipcMain.on('electron-updater', (_, event, message) => {
-          switch(event) {
-            case 'download-update':
-              autoUpdater.downloadUpdate()
-              return
-            case 'check-for-updates':
-              autoUpdater.checkForUpdates()
-              return
-            default:
-              return
-          }
-        })
-        autoUpdater.on('checking-for-update', () => {
-          main.webContents.send('electron-updater', 'checking-for-update')
-        })
-        autoUpdater.on('update-available', info => {
-          main.webContents.send('electron-updater', 'update-available', info)
-        })
-        autoUpdater.on('update-not-available', () => {
-          main.webContents.send('electron-updater', 'update-not-available')
-        })
-        autoUpdater.on('download-progress', (progress) => {
-          main.webContents.send('electron-updater', 'download-progress', progress.percent)
-        })
-        autoUpdater.on('update-downloaded', () => {
-          autoUpdater.quitAndInstall()
-        })
-        autoUpdater.autoDownload = false
-        autoUpdater.autoInstallOnAppQuit = false
-        autoUpdater.checkForUpdates()
         loading.hide()
         loading.close()
       })
