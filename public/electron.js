@@ -68,6 +68,9 @@ if (!gotTheLock) {
   })
 
   app.on('ready', () => {
+    autoUpdater.autoDownload = false
+    autoUpdater.autoInstallOnAppQuit = false
+
     ipcMain.on('electron-updater', (_, event, message) => {
       switch(event) {
         case 'download-update':
@@ -82,13 +85,13 @@ if (!gotTheLock) {
           return
         case 'set-update-channel':
           autoUpdater.channel = message
+          autoUpdater.allowPrerelease = (message !== 'latest')
+          autoUpdater.allowDowngrade =  (message === 'latest')
           return
         default:
           return
       }
     })
-    autoUpdater.autoDownload = false
-    autoUpdater.autoInstallOnAppQuit = false
 
     let loading = new BrowserWindow({width: 400, height: 400, show: false, frame: false, resizable: false, webPreferences: {webSecurity: false}})
     
