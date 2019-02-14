@@ -138,7 +138,7 @@ if (!gotTheLock) {
 }
 
 function handleArgs(argv, sendImmediately) {
-  if(argv.length < 2) return
+  if(argv.length < 2 || !argv[1].startsWith('beatdrop')) return
   let args = argv[1].split(/beatdrop:\/\/|beatdrop:%5C%5C|beatdrop:\/|beatdrop:%5C|beatdrop:/i)[1].split(/\/|%5C/)
   switch(args[0].toLowerCase()) {
     case 'songs':
