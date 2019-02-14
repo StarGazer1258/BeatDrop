@@ -29,6 +29,7 @@ class ReleaseNotesModal extends Component {
           <hr style={{borderColor: 'salmon'}} />
           <ul>
             <li>Auto-updates should finally work for beta builds.</li>
+            <li>Fixed bug where app would crash after update.</li>
           </ul>
           <br />
           <Button type="primary" onClick={() => { this.props.setLatestReleaseNotes(require('../../package.json').version) }}>Awesome!</Button>
