@@ -143,9 +143,12 @@ function handleArgs(argv, sendImmediately) {
   switch(args[0].toLowerCase()) {
     case 'songs':
       if(args.length < 3) return
+      let songs = args[2].split(',')
       switch(args[1].toLowerCase()) {
         case 'download':
-          launchEvents.songs.download.push(args[2])
+          for(let i = 0; i< songs.length; i++) {
+            launchEvents.songs.download.push(songs[i])
+          }
           break
         case 'details':
           launchEvents.songs.details.push(args[2])
