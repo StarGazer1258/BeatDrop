@@ -2,7 +2,7 @@
   "name": "beatdrop",
   "description": "A desktop app for downloading Beat Saber songs.",
   "author": "Nathaniel Johns (StarGazer1258)",
-  "version": "2.0.13-beta",
+  "version": "2.0.14-beta",
   "private": true,
   "repository": {
     "type": "git",
@@ -14,7 +14,7 @@
     "cross-env": "5.1.6",
     "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.17",
-    "electron-updater": "^4.0.6",
+    "electron-updater": "4.0.5",
     "get-image-colors": "^1.8.1",
     "md5": "^2.2.1",
     "original-fs": "^1.0.0",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "concurrently": "3.5.1",
     "electron": "3.0.10",
-    "electron-builder": "^20.38.5",
+    "electron-builder": "20.38.1",
     "electron-devtools-installer": "^2.2.4",
     "prettier": "^1.4.4",
     "react-scripts": "2.1.2",
