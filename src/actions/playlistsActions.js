@@ -64,9 +64,18 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
       }
       for(let f in files) {
         fs.readFile(path.join(state.settings.installationDirectory, 'Playlists', files[f]), 'UTF8', (err, data) => {
-          let playlist = JSON.parse(data)
-          playlist.file = path.join(state.settings.installationDirectory, 'Playlists', files[f])
-          pushPlaylist(playlist)
+          try {
+            let playlist = JSON.parse(data)
+            playlist.file = path.join(state.settings.installationDirectory, 'Playlists', files[f])
+            pushPlaylist(playlist)
+          } catch(e) {
+            dispatch({
+              type: DISPLAY_WARNING,
+              payload: {
+                text: `The playlist file ${files[f]} is invalid and cannot be parsed. Please use a tool such as https://codebeautify.org/jsonvalidator to check for errors and try again.`
+              }
+            })
+          }
         })
       }
     })
@@ -100,7 +109,6 @@ export const deletePlaylist = playlistFile => dispatch => {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          color: 'gold',
           text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.'
         }
       })
