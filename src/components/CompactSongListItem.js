@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import '../css/CompactSongListItem.css'
+
 import Loader from '../assets/loading-dots2.png'
+import LibraryBlue from '../assets/library-blue.png'
+
 import Badge from './Badge'
 
 import { connect } from 'react-redux'
@@ -90,6 +93,7 @@ class CompactSongListItem extends Component {
         <li className='compact-song-list-item' onClick={() => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.songKey || this.props.file) }}>
           <div className="song-details">
             <span className="song-title">{this.props.title}</span>
+            {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <span className="download-status"><img src={LibraryBlue} alt=""/>In Library</span> : null}
             <span className="song-artist">{this.props.artist}</span>
             <Uploader uploader={this.props.uploader} isDownloaded={this.props.isDownloaded} />
           </div>
@@ -108,7 +112,7 @@ CompactSongListItem.propTypes = ({
 })
 
 const mapStateToProps = state => ({
-  details: state.details
+  downloadedSongs: state.songs.downloadedSongs
 })
 
 export default connect(mapStateToProps, { loadDetails, setScrollTop })(CompactSongListItem)

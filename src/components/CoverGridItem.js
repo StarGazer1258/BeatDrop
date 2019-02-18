@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../css/CoverGridItem.css'
 
 import Loader from '../assets/loading-dots2.png'
+import LibraryBlue from '../assets/library-blue.png'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -95,13 +96,14 @@ componentWillReceiveProps(props) {
     if(this.props.loading) {
       return (
         <div className="cover-grid-item loading">
-          <img src={Loader} alt={this.props.key} />
+          <img className="cover-image" src={Loader} alt={this.props.key} />
         </div>
       )
     } else {
       return (
         <div key={this.props.key} className='cover-grid-item' onClick={() => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
-          <img src={this.props.coverImage} alt=""/>
+          <img className="cover-image" src={this.props.coverImage} alt=""/>
+          {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <span className="download-status"><img src={LibraryBlue} alt=""/>In Library</span> : null}
           <div style={{backgroundColor: this.state.bgc, color: this.state.textColor}} className="cover-grid-info-tab">
             <div className="cover-grid-title">{this.props.title}</div>
             <div className="cover-grid-artist">{this.props.artist}</div>
@@ -119,4 +121,8 @@ CoverGridItem.propTypes = ({
   loadDetails: PropTypes.func.isRequired
 })
 
-export default connect(null, { loadDetails, setScrollTop })(CoverGridItem)
+let mapStateToProps = state => ({
+  downloadedSongs: state.songs.downloadedSongs
+})
+
+export default connect(mapStateToProps, { loadDetails, setScrollTop })(CoverGridItem)

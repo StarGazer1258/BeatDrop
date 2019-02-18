@@ -57,7 +57,7 @@ class SongList extends Component {
           this.props.songs.songs.map((song, i) => {
             return (
               <ContextMenuTrigger id={song.hash || song.hashMd5}>
-                <SongListItem key={i} title={song.songName} artist={song.authorName} uploader={song.uploader} difficulties={song.difficulties || song.difficultyLevels} imageSource={song.coverUrl} songKey={song.key} hash={song.hash || song.hashMd5} file={song.file} downloads={song.downloadCount} upvotes={song.upVotes} downvotes={song.downVotes} plays={song.playedCount} />
+                <SongListItem key={i+((!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 0 : 1)} title={song.songName} artist={song.authorName} uploader={song.uploader} difficulties={song.difficulties || song.difficultyLevels} imageSource={song.coverUrl} songKey={song.key} hash={song.hash || song.hashMd5} file={song.file} downloads={song.downloadCount} upvotes={song.upVotes} downvotes={song.downVotes} plays={song.playedCount} />
                 <ContextMenu id={song.hash || song.hashMd5}>
                   <MenuItem onClick={(e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)}}>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}

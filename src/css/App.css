@@ -98,25 +98,12 @@ hr {
   display: none !important;
 }
 
-@keyframes dialog-fade-in {
-  from {
-    background: rgba(0, 0, 0, 0.0);
-  }
-}
-
-@keyframes dialog-drop-in {
-  from {
-    opacity: 0;
-    transform: translateY(-500px);
-  }
-}
-
 .react-contextmenu-wrapper {
   display: inline;
 }
 
 .react-contextmenu {
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.9);
   background-clip: padding-box;
   color: #373a3c;
   font-size: 16px;
@@ -132,7 +119,7 @@ hr {
 }
 
 .theme-dark .react-contextmenu {
-  background-color: #252525;
+  background-color: rgba(37, 37, 37, 0.9);
   color: white;
 }
 
@@ -197,4 +184,23 @@ hr {
 .example-multiple-targets::after {
   content: attr(data-count);
   display: block;
+}
+
+@keyframes dialog-fade-in {
+  from {
+    background: rgba(0, 0, 0, 0.0);
+  }
+}
+
+@keyframes dialog-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-500px);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
 }

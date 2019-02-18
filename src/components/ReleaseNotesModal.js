@@ -23,13 +23,20 @@ class ReleaseNotesModal extends Component {
           <h2 style={{color: 'lightgreen'}}>What's new?</h2>
           <hr style={{borderColor: 'lightgreen'}} />
           <ul>
-            <li>Multiple songs can now be downloaded in a single link.<br /><i>e.g. beatdrop://songs/download/31-11,1183-814,811-535,27-9,517-321</i></li>
+            <li>Added an indicator on the song list to show whether or not a song is in your library.</li>
+            <li>BeatDrop will now warn if a playlist file is invalid or cannot be parsed.</li>
+          </ul>
+          <h2 style={{color: 'gold'}}>What's changed?</h2>
+          <hr style={{borderColor: 'gold'}} />
+          <ul>
+            <li>ContextMenu is now slightly translucent.</li>
           </ul>
           <h2 style={{color: 'salmon'}}>What's fixed?</h2>
           <hr style={{borderColor: 'salmon'}} />
           <ul>
-            <li>Auto-updates should finally work for beta builds.</li>
-            <li>Fixed bug where app would crash after update.</li>
+            <li>Fixed bug where app would crash if playlist file was invalid.</li>
+            <li>Fixed bug where app would not download updates properly.</li>
+            <li>Fixed bug where buttons would overlap other elements.</li>
           </ul>
           <br />
           <Button type="primary" onClick={() => { this.props.setLatestReleaseNotes(require('../../package.json').version) }}>Awesome!</Button>

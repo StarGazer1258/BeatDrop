@@ -37,7 +37,7 @@
   background: transparent;
 }
 
-.song-list-item img {
+.song-list-item .cover-image {
   width: 80px;
   height: 80px;
   margin: 10px 10px;
@@ -79,4 +79,36 @@
 .beatmap-details div {
   text-align: right;
   width: 100%;
+}
+
+.song-list-item .download-status {
+  position: absolute;
+  bottom: 15px;
+  left: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  color: black;
+  font-size: 8pt;
+  font-weight: bold;
+  white-space: nowrap;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: .2s;
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  animation: fade-in .2s forwards ease;
+}
+
+.song-list-item .download-status:hover {
+  width: 70px;
+}
+
+.song-list-item .download-status img {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin: 2.5px;
 }

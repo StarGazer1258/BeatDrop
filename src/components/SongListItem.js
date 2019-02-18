@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import '../css/SongListItem.css'
+
 import Loader from '../assets/loading-dots2.png'
+import LibraryBlue from '../assets/library-blue.png'
+
 import Badge from './Badge';
 
 import { connect } from 'react-redux'
@@ -90,8 +93,9 @@ class SongListItem extends Component {
       )
     } else {
       return (
-        <li className='song-list-item' onClick={() => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
-          <img src={this.props.imageSource} alt={this.props.songKey} />
+        <li className="song-list-item" onClick={() => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
+          <img className="cover-image" src={this.props.imageSource} alt={this.props.songKey} />
+          {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <span className="download-status"><img src={LibraryBlue} alt=""/>In Library</span> : null}
           <div className="song-details">
             <div className="song-title">{this.props.title}<span className="id">{!!this.props.songKey ? this.props.songKey : ''}</span></div>
             <div className="song-artist">{this.props.artist}</div>
@@ -111,7 +115,8 @@ SongListItem.propTypes = ({
 })
 
 const mapStateToProps = state => ({
-  details: state.details
+  details: state.details,
+  downloadedSongs: state.songs.downloadedSongs
 })
 
 export default connect(mapStateToProps, { loadDetails, setScrollTop })(SongListItem)
