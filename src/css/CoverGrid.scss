@@ -1,0 +1,16 @@
+#cover-grid-container {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: calc(100vh - 65px);
+  
+  .cover-grid {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    justify-items: center;
+    margin-bottom: -85px;
+    padding-top: 1vw;
+    margin: 0 10px;
+    width: calc(100% -20px);
+  }
+}

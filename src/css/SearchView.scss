@@ -1,0 +1,41 @@
+#search-view {
+  padding-left: 50px;
+  overflow: scroll;
+  height: calc(100% + 10px);
+
+  form {
+    display: inline;
+  }
+
+  h1 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 32pt;
+  }
+
+  #search-box {
+    width: 80%;
+    margin-right: 10px;
+  }
+
+  .button {
+    margin-bottom: -15px;
+  }
+
+  .search-result {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 5px;
+    cursor: pointer;
+
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 5px;
+    }
+
+    .search-result-info {
+      margin: 5px;
+    }
+  }
+}

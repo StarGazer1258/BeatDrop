@@ -1,0 +1,36 @@
+#donate-button {
+  width: 40px;
+  height: 50px;
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-image: url(../assets/heart.png);
+  background-position: center center;
+  cursor: pointer;
+
+  &:hover, &.open {
+    background-image: url(../assets/heart-filled.png);
+  }
+
+  &.open {
+    animation: heartbeat 1s alternate forwards infinite;
+  }
+}
+
+.theme-dark, .theme-hc {
+  #donate-button {
+    background-image: url(../assets/dark/heart.png);
+
+    &:hover, &.open {
+      background-image: url(../assets/heart-filled.png);
+    }
+  }
+}
+
+@keyframes heartbeat {
+  70% {
+    transform: scaleX(1) scaleY(1);
+  }
+  100% {
+    transform: scaleX(1.1) scaleY(1.2);
+  }
+}

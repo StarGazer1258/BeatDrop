@@ -5,3 +5,8 @@ export const PLAYLIST_LIST    = 'PLAYLIST_LIST'
 export const PLAYLIST_DETAILS = 'PLAYLIST_DETAILS'
 export const SETTINGS         = 'SETTINGS'
 export const SEARCH           = 'SEARCH'
+export const DONATE           = 'DONATE'
+
+export const LIST             = 'list'
+export const COMPACT_LIST     = 'compact-list'
+export const GRID             = 'grid'

@@ -1,0 +1,33 @@
+@import './Animations';
+
+.settings-button {
+  width: 40px;
+  height: 50px;
+  background-size: 25px 25px;
+  background-repeat: no-repeat;
+  background-image: url(../assets/settings.png);
+  background-position: center center;
+  cursor: pointer;
+
+  &:hover, &.open {
+    background-image: url(../assets/settings-filled.png);
+  }
+
+  &.open {
+    animation: spin 10s linear forwards infinite;
+  }
+}
+
+.theme-dark, .theme-hc {
+  .settings-button {
+    background-image: url(../assets/dark/settings.png);
+
+    &:hover, &.open {
+      background-image: url(../assets/dark/settings-filled.png);
+    }
+
+    &.open {
+      background-image: url(../assets/dark/settings-filled.png);
+    }
+  }
+}

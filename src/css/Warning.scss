@@ -1,0 +1,30 @@
+.warning {
+  position: relative;
+  top: 60px;
+  width: calc(100% - 40px);
+  min-height: 50px;
+  margin: 10px;
+  padding: 10px;
+  margin-right: -200px;
+  border: 1px solid  black;
+  color: black;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: .5s;
+  z-index: 999;
+
+  .remove-warning img {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+  }
+}
+
+@keyframes warning-slide-in {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+}

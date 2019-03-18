@@ -1,0 +1,36 @@
+.progress-bar {
+  background: silver;
+  height: 10px;
+  border-radius: 5px;
+  width: 80%;
+  margin: 0 10%;
+  margin-top: 50px;
+  overflow: hidden;
+
+  .progress-bar-inner {
+    background: #2a4da3;
+    height: inherit;
+    transition: width 1s linear;
+
+    &.indeterminate {
+      background: #2a4da3;
+      background: repeating-linear-gradient(
+        -45deg,
+        #2a4da3,
+        #2a4da3 10px,
+        #6986d1 10px,
+        #6986d1 20px
+      );
+      background-size: calc(80% + 29px) 11px;
+      height: inherit;
+      transition: width 1s linear;
+      animation: progress-indeterminate .2s linear forwards infinite;
+    }
+  }
+}
+
+@keyframes progress-indeterminate {
+  to {
+    background-position-x: 29px;
+  }
+}

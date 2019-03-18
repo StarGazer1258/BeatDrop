@@ -5,6 +5,6 @@ export const resizeWindow = (window) => (dispatch) => {
 
   dispatch({
     type: RESIZE_WINDOW,
-    payload: window
+    payload: window.isMaximized
   })
 }

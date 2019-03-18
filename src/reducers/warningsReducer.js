@@ -1,6 +1,6 @@
 import  { DISPLAY_WARNING, CLEAR_WARNINGS, REMOVE_WARNING } from '../actions/types'
 
-export default function(state=[], action) {
+export default function(state = [], action) {
   switch(action.type) {
     case DISPLAY_WARNING:
       return [

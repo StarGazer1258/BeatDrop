@@ -1,0 +1,14 @@
+.text-area {
+  border: none;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.10);
+  padding: 15px;
+  border-radius: 20px;
+  margin-top: 5px;
+  font-family: inherit;
+  font-size: 11pt;
+
+  &:hover, &.focus {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+}

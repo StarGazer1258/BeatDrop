@@ -1,11 +1,15 @@
 import { RESIZE_WINDOW } from '../actions/types'
 
-export default function(state = {}, action) {
+let initialState = {
+  isMaximized: false
+}
+
+export default function(state = initialState, action) {
   switch(action.type) {
     case RESIZE_WINDOW:
       return {
         ...state,
-       window: action.payload.window
+       isMaximized: action.payload
       }
     default:
       return state

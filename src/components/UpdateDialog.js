@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import '../css/UpdateDialog.css'
+import '../css/UpdateDialog.scss'
 
 import { connect } from 'react-redux'
 import Button from './Button';
+import Modal from './Modal';
+import ProgressBar from './ProgressBar';
 
 const { ipcRenderer } = window.require('electron')
 
@@ -16,11 +18,8 @@ class UpdateDialog extends Component {
       updateAvailable: false,
       newVersion: 'Fetching...'
     }
-  }
 
-  componentWillMount() {
-    ipcRenderer.on('electron-updater', (_, event, message) => {
-      console.log(event, message)
+    this.onUpdateStatus = (_, event, message) => {
       switch(event) {
         case 'update-available':
           this.setState({
@@ -34,21 +33,38 @@ class UpdateDialog extends Component {
         default:
           return
       }
-    })
+    }
+  }
+
+  componentWillMount() {
+    ipcRenderer.on('electron-updater', this.onUpdateStatus)
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener('electron-updater', this.onUpdateStatus)
   }
 
   render() {
     return (
-      <div id="update-dialog" className={`theme-${this.props.theme} ${this.state.updateAvailable ? '' : 'hidden'}`}>
-        <div id="update-dialog-inner">
-          <h1 className={this.state.updateProgress > 0 ? ' downloading-update' : ''}>{this.state.updateProgress > 0 ? 'Downloading Update...' : 'Update Available!'}</h1>
-          <div id="update-progress"  className={this.state.updateProgress > 0 ? '' : ' hidden'}><div id="update-progress-inner" style={{width: `${this.state.updateProgress}%`}}></div></div>
-          <div className={`current-version${this.state.updateProgress > 0 ? ' hidden': ''}`}>Current Version: {require('../../package.json').version}</div>
-          <div className={`latest-version${this.state.updateProgress > 0 ? ' hidden': ''}`}>Latest Version: {this.state.newVersion}</div>
-          {(this.state.updateProgress > 0) ? null : <Button type="primary" onClick={() => { ipcRenderer.send('electron-updater', 'download-update') }}>Update Now</Button>}<div className="flex-br"></div>
-          {(this.state.updateProgress > 0) ? null : <Button onClick={() => { this.setState({ updateAvailable: false }) }}>Remind Me Later</Button>}
-        </div>
-      </div>
+      this.state.updateAvailable ?
+        <Modal width={ 575 } height={ 500 } onClose={ () => { this.setState({ updateAvailable: false }) } }>
+          <h1 id="update-dialog-text" className={ this.state.updateProgress > 0 ? ' downloading-update' : '' }>{ this.state.updateProgress > 0 ? 'Downloading Update...' : 'Update Available!' }</h1>
+          { this.state.updateProgress > 0 ?
+              <ProgressBar progress={ this.state.updateProgress } />
+          :
+            <>
+              <div className={ `current-version${ this.state.updateProgress > 0 ? ' hidden' : '' }` }>Current Version: { require('../../package.json').version }</div>
+              <div className={ `latest-version${ this.state.updateProgress > 0 ? ' hidden' : '' }` }>Latest Version: { this.state.newVersion }</div>
+              <div id="update-action-buttons">
+                <Button type="primary" onClick={ () => { ipcRenderer.send('electron-updater', 'download-update') } }>Update Now</Button>
+                <Button onClick={ () => { this.setState({ updateAvailable: false }) } }>Remind Me Later</Button>
+              </div>
+              
+            </>
+          }
+          <div className="flex-br"></div>
+        </Modal>
+      : null
     )
   }
 }

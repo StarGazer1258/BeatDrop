@@ -1,0 +1,23 @@
+@import './StyleConstants';
+
+.tab {
+  font-weight: 700;
+  margin: 0 5px;
+  cursor: pointer;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.active {
+    color: $beatdrop-blue;
+    text-decoration-color: $beatdrop-blue;
+    opacity: 1;
+  }
+}
+
+.theme-hc .tab.active {
+  color: $theme-hc-accent-color;
+  text-decoration-color: $theme-hc-accent-color;
+}

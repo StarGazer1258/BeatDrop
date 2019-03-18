@@ -1,39 +1,20 @@
 import React, { Component } from 'react'
-import '../css/SongScanningDialog.css'
+import '../css/SongScanningDialog.scss'
 
 import { connect } from 'react-redux'
-
-const { ipcRenderer } = window.require('electron')
+import Modal from './Modal';
+import ProgressBar from './ProgressBar';
 
 class SongScanningDialog extends Component {
 
-  componentWillMount() {
-    ipcRenderer.on('electron-updater', (_, event, message) => {
-      console.log(event, message)
-      switch(event) {
-        case 'update-available':
-          this.setState({
-            updateAvailable: true,
-            newVersion: message.version
-          })
-          return
-        case 'download-progress':
-          this.setState({ updateProgress: message })
-          return
-        default:
-          return
-      }
-    })
-  }
-
   render() {
     return (
-      <div id="song-scanning-dialog" className={`theme-${this.props.theme} ${this.props.scanning ? '' : 'hidden'}`}>
-        <div id="song-scanning-dialog-inner">
-          <h1>Scanning for songs...</h1>
-          <div id="song-scanning-progress"><div id="song-scanning-progress-inner" style={{width: `${this.props.songsLoaded / this.props.songsDiscovered * 100}%`}}></div></div>
-        </div>
-      </div>
+      this.props.scanning ?
+        <Modal width={ 575 } height={ 330 }>
+          <h1 id="scanning-text" className={ `theme-${this.props.theme}` }>Scanning for songs...</h1>
+          <ProgressBar progress={ this.props.songsLoaded / this.props.songsDiscovered * 100 } indeterminate />
+        </Modal>
+      : null
     )
   }
 }

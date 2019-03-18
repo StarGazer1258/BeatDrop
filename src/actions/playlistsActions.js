@@ -47,7 +47,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
       }
       let playlistsFound = 0
       for(let f in files) {
-        if(files[f].split('.')[files[f].split('.').length-1] === 'json' || files[f].split('.')[files[f].split('.').length-1] === 'bplist') playlistsFound++
+        if(files[f].split('.')[files[f].split('.').length - 1] === 'json' || files[f].split('.')[files[f].split('.').length - 1] === 'bplist') playlistsFound++
       }
       let pushPlaylist = playlist => {
         playlists.push(playlist)
@@ -164,7 +164,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
           type: DISPLAY_WARNING,
           payload: {
             color: 'gold',
-            text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+            text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
           }
         })
         return
@@ -175,7 +175,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
       })
       dispatch({
         type: LOAD_PLAYLIST_DETAILS,
-        payload: {...playlist, songs: [], playlistFile}
+        payload: { ...playlist, songs: [], playlistFile }
       })
       let state = getState()
       for(let i = 0; i < playlist.songs.length; i++) {
@@ -275,9 +275,9 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
   }
   for(let i = 0; i < details.newOrder.length; i++) {
     if(findWithAttr(details.songs, 'hash', details.newOrder[i]) >= 0) {
-      newSongs.push({hash: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].hash, songName: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].songName})
+      newSongs.push({ hash: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].hash, songName: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].songName })
     } else {
-      newSongs.push({key: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].key, songName: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].songName})
+      newSongs.push({ key: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].key, songName: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].songName })
     }
   }
   details.songs = newSongs
@@ -293,7 +293,7 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
         type: DISPLAY_WARNING,
         payload: {
           color: 'gold',
-          text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+          text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
         }
       })
       return
@@ -321,17 +321,25 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
         type: DISPLAY_WARNING,
         payload: {
           color: 'gold',
-          text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+          text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
         }
       })
       return
     }
     let playlist = JSON.parse(data)
     if(song.hash || song.hashMd5) {
-      playlist.songs.push({
-        hash: song.hash || song.hashMd5,
-        songName: song.name || song.songName
-      })
+      if(song.key) {
+        playlist.songs.push({
+          hash: song.hash || song.hashMd5,
+          key: song.key,
+          songName: song.name || song.songName
+        })
+      } else {
+        playlist.songs.push({
+          hash: song.hash || song.hashMd5,
+          songName: song.name || song.songName
+        })
+      }
     } else {
       if(song.file) {
         let file = song.file
@@ -354,10 +362,18 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
         let hash = md5(to_hash)
         song.hash = hash
         fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-        playlist.songs.push({
-          hash: hash,
-          songName: song.name || song.songName
-        })
+        if(song.key) {
+          playlist.songs.push({
+            hash: hash,
+            key: song.key,
+            songName: song.name || song.songName
+          })
+        } else {
+          playlist.songs.push({
+            hash: hash,
+            songName: song.name || song.songName
+          })
+        }
       }
     }
     
@@ -367,7 +383,7 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
           type: DISPLAY_WARNING,
           payload: {
             color: 'gold',
-            text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8. Try redownloading the playlist and try again.'
+            text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
           }
         })
         return

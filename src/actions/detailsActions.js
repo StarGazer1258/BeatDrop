@@ -1,17 +1,10 @@
-import { SET_DETAILS_OPEN, LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, SET_VIEW, DISPLAY_WARNING } from './types'
+import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_DETAILS } from '../views'
 
 import AdmZip from 'adm-zip'
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
-
-export const setDetailsOpen = (isOpen) => dispatch => {
-  dispatch({
-    type: SET_DETAILS_OPEN,
-    payload: isOpen
-  })
-}
 
 /**
  * Loads and presents the details page for a song.
@@ -68,10 +61,35 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           payload: false
         })
       })
+      .catch(() => { })
     dispatch({
       type: SET_VIEW,
       payload: SONG_DETAILS
     })
+    fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${identity.split('-')[0]}/ratings`)
+      .then(res => res.json())
+      .then(bsaberData => {
+        dispatch({
+          type: LOAD_DETAILS,
+          payload: { ratings: bsaberData }
+        })
+      })
+      .catch(() => { dispatch({
+        type: LOAD_DETAILS,
+        payload: {
+          ratings: {
+            overall_rating: 0,
+            average_ratings: {
+              fun_factor: 0,
+              rythm: 0,
+              flow: 0,
+              pattern_quality: 0,
+              readability: 0,
+              level_quality: 0
+            }
+          }
+        }
+      }) })
   } else {
     if((/^[a-f0-9]{32}$/).test(identity)) {
       if(getState().songs.downloadedSongs.some(song => song.hash === identity)) {
@@ -90,7 +108,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           })
           dispatch({
             type: LOAD_DETAILS,
-            payload: {song}
+            payload: { song }
           })
           dispatch({
             type: SET_DETAILS_LOADING,
@@ -121,9 +139,17 @@ export const loadDetails = (identity) => (dispatch, getState) => {
                     }
                   }
                 })
+              fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${song.id}/ratings`)
+                .then(res => res.json())
+                .then(bsaberData => {
+                  dispatch({
+                    type: LOAD_DETAILS,
+                    payload: { ratings: bsaberData }
+                  })
+                })
                 dispatch({
                   type: LOAD_DETAILS,
-                  payload: {song}
+                  payload: { song }
                 })
                 dispatch({
                   type: SET_DETAILS_LOADING,
@@ -151,7 +177,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
         })
         dispatch({
           type: LOAD_DETAILS,
-          payload: {song}
+          payload: { song }
         })
         dispatch({
           type: SET_DETAILS_LOADING,
@@ -164,17 +190,4 @@ export const loadDetails = (identity) => (dispatch, getState) => {
       })
     }
   }
-  /*
-  fetch('https://bsaber.com/wp-json/wp/v2/posts?filter[meta_key]=SongID&filter[meta_value]=' + identity.split('-')[0])
-  .then(res => res.json())
-  .then(bsaberData => {
-    if(bsaberData.length > 0) {
-      console.log(bsaberData[0].post_ratings_average)
-      dispatch({
-        type: LOAD_DETAILS,
-        payload: { bsaberData: bsaberData[0]}
-      })
-    }
-  })
-  */
 }

@@ -1,0 +1,100 @@
+.cover-grid-item {
+  position: relative;
+  border-radius: 5px;
+  height: 275px;
+  width: 200px;
+  margin-bottom: 2vw;
+  cursor: pointer;
+  transition: transform 0.5s;
+  background: rgb(128, 128, 128);
+
+  .library-indicator {
+    bottom: 80px;
+    left: 5px;
+  }
+
+  .cover-image {
+    height: 200px;
+    width: 200px;
+    border-radius: 5px 5px 0 0;
+    background: rgb(128, 128, 128);
+    margin: 0;
+  }
+
+  .cover-grid-info-tab {
+    height: 76px;
+    width: 100%;
+    background: rgb(128, 128, 128);
+    margin-top: -4px;
+    padding: .5vw;
+    box-sizing: border-box;
+    border-radius: 0 0 5px 5px;
+    transition: background-color 0.5s;
+    overflow: hidden;
+
+    .cover-grid-title {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: bold;
+      font-size: 14pt;
+      white-space: nowrap;
+    }
+    
+    .cover-grid-artist {
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12pt;
+      white-space: nowrap;
+    }
+    
+    .dots {
+      display: flex;
+      flex-flow: row nowrap;
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        background-color: black;
+        border-radius: 25%;
+        margin-right: 5px;
+        margin-top: 5px;
+      }
+    }
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    height: 275px;
+    width: 200px;
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:last-child {
+    margin-bottom: 7vw;
+    margin-right: 1vw;
+  }
+
+  &.loading {
+    .cover-image {
+      object-fit: contain;
+    }
+  }
+}
+
+@keyframes pulse {
+  to {
+    background-position: 0px -18vw;
+  }
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import '../css/SortBar.css'
+import '../css/SortBar.scss'
 import TabGroup from './TabGroup';
 import Tab from './Tab';
 
@@ -12,7 +12,7 @@ class SortBar extends Component {
     if(this.props.hidden) return null
     return (
       <div className='sort-bar'>
-        <TabGroup label="View:"><Tab active={this.props.songView === 'list'} onClick={() => {this.props.setSongView('list')}}>List</Tab><Tab active={this.props.songView === 'compact-list'} onClick={() => {this.props.setSongView('compact-list')}}>Compact List</Tab><Tab active={this.props.songView === 'grid'} onClick={() => {this.props.setSongView('grid')}}>Grid</Tab></TabGroup>
+        <TabGroup label="View:"><Tab active={ this.props.songView === 'list' } onClick={ () => {this.props.setSongView('list')} }>List</Tab><Tab active={ this.props.songView === 'compact-list' } onClick={ () => {this.props.setSongView('compact-list')} }>Compact List</Tab><Tab active={ this.props.songView === 'grid' } onClick={ () => {this.props.setSongView('grid')} }>Grid</Tab></TabGroup>
       </div>
     )
   }

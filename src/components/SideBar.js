@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../css/SideBar.css'
+import '../css/SideBar.scss'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -12,25 +12,26 @@ import { setSource, setResource } from '../actions/sourceActions'
 import { resizeSidebar } from '../actions/sidebarActions'
 import QueueButton from './QueueButton';
 import { SONG_LIST, PLAYLIST_LIST } from '../views'
+import DonateButton from './DonateButton';
 
 class SideBar extends Component {
 
   render() {
     return (
-      <div id='sidebar' className={this.props.sidebarOpen ? '' : 'collapsed'}>
-        <div className='resize-sidebar' title={this.props.sidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'} onClick={this.props.resizeSidebar}></div>
+      <div id='sidebar' className={ this.props.sidebarOpen ? '' : 'collapsed' }>
+        <div className='resize-sidebar' title={ this.props.sidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar' } onClick={ this.props.resizeSidebar }></div>
         <h5>LIBRARY</h5>
         <ul>
-          <li className={`fetch-local-songs ${this.props.view === SONG_LIST && this.props.source.source === 'local' && this.props.source.resource === 'songs' ? 'selected' : ''}`} onClick={this.props.fetchLocalSongs}>Songs</li>
-          <li className={`fetch-local-playlists ${this.props.view === PLAYLIST_LIST ? 'selected' : ''}`} onClick={this.props.fetchLocalPlaylists}>Playlists</li>
+          <li className={ `fetch-local-songs ${this.props.view === SONG_LIST && this.props.source.source === 'local' && this.props.source.resource === 'songs' ? 'selected' : ''}` } onClick={ this.props.fetchLocalSongs }>Songs</li>
+          <li className={ `fetch-local-playlists ${this.props.view === PLAYLIST_LIST ? 'selected' : ''}` } onClick={ this.props.fetchLocalPlaylists }>Playlists</li>
         </ul>
         <h5>BEATSAVER</h5>
         <ul>
-          <li className={`fetch-new-songs ${this.props.view === SONG_LIST && this.props.source.source === 'beatsaver' && this.props.source.resource === 'new' ? 'selected' : ''}`} onClick={this.props.fetchNew}>New Songs</li>
-          <li className={`fetch-top-finished ${this.props.view === SONG_LIST && this.props.source.source === 'beatsaver' && this.props.source.resource === 'topFinished' ? 'selected' : ''}`} onClick={this.props.fetchTopFinished}>Top Finished</li>
-          <li className={`fetch-top-downloaded ${this.props.view === SONG_LIST && this.props.source.source === 'beatsaver' && this.props.source.resource === 'topDownloads' ? 'selected' : ''}`} onClick={this.props.fetchTopDownloads}>Top Downloaded</li>
+          <li title={ `New Songs${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `fetch-new-songs${this.props.view === SONG_LIST && this.props.source.source === 'beatsaver' && this.props.source.resource === 'new' ? ' selected' : ''}${this.props.offlineMode ? ' disabled' : ''}` } onClick={ this.props.offlineMode ? null : this.props.fetchNew }>New Songs</li>
+          <li title={ `Top Finished${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `fetch-top-finished ${this.props.view === SONG_LIST && this.props.source.source === 'beatsaver' && this.props.source.resource === 'topFinished' ? 'selected' : ''}${this.props.offlineMode ? ' disabled' : ''}` } onClick={ this.props.offlineMode ? null : this.props.fetchTopFinished }>Top Finished</li>
+          <li title={ `Top Downloaded${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `fetch-top-downloaded ${this.props.view === SONG_LIST && this.props.source.source === 'beatsaver' && this.props.source.resource === 'topDownloads' ? 'selected' : ''}${this.props.offlineMode ? ' disabled' : ''}` } onClick={ this.props.offlineMode ? null : this.props.fetchTopDownloads }>Top Downloaded</li>
         </ul>
-        <div className="buttons-bottom"><SettingsButton /><SearchButton /><QueueButton /></div>
+        <div className="buttons-bottom"><SettingsButton /><SearchButton /><QueueButton /><DonateButton /></div>
       </div>
     )
   }
@@ -52,7 +53,8 @@ SideBar.propTypes = {
 const mapStateToProps = state => ({
   view: state.view.view,
   source: state.source,
-  sidebarOpen: state.sidebar.isOpen
+  sidebarOpen: state.sidebar.isOpen,
+  offlineMode: state.settings.offlineMode
 })
 
 export default connect(mapStateToProps, { fetchNew, fetchTopDownloads, fetchTopFinished, fetchLocalSongs, fetchLocalPlaylists, setSource, setResource, resizeSidebar })(SideBar)

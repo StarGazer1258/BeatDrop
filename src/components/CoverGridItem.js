@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import '../css/CoverGridItem.css'
+import '../css/CoverGridItem.scss'
+
+import LibraryIndicator from './LibraryIndicator'
 
 import Loader from '../assets/loading-dots2.png'
-import LibraryBlue from '../assets/library-blue.png'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -56,7 +57,7 @@ function Difficulties(props) {
     })
   }
   return badges.map((badge, i) => {
-    return <div key={i} className='dot' title={badge.text} style={{backgroundColor: badge.backgroundColor, border: `1px solid ${props.textColor}`}}></div>
+    return <div key={ i } className='dot' title={ badge.text } style={ { backgroundColor: badge.backgroundColor, border: `1px solid ${props.textColor}` } }></div>
   })
 }
 
@@ -75,7 +76,7 @@ componentWillReceiveProps(props) {
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
-          textColor: (colors[0].rgb()[0]*0.299 + colors[0].rgb()[1]*0.587 + colors[0].rgb()[2]*0.114) > 186 ? 'black' : 'white'
+          textColor: (colors[0].rgb()[0] * 0.299 + colors[0].rgb()[1] * 0.587 + colors[0].rgb()[2] * 0.114) > 186 ? 'black' : 'white'
         })
       })
       .catch(() => {})
@@ -86,7 +87,7 @@ componentWillReceiveProps(props) {
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
-          textColor: (colors[0].rgb()[0]*0.299 + colors[0].rgb()[1]*0.587 + colors[0].rgb()[2]*0.114) > 186 ? 'black' : 'white'
+          textColor: (colors[0].rgb()[0] * 0.299 + colors[0].rgb()[1] * 0.587 + colors[0].rgb()[2] * 0.114) > 186 ? 'black' : 'white'
         })
       })
       .catch(() => {})
@@ -96,19 +97,19 @@ componentWillReceiveProps(props) {
     if(this.props.loading) {
       return (
         <div className="cover-grid-item loading">
-          <img className="cover-image" src={Loader} alt={this.props.key} />
+          <img className="cover-image" src={ Loader } alt={ this.props.key } />
         </div>
       )
     } else {
       return (
-        <div key={this.props.key} className='cover-grid-item' onClick={() => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) }}>
-          <img className="cover-image" src={this.props.coverImage} alt=""/>
-          {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <span className="download-status"><img src={LibraryBlue} alt=""/>In Library</span> : null}
-          <div style={{backgroundColor: this.state.bgc, color: this.state.textColor}} className="cover-grid-info-tab">
+        <div key={ this.props.key } className='cover-grid-item' onClick={ () => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) } }>
+          <img className="cover-image" src={ this.props.coverImage } alt=""/>
+          {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <LibraryIndicator /> : null}
+          <div style={ { backgroundColor: this.state.bgc, color: this.state.textColor } } className="cover-grid-info-tab">
             <div className="cover-grid-title">{this.props.title}</div>
             <div className="cover-grid-artist">{this.props.artist}</div>
             <div className="dots">
-              <Difficulties difficulties={this.props.difficulties} textColor={this.state.textColor} />
+              <Difficulties difficulties={ this.props.difficulties } textColor={ this.state.textColor } />
             </div>
           </div>
         </div>

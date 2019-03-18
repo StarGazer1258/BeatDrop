@@ -1,4 +1,4 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 
 const { remote } = window.require('electron')
@@ -52,6 +52,22 @@ export const fetchNew = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
+      for(let i = 0; i < data.songs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+        .then(res => res.json())
+        .then(bsaberData => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData }
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData: { overall_rating: 'Error' } }
+          })
+        })
+      }
     })
 }
 
@@ -87,13 +103,20 @@ export const fetchTopDownloads = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i=0; i<data.songs.length; i++) {
-        fetch('https://bsaber.com/wp-json/wp/v2/posts?filter[meta_key]=SongID&filter[meta_value]=' + data.songs[i].key.split('-')[0])
+      for(let i = 0; i < data.songs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
-          if(bsaberData.length > 0) {
-            console.log(bsaberData[0].post_ratings_average)
-          }
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData }
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData: { overall_rating: 'Error' } }
+          })
         })
       }
     })
@@ -131,6 +154,22 @@ export const fetchTopFinished = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
+      for(let i = 0; i < data.songs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+        .then(res => res.json())
+        .then(bsaberData => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData }
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData: { overall_rating: 'Error' } }
+          })
+        })
+      }
     })
 }
 
@@ -204,7 +243,7 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
         let dirs = file.split('\\')
         dirs.pop()
         let dir = dirs.join('\\')
-        if(file.substr(file.length-9) === 'info.json') {
+        if(file.substr(file.length - 9) === 'info.json') {
           count++
           fs.readFile(file, 'UTF-8', (err, data) => {
             if(err) { decrementCounter(); return }
@@ -246,7 +285,9 @@ export const loadMore = () => (dispatch, getState) => {
   })
   let state = getState()
   fetch(resourceUrl[state.source.source][state.source.resource] + '/' + state.songs.songs.length)
-    .then(res => res.json())
+    .then(res => {
+      return res.json()
+    })
     .then(data => {
       dispatch({
         type: LOAD_MORE,
@@ -255,6 +296,30 @@ export const loadMore = () => (dispatch, getState) => {
       dispatch({
         type: SET_LOADING_MORE,
         payload: false
+      })
+      for(let i = state.songs.songs.length; i < state.songs.songs.length + data.songs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i - state.songs.songs.length].key.split('-')[0]}/ratings`)
+        .then(res => res.json())
+        .then(bsaberData => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData }
+          })
+        })
+        .catch((err) => {
+          dispatch({
+            type: ADD_BSABER_RATING,
+            payload: { i, bsaberData: { overall_rating: 'Error' } }
+          })
+        })
+      }
+    })
+    .catch((err) => {
+      dispatch({
+        type: DISPLAY_WARNING,
+        payload: {
+          text: 'There was error loading more songs. Check your connection to the internet and try again.'
+        }
       })
     })
 }

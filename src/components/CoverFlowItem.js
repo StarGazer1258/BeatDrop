@@ -5,7 +5,7 @@ class CoverFlowItem extends Component {
   render() {
     return (
       <div className='cover-flow-item'>
-        <img src={this.props.coverImage} alt=""/>
+        <img src={ this.props.coverImage } alt=""/>
       </div>
     )
   }

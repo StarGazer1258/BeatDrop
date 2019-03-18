@@ -1,0 +1,68 @@
+@import './StyleConstants';
+
+#download-queue {
+  position: absolute;
+  bottom: 60px;
+  left: 80px;
+  border-radius: 5px;
+  width: 30vw;
+  height: 70vh;
+  background: white;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+    height: calc(100% - 59px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  #queue-toolbar {
+    height: 48px;
+    border-bottom: 1px solid silver;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #clear-queue-button {
+    width: 40px;
+    height: 50px;
+    margin-right: 5px;
+    background-size: 25px 25px;
+    background-repeat: no-repeat;
+    background-image: url(../assets/clear-queue.png);
+    background-position: center center;
+    cursor: pointer;
+    transition: transform .5s;
+
+    &:hover {
+      background-image: url(../assets/clear-queue-filled.png);
+    }
+  }
+
+  &.theme-dark, &.theme-hc {
+    #clear-queue-button {
+      background-image: url(../assets/dark/clear-queue.png);
+
+      &:hover {
+        background-image: url(../assets/dark/clear-queue-filled.png);
+      }
+    }
+  }
+
+  &.theme-dark {
+    background: $theme-dark-background-color;
+    color: $theme-dark-text-color;
+  }
+
+  &.theme-hc {
+    background: $theme-hc-background-color;
+    color: $theme-hc-text-color;
+    border: 1px solid white;
+  }
+}

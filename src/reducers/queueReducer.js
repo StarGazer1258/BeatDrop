@@ -5,7 +5,7 @@ const initialState = {
   items: []
 }
 
-export default function(state=initialState, action) {
+export default function(state = initialState, action) {
   switch(action.type) {
     case SET_QUEUE_OPEN:
       return {
@@ -31,7 +31,7 @@ export default function(state=initialState, action) {
       }
     case UPDATE_PROGRESS: {
       let items = [...state.items]
-      for(let i=0;i<items.length;i++) {
+      for(let i = 0;i < items.length;i++) {
         if(items[i].hash === action.payload.hash && items[i].utc === action.payload.utc) {
           items[i].progress = action.payload.progress
         }

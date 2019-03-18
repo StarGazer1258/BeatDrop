@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import '../css/App.css'
-import '../css/fonts.css'
+import '../css/App.scss'
+import '../css/fonts.scss'
 import TitleBar from './TitleBar'
 import Slate from './Slate'
 import { Provider } from 'react-redux'
@@ -23,19 +23,6 @@ import '../sentry'
 const { ipcRenderer } = window.require('electron')
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      window: {
-        x: 0,
-        y: 0,
-        width: 985,
-        height: 585
-      }
-    }
-  }
-
   componentDidMount() {
     ipcRenderer.send('launch-events', 'check-launch-events')
     ipcRenderer.on('launch-events', (_, event, message) => {
@@ -61,20 +48,20 @@ class App extends Component {
 
   render() {
     return (
-      <Provider store={store}>
-        <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+      <Provider store={ store }>
+        <PersistGate loading={ <div>Loading...</div> } persistor={ persistor }>
           <div className='app'>
             <TitleBar />
             <Slate />
             <ViewSwitcher />
-            <ReleaseNotesModal />
             <DownloadQueue />
-            <UpdateDialog />
             <SongScanningDialog />
+            <ReleaseNotesModal />
+            <UpdateDialog />
           </div>
         </PersistGate>
       </Provider>
-    );
+    )
   }
 }
 

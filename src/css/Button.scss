@@ -1,0 +1,67 @@
+@import './StyleConstants';
+
+.theme-dark {
+  .button {
+    background-color: rgba(255, 255, 255, 0.3);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.35);
+    }
+  }
+}
+
+.theme-hc {
+  .button {
+    background-color: white;
+    color: black;
+
+    &.primary {
+      background-color: rgba($theme-hc-accent-color, 0.75);
+  
+      &:hover {
+        background-color: rgba($theme-hc-accent-color, 0.9);
+      }
+    }
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+  }
+}
+
+.button {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 10px 20px;
+  height: 20px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-family: "Lato", sans-serif;
+  font-size: 11pt;
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  &.destructive {
+    background-color: rgba(255, 0, 0, 0.5);
+    color: white;
+
+    &:hover {
+      background-color: rgba(255, 0, 0, 0.6);
+    }
+  }
+
+  &.primary {
+    background-color: rgba($beatdrop-blue, 0.75);
+    color: white;
+
+    &:hover {
+      background-color: rgba($beatdrop-blue, 0.9);
+    }
+  }
+}

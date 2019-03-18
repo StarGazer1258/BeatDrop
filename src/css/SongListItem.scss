@@ -1,0 +1,146 @@
+@import './StyleConstants';
+
+.song-list-item {
+  width: calc(100% - 10px);
+  height: 100px;
+  padding: 0 5px;
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  transition: .2s;
+  flex-flow: row wrap;
+  overflow: hidden;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+
+  .id {
+    font-weight: 500;
+    margin-left: 5px;
+    opacity: 0.5;
+    font-size: 10pt !important;
+  }
+
+  .cover-image {
+    width: 80px;
+    height: 80px;
+    margin: 10px 10px;
+    border-radius: 5px;
+    position: relative;
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
+  }
+
+  .song-details {
+    .song-title {
+      font-size: 18pt;
+      font-weight: 900;
+      margin-top: 3px;
+      margin-bottom: -3px;
+      max-width: calc(100vw - 460px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .song-artist, .uploader {
+      font-size: 12pt;
+      max-width: calc(100vw - 460px);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .beatmap-details {
+    width: 150px;
+    position: absolute;
+    right: 5px;
+    height: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: flex-end;
+
+    div {
+      text-align: right;
+      width: 100%;
+    }
+  }
+
+  .library-indicator {
+    bottom: 15px;
+    left: 20px;
+  }
+
+  &.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 266px;
+      height: 150px;
+      box-shadow: none;
+      background: transparent;
+    }
+  }
+
+  &.compact {
+    height: 50px;
+    padding: 0 10px;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+
+    .uploader {
+      font-size: 12pt;
+      max-width: calc(100vw - 290px);
+      margin-right: 5px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      margin-right: 5px;
+    }
+
+    .song-title {
+      font-size: 18pt;
+      font-weight: 900;
+      max-width: calc(100vw - 600px);
+      margin-right: 5px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .library-indicator {
+      display: inline-flex;
+      position: initial;
+    }
+
+    div {
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    .cover-image {
+      display: none;
+    }
+
+    .beatmap-details {
+      display: none;
+    }
+  }
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.theme-hc {
+  .song-list-item {
+    border-bottom: 1px dashed white;
+  }
+}

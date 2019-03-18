@@ -1,6 +1,6 @@
 import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_PLAYLIST_PICKER_OPEN } from '../actions/types'
 
-export default function(state={playlists: [], playlistDetails: {playlistTitle: '', playlistAuthor: '', playlistDescription: '', image: '', songs: []}, newCoverImageSource: '', newPlaylistDialogOpen: false, pickerOpen: false, editing: false}, action) {
+export default function(state = { playlists: [], playlistDetails: { playlistTitle: '', playlistAuthor: '', playlistDescription: '', image: '', songs: [] }, newCoverImageSource: '', newPlaylistDialogOpen: false, pickerOpen: false, editing: false }, action) {
   switch(action.type) {
     case FETCH_LOCAL_PLAYLISTS:
       return {

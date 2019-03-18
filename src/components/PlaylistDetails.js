@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../css/PlaylistDetails.css'
+import '../css/PlaylistDetails.scss'
 import Sortable from 'sortablejs'
 
 import { connect } from 'react-redux'
@@ -42,16 +42,16 @@ class PlaylistDetails extends Component {
   render() {
     if(this.props.loading) {
       return (
-        <div id="plsylist-details" className="loading">
-          <div className="close-icon" onClick={() => {this.props.setView(this.props.previousView)}}></div>
+        <div id="playlist-details" className="loading">
+          <div className="close-icon" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
           <img className="cover-image" alt='' />
           <div className="details-info">
             <span className="details-title"></span>
-            <div className="details-artist"></div>
+            <div className="details-author"></div>
             <div className="action-buttons">
-              <span className="action-button delete-button"><img src={deleteIcon} alt='' />DELETE</span>
-              <span className="action-button edit-button"><img src={addIcon} alt='' />EDIT</span>
-              <span className="action-button more-button"><img src={moreIcon} alt='' /></span>
+              <span className="action-button delete-button"><img src={ deleteIcon } alt='' />DELETE</span>
+              <span className="action-button edit-button"><img src={ addIcon } alt='' />EDIT</span>
+              <span className="action-button more-button"><img src={ moreIcon } alt='' /></span>
             </div>
             <div className="details-description"></div>
           </div>
@@ -60,24 +60,24 @@ class PlaylistDetails extends Component {
     } else {
       return (
         <div id="playlist-details">
-          <div className="close-icon" title="Close" onClick={() => { this.props.setPlaylistEditing(false); this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) }}></div>
-          <div className="details-split">
-            <div className="details-info">
+          <div className="close-icon" title="Close" onClick={ () => { this.props.setPlaylistEditing(false); this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) } }></div>
+          <div id="details-split">
+            <div id="details-info">
               {this.props.editing ? 
-                <div>
-                  <label htmlFor="edit-playlist-cover-image" id="edit-playlist-add-cover-image"><img src={this.props.newCoverImageSource || this.props.playlistDetails.image} alt="" /></label>
-                  <input type="file" name="edit-playlist-cover-image" id="edit-playlist-cover-image" accept=".jpg,.jpeg,.png,.gif" onChange={(e) => {this.props.loadPlaylistCoverImage(e.target.files[0].path || this.props.settings.newCoverImageSource)}} />
-                </div>
+                <>
+                  <label htmlFor="edit-playlist-cover-image" id="edit-playlist-add-cover-image"><img src={ this.props.newCoverImageSource || this.props.playlistDetails.image } alt="" /></label>
+                  <input type="file" name="edit-playlist-cover-image" id="edit-playlist-cover-image" accept=".jpg,.jpeg,.png,.gif" onChange={ (e) => {this.props.loadPlaylistCoverImage(e.target.files[0].path || this.props.settings.newCoverImageSource)} } />
+                </>
               :
-                <img className="cover-image" src={this.props.playlistDetails.image} alt='' />
+                <img className="cover-image" src={ this.props.playlistDetails.image } alt='' />
               }
-              {this.props.editing ? <input id="editing-playlist-title" className="text-box" placeholder="Title" defaultValue={this.props.playlistDetails.playlistTitle} /> : <span className="details-title" title={this.props.playlistDetails.playlistTitle}>{this.props.playlistDetails.playlistTitle}</span>}
-              {this.props.editing ? <input id="editing-playlist-author" className="text-box editing-playlist-author" placeholder="Author" defaultValue={this.props.playlistDetails.playlistAuthor} /> : <div className="details-author" title={this.props.playlistDetails.playlistAuthor}>{this.props.playlistDetails.playlistAuthor}</div>}
+              {this.props.editing ? <input id="editing-playlist-title" className="text-box" placeholder="Title" defaultValue={ this.props.playlistDetails.playlistTitle } /> : <span className="details-title" title={ this.props.playlistDetails.playlistTitle }>{this.props.playlistDetails.playlistTitle}</span>}
+              {this.props.editing ? <input id="editing-playlist-author" className="text-box editing-playlist-author" placeholder="Author" defaultValue={ this.props.playlistDetails.playlistAuthor } /> : <div className="details-author" title={ this.props.playlistDetails.playlistAuthor }>{this.props.playlistDetails.playlistAuthor}</div>}
               <div className="action-buttons">
-              <span className={`action-button delete-button${this.props.editing ? ' hidden': ''}`} onClick={() => { this.props.deletePlaylist(this.props.playlistDetails.playlistFile); this.props.fetchLocalPlaylists() }}><img src={deleteIcon} alt='' />DELETE</span>
-                <span className="action-button edit-button" onClick={() => { if(this.props.editing) { this.props.savePlaylistDetails({...this.props.playlistDetails, playlistTitle: document.getElementById('editing-playlist-title').value, playlistAuthor: document.getElementById('editing-playlist-author').value, playlistDescription: document.getElementById('editing-playlist-description').value, newOrder: playlistSongs.toArray()}) } this.props.setPlaylistEditing(!this.props.editing); playlistSongs.option('disabled', !playlistSongs.option('disabled')) }}><img src={addIcon} alt='' />{this.props.editing ? 'FINISH EDITING' : 'EDIT'}</span>
-                <ContextMenuTrigger id="playlist-details-more" holdToDisplay={0}><span id="more-button" className={`action-button more-button i-more-actions${this.props.editing ? ' hidden': ''}`}><img className="i-more-actions" src={moreIcon} alt='' /></span></ContextMenuTrigger>
-                <ContextMenu id="playlist-details-more"><MenuItem onClick={(e) => {
+              <span className={ `action-button delete-button${this.props.editing ? ' hidden' : ''}` } onClick={ () => { this.props.deletePlaylist(this.props.playlistDetails.playlistFile); this.props.fetchLocalPlaylists() } }><img src={ deleteIcon } alt='' />DELETE</span>
+                <span className="action-button edit-button" onClick={ () => { if(this.props.editing) { this.props.savePlaylistDetails({ ...this.props.playlistDetails, playlistTitle: document.getElementById('editing-playlist-title').value, playlistAuthor: document.getElementById('editing-playlist-author').value, playlistDescription: document.getElementById('editing-playlist-description').value, newOrder: playlistSongs.toArray() }) } this.props.setPlaylistEditing(!this.props.editing); playlistSongs.option('disabled', !playlistSongs.option('disabled')) } }><img src={ addIcon } alt='' />{this.props.editing ? 'FINISH EDITING' : 'EDIT'}</span>
+                <ContextMenuTrigger id="playlist-details-more" holdToDisplay={ 0 }><span id="more-button" className={ `action-button more-button i-more-actions${this.props.editing ? ' hidden' : ''}` }><img className="i-more-actions" src={ moreIcon } alt='' /></span></ContextMenuTrigger>
+                <ContextMenu id="playlist-details-more"><MenuItem onClick={ (e) => {
                     e.stopPropagation()
                     let neededSongs = 0
                     let checkedSongs = 0
@@ -93,14 +93,14 @@ class PlaylistDetails extends Component {
                                 neededSongs++
                               }
                               checkedSongs++
-                              if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
+                              if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({ color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000 }); this.setState({ moreOpen: false })
                             })
                             .catch(err => {
-                              this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.`})
+                              this.props.displayWarning({ text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.` })
                               return
                             })
                         } catch(err) {
-                          this.props.displayWarning({text: `An unexpected error occured: ${err}. Please try again.`})
+                          this.props.displayWarning({ text: `An unexpected error occured: ${err}. Please try again.` })
                           return
                         }
                       } else {
@@ -109,17 +109,17 @@ class PlaylistDetails extends Component {
                           neededSongs++
                         }
                         checkedSongs++
-                        if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000}); this.setState({moreOpen: false})
+                        if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({ color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000 }); this.setState({ moreOpen: false })
                       }
                     }
-                  }}>Download Missing Songs</MenuItem></ContextMenu>
+                  } }>Download Missing Songs</MenuItem></ContextMenu>
               </div>
-              {this.props.editing ? <textarea id="editing-playlist-description" className="text-area" placeholder="Description" defaultValue={this.props.playlistDetails.playlistDescription}></textarea> : this.props.playlistDetails.playlistDescription ? <div className="details-description"><b>{'Description: '}</b><Linkify properties={{onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you like to continue?`)) { shell.openExternal(e.target.href) }}}}>{this.props.playlistDetails.playlistDescription}</Linkify></div> : ''}
+              {this.props.editing ? <textarea id="editing-playlist-description" className="text-area" placeholder="Description" defaultValue={ this.props.playlistDetails.playlistDescription }></textarea> : this.props.playlistDetails.playlistDescription ? <div className="details-description"><b>{'Description: '}</b><Linkify properties={ { onClick: (e) => {e.preventDefault(); e.stopPropagation(); if(window.confirm(`The link you just clicked is attemting to send you to: ${e.target.href}\nWould you like to continue?`)) { shell.openExternal(e.target.href) }} } }>{this.props.playlistDetails.playlistDescription}</Linkify></div> : ''}
             </div>
             <ol id="playlist-songs">
-              {this.props.playlistDetails.songs.length === 0 ? <div style={{marginTop: '10px', color: 'silver', fontStyle: 'italic'}}>This playlist is empty.</div> : ''}
+              {this.props.playlistDetails.songs.length === 0 ? <div style={ { marginTop: '10px', color: 'silver', fontStyle: 'italic' } }>This playlist is empty.</div> : ''}
               {this.props.playlistDetails.songs.map((song, i) => {
-                return <li className={`playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}`} key={i} data-id={song.hash || song.key}><span><img style={{boxShadow: 'none', background: 'transparent'}} src={song.coverUrl || errorIcon} alt="?" /><div className="playlist-item-title">{song.name || song.songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={(e) => {e.target.parentNode.parentNode.remove()}}></div> : null}</span></li>
+                return <li className={ `playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}` } key={ i } data-id={ song.hash || song.key }><span><img style={ { boxShadow: 'none', background: 'transparent' } } src={ song.coverUrl || errorIcon } alt="?" /><div className="playlist-item-title">{song.name || song.songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={ (e) => {e.target.parentNode.parentNode.remove()} }></div> : null}</span></li>
               })}
             </ol>
           </div>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import '../css/SettingsButton.css'
+import '../css/SettingsButton.scss'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -8,7 +8,7 @@ import { SETTINGS } from '../views'
 
 class SettingsButton extends Component {
   render() {
-    return <div title="Settings" className={"settings-button" + (this.props.view === SETTINGS ? ' open' : '')} onClick={() => this.props.setView(SETTINGS)}></div>
+    return <div title="Settings" className={ "settings-button" + (this.props.view === SETTINGS ? ' open' : '') } onClick={ () => this.props.setView(SETTINGS) }></div>
   }
 }
 

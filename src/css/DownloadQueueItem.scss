@@ -1,0 +1,62 @@
+@import './StyleConstants';
+
+.download-queue-item {
+  display: flex;
+  padding: 10px 0;
+  border-bottom: 1px solid silver;
+
+  img {
+    background-color: grey;
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+  }
+
+  .queue-item-info {
+    width: calc(100% - 60px);
+
+    .queue-item-title {
+      margin-left: 5px;
+      font-weight: bold;
+    }
+
+    .queue-item-artist {
+      margin-left: 5px;
+    }
+
+    .queue-item-progress {
+      margin-left: 5px;
+      margin-top: 5px;
+      display: inline-block;
+      width: 75%;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+
+      .queue-item-progress-inner {
+        height: 100%;
+        background-color: royalblue;
+      }
+    }
+
+    .queue-item-progress-label {
+      display: inline-block;
+      width: 10%;
+      margin-left: 10px;
+    }
+  }
+}
+
+.theme-hc {
+  .download-queue-item {
+    border-bottom: 1px solid $theme-hc-line-color;
+
+    .queue-item-progress {
+      border: 1px solid $theme-hc-line-color;
+    }
+
+    img {
+      border: 1px solid $theme-hc-line-color;
+    }
+  }
+}

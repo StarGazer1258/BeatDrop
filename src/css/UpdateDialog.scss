@@ -1,0 +1,44 @@
+#update-dialog-text, .current-version, .latest-version {
+  text-align: center;
+}
+
+#update-dialog-text {
+  margin-top: 50px;
+  transition: .5s;
+
+  &.downloading-update {
+    margin-top: 90px;
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    position: relative;
+    left: calc(50% - 50px);
+    top: 25px;
+    width: 100px;
+    height: 100px;
+    padding: 30px 0;
+    background: url(../assets/update.png);
+    background-repeat: no-repeat;
+    transition: .5s;
+  }
+}
+
+.theme-dark, .theme-hc {
+  #update-dialog-text::before {
+    background: url(../assets/dark/update.png);
+    background-repeat: no-repeat;
+  }
+}
+
+#update-action-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+
+  .button {
+    width: 120px;
+  }
+}

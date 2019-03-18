@@ -14,6 +14,8 @@ export const setSearchSources = sources => dispatch => {
 }
 
 export const submitSearch = keywords => dispatch => {
+  if(!keywords) return
+
   let state = store.getState()
 
   dispatch({
@@ -25,15 +27,20 @@ export const submitSearch = keywords => dispatch => {
   let beatSaverIdResultsReady = false
   let localResultsReady = false
 
-  //Library Search
   let localSongs = []
+  let beatSaverSongs = []
+  let idSong = {}
+
+  let isId = parseInt(keywords.replace('-', ''), 10)
+
+  //Library Search
   let localSongCount = 0
   let walkerEnded = false
   let decrementCounter = () => {
     localSongCount--
     if (walkerEnded && localSongCount === 0) {
       localSongs = localSongs.filter((song, i) => {
-        for (let k=0; k<keywords.split(' ').length; k++) {
+        for (let k = 0; k < keywords.split(' ').length; k++) {
           if(song.songName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.songSubName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.authorName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase())) return true
         }
         return false
@@ -41,7 +48,7 @@ export const submitSearch = keywords => dispatch => {
       if(beatSaverResultsReady && beatSaverIdResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: {keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong}
+          payload: isId ? { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] } : { keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong }
         })
         dispatch({
           type: SET_LOADING,
@@ -80,15 +87,15 @@ export const submitSearch = keywords => dispatch => {
       .on('end', () => {
         if (localSongCount === 0) {
           localSongs = localSongs.filter((song, i) => {
-            for (let k=0; k<keywords.split(' ').length; k++) {
+            for (let k = 0; k < keywords.split(' ').length; k++) {
               if(song.songName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.songSubName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.authorName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase())) return true
             }
             return false
           })
-          if(beatSaverResultsReady) {
+          if(beatSaverResultsReady && beatSaverIdResultsReady) {
             dispatch({
               type: SUBMIT_SEARCH,
-              payload: {keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong}
+              payload: isId ? { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] } : { keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong }
             })
             dispatch({
               type: SET_LOADING,
@@ -103,15 +110,14 @@ export const submitSearch = keywords => dispatch => {
   })
 
   //BeatSaver Search
-  let beatSaverSongs = []
-  fetch('https://beatsaver.com/api/songs/search/all/' + keywords)
+  fetch('https://beatsaver.com/api/songs/search/all/' + encodeURIComponent(keywords.replace('/', '\\')))
     .then(res => res.json())
     .then(data => {
-      beatSaverSongs = data
-      if(localResultsReady&beatSaverIdResultsReady) {
+      beatSaverSongs = data.songs
+      if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: {keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong}
+          payload: isId ? { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] } : { keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong }
         })
         dispatch({
           type: SET_LOADING,
@@ -123,17 +129,15 @@ export const submitSearch = keywords => dispatch => {
     })
   
   //BeatSaver ID Search
-  let idSong = {}
-  if(parseInt(keywords.replace('-', ''), 10)) {
+  if(isId) {
     fetch('https://beatsaver.com/api/songs/detail/' + keywords)
     .then(res => res.json())
     .then(data => {
-      idSong = data
-      console.log(data)
+      idSong = data.song
       if(localResultsReady & beatSaverResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: {keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong}
+          payload: { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] }
         })
         dispatch({
           type: SET_LOADING,
@@ -142,7 +146,7 @@ export const submitSearch = keywords => dispatch => {
         return
       }
       beatSaverIdResultsReady = true
-    })
+    }).catch((_) => { isId = false; beatSaverIdResultsReady = true })
   } else {
     beatSaverIdResultsReady = true
   }

@@ -1,16 +1,12 @@
-import { SET_DETAILS_OPEN, SET_DETAILS_LOADING, LOAD_DETAILS, CLEAR_DETAILS } from '../actions/types'
+import { SET_DETAILS_LOADING, LOAD_DETAILS, CLEAR_DETAILS } from '../actions/types'
 
 const initialState = {
-  isOpen: false
+  isOpen: false,
+  loading: false
 }
 
-export default (state=initialState, action) => {
+export default (state = initialState, action) => {
   switch(action.type) {
-    case SET_DETAILS_OPEN:
-      return {
-        ...state,
-        isOpen: action.payload
-      }
     case SET_DETAILS_LOADING:
       return {
         ...state,

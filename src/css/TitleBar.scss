@@ -1,0 +1,139 @@
+@import './StyleConstants';
+
+#titlebar {
+  width: 100%;
+  height: 35px;
+  font-weight: 200;
+  -webkit-app-region: drag;
+  position: fixed;
+  top: 0;
+  font-family: "Montserrat", "Lato", sans-serif;
+  background: white;
+  background-size: 100px;
+  background-position: 20px 0;
+  border-bottom: 1px solid silver;
+  z-index: 999;
+
+  img {
+    width: 15px;
+    margin-right: 5px;
+  }
+
+  #close-button, #resize-button, #minimize-button {
+    width: 45px;
+    height: 100%;
+    background: white;
+    float: right;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: .2s;
+    -webkit-app-region: no-drag;
+  }
+
+  #close-button {
+    #close-icon {
+      background-image: url(../assets/close.png);
+      background-size: cover;
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  #resize-button #resize-icon {
+    background-image: url(../assets/maximize.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 10px;
+    height: 10px;
+
+    &.maximized {
+      background-image: url(../assets/restore.png);
+    }
+  }
+
+  #minimize-button #minimize-icon {
+    background-image: url(../assets/minimize.png);
+    background-size: cover;
+    width: 10px;
+    height: 1px;
+  }
+
+  .window-title {
+    height: 100%;
+    margin-left: 0px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &.theme-dark, &.theme-hc {
+    #close-button #close-icon {
+      background-image: url(../assets/dark/close.png);
+    }
+
+    #resize-button #resize-icon {
+      background-image: url(../assets/dark/maximize.png);
+
+      &.maximized {
+        background-image: url(../assets/dark/restore.png);
+      }
+    }
+
+    #minimize-button #minimize-icon {
+      background-image: url(../assets/dark/minimize.png);
+    }
+  }
+
+  &.theme-dark {
+    background: #252525;
+    color: white;
+    border-bottom: 1px solid #454545;
+
+    #close-button {
+      background: #252525;
+    }
+
+    #resize-button {
+      background: #252525;
+    }
+
+    #minimize-button {
+      background: #252525;
+    }
+  }
+
+  &.theme-hc {
+    background: $theme-hc-background-color;
+    color: $theme-hc-text-color;
+
+    #close-button {
+      background: $theme-hc-background-color;
+    }
+
+    #resize-button {
+      background: $theme-hc-background-color;
+    }
+
+    #minimize-button {
+      background: $theme-hc-background-color;
+    }
+  }
+
+  #close-button {
+    &:hover {
+      background: #e0021f;
+      transition: 0s;
+    }
+  }
+
+  #resize-button, #minimize-button {
+    &:hover {
+      background: silver;
+      transition: 0s;
+    }
+  }
+}

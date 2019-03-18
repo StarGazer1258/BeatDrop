@@ -79,7 +79,7 @@ if (!gotTheLock) {
         case 'check-for-updates':
           try {
             autoUpdater.checkForUpdates()
-          } catch(_) {
+          } catch(err) {
             main.webContents.send('electron-updater', 'error')
           }
           return
@@ -123,16 +123,19 @@ if (!gotTheLock) {
       })
     })
     loading.loadURL(`file://${path.join(__dirname, '../build/loading.html')}`)
-    loading.show()
+    loading.once('ready-to-show', () => loading.show())
   
     if(isDev) {
-      const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
-      installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
+      const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer')
+      let extensions = [REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]
+      for(let i = 0; i < extensions.length; i++) {
+        installExtension(extensions[i]).then((name) => {
           console.log(`Added Extension:  ${name}`)
-      })
-      .catch((err) => {
-          console.log('An error occurred: ', err)
-      })
+        })
+        .catch((err) => {
+            console.log('An error occurred: ', err)
+        })
+      }
     }
   })
 }
@@ -182,10 +185,10 @@ function handleArgs(argv, sendImmediately) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 985, 
-    height: 575, 
-    minWidth: 985, 
-    minHeight: 575,
+    width: 1015, 
+    height: 615, 
+    minWidth: 1015, 
+    minHeight: 615,
     resizable: true, 
     frame: false,
     webPreferences: {

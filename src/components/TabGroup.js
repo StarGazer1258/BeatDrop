@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../css/TabGroup.css'
+import '../css/TabGroup.scss'
 
 class TabGroup extends Component {
   constructor(props) {

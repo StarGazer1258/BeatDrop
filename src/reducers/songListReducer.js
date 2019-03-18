@@ -1,6 +1,6 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, LOAD_MORE, REFRESH, ADD_BSABER_RATING, FETCH_LOCAL_SONGS, SET_DOWNLOADED_SONGS, SET_SCROLLTOP, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, SET_SCANNING_FOR_SONGS} from '../actions/types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, LOAD_MORE, REFRESH, ADD_BSABER_RATING, FETCH_LOCAL_SONGS, SET_DOWNLOADED_SONGS, SET_SCROLLTOP, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, SET_SCANNING_FOR_SONGS } from '../actions/types'
 
-export default function(state={songs: [], scrollTop: 0, downloadingCount: 0, waitingToDownload: [], downloadedSongs: [], songsDiscovered: 0, songsLoaded: 0, scanningForSongs: false, totalSongs: 0}, action) {
+export default function(state = { songs: [], scrollTop: 0, downloadingCount: 0, waitingToDownload: [], downloadedSongs: [], songsDiscovered: 0, songsLoaded: 0, scanningForSongs: false, totalSongs: 0 }, action) {
   switch(action.type) {
     case FETCH_NEW:
     case FETCH_TOP_DOWNLOADS:
@@ -31,14 +31,9 @@ export default function(state={songs: [], scrollTop: 0, downloadingCount: 0, wai
         totalSongs: action.payload.total
       }
     case ADD_BSABER_RATING:
-    let newState = {...state}
-      for(let i=0; i<newState.length; i++) {
-        if(newState[i].key === action.payload.forKey && action.payload.rating !== undefined) {
-          newState[i].bsaberRating = action.payload.rating[0]
-          return newState
-        }
-      }
-      return state
+      let ratedState = { ...state }
+      ratedState.songs[action.payload.i].ratings = action.payload.bsaberData
+      return ratedState
     case SET_DOWNLOADED_SONGS:
       return {
         ...state,

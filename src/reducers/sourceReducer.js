@@ -1,6 +1,6 @@
 import { SET_SOURCE, SET_RESOURCE } from '../actions/types'
 
-export default function(state={source: 'beatsaver', resource: 'new'}, action) {
+export default function(state = { source: 'beatsaver', resource: 'new' }, action) {
   switch(action.type) {
     case SET_SOURCE:
       return {

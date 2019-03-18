@@ -1,0 +1,25 @@
+#welcome-page {
+  height: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-content: center;
+
+  img {
+    width: 200px;
+    height: 200px;
+  }
+
+  h1 {
+    width: 100%;
+    text-align: center;
+  }
+
+  .flex-br {
+    height: 10px;
+  }
+
+  .button {
+    width: 100px;
+  }
+}

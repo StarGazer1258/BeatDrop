@@ -1,0 +1,24 @@
+#scanning-text {
+  text-align: center;
+
+  &::before {
+    content: "";
+    display: block;
+    position: relative;
+    left: calc(50% - 50px);
+    top: 20px;
+    width: 100px;
+    height: 100px;
+    padding: 30px 0;
+    background: url(../assets/update.png);
+    background-repeat: no-repeat;
+    transition: .5s;
+  }
+}
+
+#scanning-text.theme-dark, #scanning-text.theme-hc {
+  &::before {
+    background: url(../assets/dark/update.png);
+    background-repeat: no-repeat;
+  }
+}

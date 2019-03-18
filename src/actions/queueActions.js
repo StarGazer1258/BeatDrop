@@ -51,7 +51,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             if(results.songs.length === 1) {
               dispatch({
                 type: ADD_TO_QUEUE,
-                payload: {...results.songs[0], utc}
+                payload: { ...results.songs[0], utc }
               })
               let req = request.get({
                 url: results.songs[0].downloadUrl,
@@ -86,7 +86,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 let zipEntries = zip.getEntries()
                 let infoEntry, infoObject
                 for(let i = 0; i < zipEntries.length; i++) {
-                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length-9, 9) === 'info.json') {
+                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json') {
                     infoEntry  = zipEntries[i]
                   }
                 }
@@ -96,7 +96,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   dispatch({
                     type: DISPLAY_WARNING,
                     payload: {
-                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF8. Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
                     }
                   })
                   return
@@ -108,7 +108,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 zip.extractAllTo(path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo))
                 dispatch({
                   type: SET_DOWNLOADED_SONGS,
-                  payload: [...getState().songs.downloadedSongs, {hash, file: path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo, infoEntry.entryName)}]
+                  payload: [...getState().songs.downloadedSongs, { hash, file: path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo, infoEntry.entryName) }]
                 })
                 state = { ...getState() }
                 dispatch({
@@ -207,7 +207,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         if(results.songs.length === 1) {
           dispatch({
             type: ADD_TO_QUEUE,
-            payload: {...results.songs[0], utc}
+            payload: { ...results.songs[0], utc }
           })
           let req = request.get({
             url: results.songs[0].downloadUrl,
@@ -215,7 +215,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           }, (err, r, data) => {
             try {
               // eslint-disable-next-line
-              if(err || r.statusCode !== 200) throw 'Error downloading!'
+              if(err || r ? r.statusCode !== 200 : false) throw 'Error downloading!'
             } catch(err) {
               state = { ...getState() }
                 dispatch({
@@ -242,8 +242,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             let zipEntries = zip.getEntries()
             let infoEntry, infoObject
             for(let i = 0; i < zipEntries.length; i++) {
-              if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length-9, 9) === 'info.json') {
-                infoEntry  = zipEntries[i]
+              if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json') {
+                infoEntry = zipEntries[i]
               }
             }
             try {
@@ -252,7 +252,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF8. Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                  text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
                 }
               })
               return
@@ -264,7 +264,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             zip.extractAllTo(path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo))
             dispatch({
               type: SET_DOWNLOADED_SONGS,
-              payload: [...getState().songs.downloadedSongs, {hash, file: path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo, infoEntry.entryName)}]
+              payload: [...getState().songs.downloadedSongs, { hash, file: path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo, infoEntry.entryName) }]
             })
             state = { ...getState() }
             dispatch({
@@ -413,7 +413,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
     }
     Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
       .on('file', (file) => {
-        if(file.substr(file.length-9) === 'info.json') {
+        if(file.substr(file.length - 9) === 'info.json') {
           count++
           fs.readFile(file, 'UTF-8', (err, data) => {
             if(err) { decrementCounter(); return }
@@ -428,7 +428,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
               return
             }
             if(song.hasOwnProperty('hash')) {
-              songs.push({hash: song.hash, file})
+              songs.push({ hash: song.hash, file })
               decrementCounter()
             } else {
               let to_hash = ''
@@ -443,7 +443,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
               let hash = md5(to_hash)
               song.hash = hash
               fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-              songs.push({hash, file})
+              songs.push({ hash, file })
               decrementCounter()
             }
           })

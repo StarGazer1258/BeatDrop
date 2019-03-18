@@ -16,14 +16,14 @@ class CoverFlow extends Component {
   render() {
     return (
       <Coverflow width="985" height="500"
-        displayQuantityOfSide={2}
-        navigation={true}
-        enableScroll={true}
-        clickable={true}
+        displayQuantityOfSide={ 2 }
+        navigation={ true }
+        enableScroll={ true }
+        clickable={ true }
         active="middle"
       >
         {this.props.songs.map((song, index) => {
-          return <CoverFlowItem key={index} title={song.songName} artist={song.authorName} uploader={song.uploader} coverImage={song.coverUrl} />
+          return <CoverFlowItem key={ index } title={ song.songName } artist={ song.authorName } uploader={ song.uploader } coverImage={ song.coverUrl } />
         })}
       </Coverflow>
     )

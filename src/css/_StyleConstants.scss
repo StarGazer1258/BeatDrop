@@ -1,0 +1,22 @@
+$beatdrop-blue: #2a4da3;
+
+$theme-light-background-color: white;
+$theme-light-text-color: black;
+$theme-light-accent-color: $beatdrop-blue;
+$theme-light-line-color: rgba(0, 0, 0, 0.35);
+$theme-light-sidebar-background-color: rgba(0, 0, 0, 0.2);
+$theme-light-link-color: $beatdrop-blue;
+
+$theme-dark-background-color: #303030;
+$theme-dark-text-color: white;
+$theme-dark-accent-color: $beatdrop-blue;
+$theme-dark-line-color: rgba(255, 255, 255, 0.35);
+$theme-dark-sidebar-background-color: rgba(0, 0, 0, 0.2);
+$theme-dark-link-color: #4174F6;
+
+$theme-hc-background-color: black;
+$theme-hc-text-color: white;
+$theme-hc-accent-color: #4174F6;
+$theme-hc-line-color: white;
+$theme-hc-sidebar-background-color: black;
+$theme-hc-link-color: $theme-hc-accent-color;

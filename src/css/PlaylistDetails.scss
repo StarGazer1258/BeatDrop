@@ -1,0 +1,295 @@
+@import './Animations';
+
+#playlist-details {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 15px;
+  height: calc(100vh - 85px);
+  position: relative;
+  animation: fade-in .2s forwards;
+
+  #playlist-songs {
+    overflow-y: scroll;
+    flex-grow: 1;
+    margin-bottom: -35px;
+
+    .playlist-song-item {
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(0,0,0,0.25);
+      transition: .2s;
+
+      span {
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+        width: calc(100% - 20px);
+      }
+
+      img:not(.delete-playlist-item) {
+        width: 50px;
+        height: 50px;
+        border-radius: 5px;
+        margin-right: 10px;
+        filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
+      }
+
+      .playlist-item-downloaded {
+        width: 35px;
+        height: 35px;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        display: block;
+        background: url(../assets/check.png);
+        background-size: 25px;
+        background-repeat: no-repeat;
+      }
+
+      .delete-playlist-item {
+        width: 35px;
+        height: 35px;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        display: block;
+        background: url(../assets/close.png);
+        background-size: 25px;
+        background-repeat: no-repeat;
+        cursor: pointer;
+      }
+
+      &.draggable {
+        cursor: -webkit-grab;
+        border-bottom: none;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        margin: 10px;
+      }
+    }
+  }
+
+  #details-split {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    margin-right: 40px;
+  }
+
+  #details-info {
+    margin: 10px 20px;
+    display: flex;
+    flex-flow: column nowrap;
+    width: calc(20vw + 20px);
+
+    #edit-playlist-cover-image {
+      display: none;
+    }
+
+    #edit-playlist-add-cover-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32pt;
+      font-weight: bold;
+      color: white;
+      width: 200px;
+      height: 200px;
+      margin-bottom: 5px;
+      background:  rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      cursor: pointer;
+      overflow: hidden;
+
+      img {
+        width: 200px;
+        height: 200px;
+      }
+    }
+    
+    .details-title {
+      display: inline-block;
+      font-size: 14pt;
+      font-weight: 900;
+      margin-top: 7px;
+      margin-bottom: -3px;
+      padding-left: 5px;
+      max-width: 20vw;
+      max-height: 70px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-shrink: 0;
+    }
+
+    .details-author {
+      font-size: 12pt;
+      opacity: 0.8;
+      flex-shrink: 0;
+      padding-left: 5px;
+      margin-top: 5px;
+    }
+
+    .details-description {
+      margin-bottom: 10px;
+      max-width: 30vw;
+      max-height: 20vh;
+      overflow-y: scroll;
+      flex-shrink: 0;
+    }
+
+    .action-buttons {
+      margin: 15px 0;
+
+      .action-button {
+        margin: 0 3px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 8pt;
+        font-weight: 900;
+        color: white;
+        background-color: rgba(42, 77, 163, 0.8);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+
+        &:not(.more-button) img {
+          width: 15px;
+          height: 15px;
+          margin-right: 5px;
+        }
+
+        &.more-button img {
+          width: 15px;
+          height: 15px;
+        }
+
+        &:hover {
+          background-color: rgb(42, 77, 163);
+        }
+      }
+    }
+  }
+
+  .cover-image {
+    width: 20vw;
+    height: 20vw;
+    filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.25));
+    border-radius: 5px;
+  }
+
+  .text-box {
+    width: calc(20vw - 30px);
+    min-width: 0 !important;
+
+    &:nth-child(2) {
+      margin-top: 10px;
+    }
+  }
+
+  .text-area {
+    width: calc(20vw - 30px);
+    height: 75px;
+    min-width: calc(20vw - 30px);
+    max-width: calc(20vw - 30px);
+  }
+
+  .close-icon {
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 25px;
+    height: 25px;
+    background: url(../assets/close.png);
+    background-size: 25px;
+
+    img {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  &.loading {
+    .cover-image {
+      display: block;
+      background-color: silver;
+      width: 20vw;
+      height: 20vw;
+      box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.25);
+      border-radius: 5px;
+    }
+
+    .details-info {
+      .details-title {
+        display: inline-block;
+        height: 30px;
+        width: 30vw;
+        background-color: silver;
+      }
+
+      .details-author {
+        height: 20px;
+        width: 15vw;
+        background-color: silver;
+        margin-top: 5px;
+      }
+
+      .details-description {
+        background-color: silver;
+        width: 30vw;
+        height: 16.8vw;
+        flex-shrink: 0;
+      }
+
+      .action-buttons .action-button {
+        opacity: 0.4;
+        cursor: not-allowed;
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+.theme-dark, .theme-hc {
+  #playlist-details {
+    #playlist-songs .playlist-song-item {
+      .delete-playlist-item {
+        background: url(../assets/dark/close.png);
+        background-size: 25px;
+        background-repeat: no-repeat;
+      }      
+
+      &.draggable {
+        background: rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    .close-icon {
+      background: url(../assets/dark/close.png);
+      background-size: 25px;
+    }
+  }
+}
+
+.theme-hc {
+  #playlist-songs .playlist-song-item {
+    .delete-playlist-item {
+      background: url(../assets/dark/close.png);
+      background-size: 25px;
+      background-repeat: no-repeat;
+    }
+
+    border-bottom: 1px dashed white !important;
+
+    &.draggable {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid white;
+      border-bottom: 1px solid white !important;
+    }
+  }
+}
+
+@keyframes playlist-details-loading-mask {
+  to {
+    mask-position: 300px 0; 
+  }
+}

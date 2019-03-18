@@ -1,0 +1,205 @@
+@import './StyleConstants';
+
+#sidebar {
+  width: 195px;
+  background-color: $theme-light-sidebar-background-color;
+  padding: 15px;
+  overflow: hidden;
+  transition: .3s ease-out;
+
+  .resize-sidebar {
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-image: url('../assets/sidebar-collapse.png');
+    background-size: 30px;
+    cursor: pointer;
+
+    &:hover {
+      background-image: url('../assets/sidebar-collapse-filled.png');
+    }
+  }
+
+  .buttons-bottom {
+    width: 100vw !important;
+    display: flex;
+    flex-flow: row wrap;
+    position: absolute;
+    bottom: 15px;
+    width: inherit;
+
+    div {
+      width: 30px;
+      height: 30px;
+      background-size: 30px;
+      cursor: pointer;
+      padding-right: 5px;
+      padding-top: 5px;
+    }
+  }
+
+  h5 {
+    margin-bottom: 10px;
+  }
+
+  &.collapsed {
+    width: 30px;
+
+    .resize-sidebar {
+      background-image: url('../assets/sidebar-expand.png');
+
+      &:hover {
+        background-image: url('../assets/sidebar-expand-filled.png');
+      }
+    }
+
+    .buttons-bottom {
+      width: 30px !important;
+    }
+
+    h5, ul {
+      display: none;
+    }
+  }
+
+  ul {
+    list-style: none;
+    transform: translateX(-25px);
+    width: 100vw;
+
+    li {
+      margin: 5px 0;
+      cursor: pointer;
+      
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        transform: translate(-5px, 7px);
+        background-size: 25px;
+      }
+
+      &:hover {
+        font-weight: bold;
+      }
+
+      &.fetch-new-songs {
+        &::before {
+          background-image: url('../assets/new.png');
+        }
+      }
+
+      &.fetch-local-playlists {
+        &::before {
+          background-image: url('../assets/playlist.png');
+        }
+      }
+
+      &.fetch-top-finished {
+        &::before {
+          background-image: url('../assets/finish.png');
+        }
+      }
+
+      &.fetch-top-downloaded {
+        &::before {
+          background-image: url('../assets/download-li-filled.png');
+        }
+      }
+
+      &.fetch-local-songs {
+        &::before {
+          background-image: url('../assets/song.png');
+        }
+      }
+
+      &.selected {
+        font-weight: bold;
+        color: $beatdrop-blue;
+      }
+
+      &.disabled {
+        opacity: 0.25;
+        cursor: not-allowed;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+.theme-dark, .theme-hc {
+  #sidebar {
+    background-color: $theme-light-sidebar-background-color;
+    color: $theme-dark-text-color;
+
+    ul li {
+      &.fetch-new-songs {
+        &::before {
+          background-image: url('../assets/dark/new.png');
+        }
+      }
+
+      &.fetch-local-playlists {
+        &::before {
+          background-image: url('../assets/dark/playlist.png');
+        }
+      }
+
+      &.fetch-top-finished {
+        &::before {
+          background-image: url('../assets/dark/finish.png');
+        }
+      }
+
+      &.fetch-top-downloaded {
+        &::before {
+          //TODO Fix asset names
+          background-image: url('../assets/download-filled.png');
+        }
+      }
+
+      &.fetch-local-songs {
+        &::before {
+          background-image: url('../assets/dark/song.png');
+        }
+      }
+    }
+
+    .resize-sidebar {
+      background-image: url('../assets/dark/sidebar-collapse.png');
+  
+      &:hover {
+        background-image: url('../assets/dark/sidebar-collapse-filled.png');
+      }
+    }
+
+    &.collapsed {
+      .resize-sidebar {
+        background-image: url('../assets/dark/sidebar-expand.png');
+
+        &:hover {
+          background-image: url('../assets/dark/sidebar-expand-filled.png');
+        }
+      }
+    }
+  }
+}
+
+.theme-hc {
+  #sidebar {
+    background-color: $theme-hc-sidebar-background-color;
+    border-right: 1px solid white;
+    width: 194px;
+
+    &.collapsed {
+      width: 29px;
+    }
+
+    ul li {
+      &.selected {
+        color: $theme-hc-accent-color;
+      }
+    }
+  }
+}

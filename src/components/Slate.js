@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import '../css/Slate.css'
+import '../css/Slate.scss'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 class Slate extends Component {
   render() {
     return (
-      <div id="slate" className={`theme-${this.props.theme}`}></div>
+      <div id="slate" className={ `theme-${this.props.theme}` }></div>
     )
   }
 }

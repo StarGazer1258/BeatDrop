@@ -1,0 +1,37 @@
+@import './Animations';
+@import './StyleConstants';
+
+.modal-under {
+  position: absolute;
+  top: 35px;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 35px);
+  background: rgba(0, 0, 0, 0.5);
+  animation: fade-in .2s forwards ease-out;
+  perspective: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  position: absolute;
+  background: white;
+  padding: 20px;
+  transform-origin: 0 0;
+  animation: drop-in .2s forwards ease-out;
+  overflow-y: scroll;
+  border-radius: 5px;
+}
+
+.theme-dark .modal {
+  background: $theme-dark-background-color;
+  color: $theme-dark-text-color;
+}
+
+.theme-hc .modal {
+  background: $theme-hc-background-color;
+  color: $theme-hc-text-color;
+  border: 1px solid $theme-hc-line-color;
+}
