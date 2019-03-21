@@ -5,10 +5,23 @@
   justify-content: center;
   align-content: center;
 
-  img {
+  img.heart {
     margin-top: -30px;
     width: 150px;
     height: 150px;
+  }
+
+  img.patreon-button {
+    margin-top: 40px;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.5);
+
+    &:hover {
+      box-shadow: 2px 5px 15px 0px rgba(0,0,0,0.5);
+      animation: patreon-wiggle .1s alternate infinite linear;
+    }
   }
 
   h1 {
@@ -36,5 +49,14 @@
 
   .button {
     width: 130px;
+  }
+}
+
+@keyframes patreon-wiggle {
+  from {
+    transform: rotate(-2deg) scale(1.05) translatey(-3px);
+  }
+  to {
+    transform: rotate(2deg) scale(1.05) translatey(-3px);
   }
 }
