@@ -39,7 +39,10 @@
   }
 
   h5 {
-    margin-bottom: 10px;
+    opacity: 0.7;
+    text-decoration: none;
+    margin-bottom: -15px;
+    margin-top: 10px;
   }
 
   &.collapsed {
@@ -59,6 +62,106 @@
 
     h5, ul {
       display: none;
+    }
+
+    .section {
+      font-size: 0;
+    }
+  }
+
+  .section {
+    font-size: 12pt;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    cursor: pointer;
+
+    &.selected {
+      color: $theme-light-accent-color;
+      font-weight: 900;
+    }
+
+    &:hover {
+      font-weight: 900;
+    }
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      transform: translate(-5px, 7px);
+      background-size: 25px;
+    }
+
+    &.section-songs {
+      &::before {
+        background-image: url('../assets/song.png');
+      }
+
+      &:hover, &.selected {
+        &::before {
+          background-image: url('../assets/song-filled.png');
+        }
+      }
+    }
+
+    &.section-mods {
+      &::before {
+        background-image: url('../assets/mod.png');
+      }
+
+      &:hover, &.selected {
+        &::before {
+          background-image: url('../assets/mod-filled.png');
+        }
+      }
+    }
+
+    &.section-sabers {
+      &::before {
+        background-image: url('../assets/saber.png');
+      }
+
+      &:hover, &.selected {
+        &::before {
+          background-image: url('../assets/saber-filled.png');
+        }
+      }
+    }
+
+    &.section-platforms {
+      &::before {
+        background-image: url('../assets/platform.png');
+      }
+
+      &:hover, &.selected {
+        &::before {
+          background-image: url('../assets/platform-filled.png');
+        }
+      }
+    }
+
+    &.section-avatars {
+      &::before {
+        background-image: url('../assets/avatar.png');
+      }
+
+      &:hover, &.selected {
+        &::before {
+          background-image: url('../assets/avatar-filled.png');
+        }
+      }
+    }
+  }
+
+  .section-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: .5s;
+
+    &.selected {
+      max-height: 400px;
     }
   }
 
@@ -110,7 +213,37 @@
 
       &.fetch-local-songs {
         &::before {
-          background-image: url('../assets/song.png');
+          background-image: url('../assets/song-filled.png');
+        }
+      }
+
+      &.modsaber-all, &.library-all-mods {
+        &::before {
+          background-image: url('../assets/mod-filled.png');
+        }
+      }
+
+      &.modsaber-recommended {
+        &::before {
+          background-image: url('../assets/star-filled.png');
+        }
+      }
+
+      &.modsaber-categories {
+        &::before {
+          background-image: url('../assets/categories.png');
+        }
+      }
+
+      &.library-activated-mods {
+        &::before {
+          background-image: url('../assets/activated.png');
+        }
+      }
+
+      &.library-conflicted-mods {
+        &::before {
+          background-image: url('../assets/pack.png');
         }
       }
 
@@ -132,6 +265,68 @@
   #sidebar {
     background-color: $theme-light-sidebar-background-color;
     color: $theme-dark-text-color;
+
+    .section {
+      &.section-songs {
+        &::before {
+          background-image: url('../assets/dark/song.png');
+        }
+  
+        &:hover, &.selected {
+          &::before {
+            background-image: url('../assets/dark/song-filled.png');
+          }
+        }
+      }
+  
+      &.section-mods {
+        &::before {
+          background-image: url('../assets/dark/mod.png');
+        }
+  
+        &:hover, &.selected {
+          &::before {
+            background-image: url('../assets/dark/mod-filled.png');
+          }
+        }
+      }
+  
+      &.section-sabers {
+        &::before {
+          background-image: url('../assets/dark/saber.png');
+        }
+  
+        &:hover, &.selected {
+          &::before {
+            background-image: url('../assets/dark/saber-filled.png');
+          }
+        }
+      }
+  
+      &.section-platforms {
+        &::before {
+          background-image: url('../assets/dark/platform.png');
+        }
+  
+        &:hover, &.selected {
+          &::before {
+            background-image: url('../assets/dark/platform-filled.png');
+          }
+        }
+      }
+  
+      &.section-avatars {
+        &::before {
+          background-image: url('../assets/dark/avatar.png');
+        }
+  
+        &:hover, &.selected {
+          &::before {
+            background-image: url('../assets/dark/avatar-filled.png');
+          }
+        }
+      }
+    }
 
     ul li {
       &.fetch-new-songs {
@@ -161,7 +356,37 @@
 
       &.fetch-local-songs {
         &::before {
-          background-image: url('../assets/dark/song.png');
+          background-image: url('../assets/dark/song-filled.png');
+        }
+      }
+
+      &.modsaber-all, &.library-all-mods {
+        &::before {
+          background-image: url('../assets/dark/mod-filled.png');
+        }
+      }
+
+      &.modsaber-recommended {
+        &::before {
+          background-image: url('../assets/dark/star-filled.png');
+        }
+      }
+
+      &.modsaber-categories {
+        &::before {
+          background-image: url('../assets/dark/categories.png');
+        }
+      }
+
+      &.library-activated-mods {
+        &::before {
+          background-image: url('../assets/dark/activated.png');
+        }
+      }
+
+      &.library-conflicted-mods {
+        &::before {
+          background-image: url('../assets/dark/pack.png');
         }
       }
     }
@@ -194,6 +419,12 @@
 
     &.collapsed {
       width: 29px;
+    }
+
+    .section {
+      &.selected {
+        color: $theme-hc-accent-color;
+      }
     }
 
     ul li {

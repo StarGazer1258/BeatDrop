@@ -1,0 +1,42 @@
+@import './StyleConstants';
+
+#crash-message {
+  margin-top: 35px;
+  width: 100vw;
+  height: calc(100vh - 35px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row wrap;
+
+  div {
+    text-align: center;
+  }
+
+  p {
+    padding: 0 120px;
+  }
+
+  .error-image {
+    width: 100%;
+    height: 100px;
+    background-image: url(../assets/error.png);
+    background-size: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &.theme-dark, &.theme-hc {
+    .error-image {
+      background-image: url(../assets/dark/error.png);
+    }
+  }
+
+  &.theme-dark {
+    color: $theme-dark-text-color;
+  }
+
+  &.theme-hc {
+    color: $theme-hc-text-color;
+  }
+}

@@ -6,10 +6,10 @@ const isDev = require('electron-is-dev')
 
 const { autoUpdater } = require("electron-updater")
 
-const appIcon = path.join(__dirname, '/assets/appicons/ico/icon.ico')
+const appIcon = path.join(__dirname, 'assets', 'appicons', 'ico', 'icon.ico')
 
 const Sentry = require('@sentry/electron')
-Sentry.init({dsn: '***REMOVED***'})
+Sentry.init({ dsn: '***REMOVED***' })
 
 let mainWindow = null
 
@@ -38,6 +38,11 @@ ipcMain.on('launch-events', (_, event, message) => {
           details: [],
           download: [],
           delete: []
+        },
+        mods: {
+          details: [],
+          install: [],
+          uninstall: []
         }
       }
       return
@@ -93,7 +98,7 @@ if (!gotTheLock) {
       }
     })
 
-    let loading = new BrowserWindow({width: 400, height: 400, show: false, frame: false, resizable: false, webPreferences: {webSecurity: false}})
+    let loading = new BrowserWindow({ width: 400, height: 400, show: false, frame: false, resizable: false, webPreferences: { webSecurity: false } })
     
     if(!isDev) handleArgs(process.argv)
     loading.once('show', () => {
@@ -149,7 +154,7 @@ function handleArgs(argv, sendImmediately) {
       let songs = args[2].split(',')
       switch(args[1].toLowerCase()) {
         case 'download':
-          for(let i = 0; i< songs.length; i++) {
+          for(let i = 0; i < songs.length; i++) {
             launchEvents.songs.download.push(songs[i])
           }
           break
@@ -162,6 +167,21 @@ function handleArgs(argv, sendImmediately) {
       break
     case 'playlists':
       // Planned for future...
+    case 'mods':
+      if(args.length < 3) return
+      let mods = args[2].split(',')
+      switch(args[1].toLowerCase()) {
+        case 'details':
+          launchEvents.mods.details.push(decodeURIComponent(args[2]))
+          return
+        case 'install':
+          for(let i = 0; i < songs.length; i++) {
+            launchEvents.mods.install.push(decodeURIComponent(mods[i]))
+          }
+          return
+        default:
+          return
+      }
       return
     default:
       break
@@ -192,7 +212,6 @@ function createWindow() {
     resizable: true, 
     frame: false,
     webPreferences: {
-      preload: path.join(__dirname, '../build/sentry.js'),
       webSecurity: false
     },                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     title: 'BeatDrop',

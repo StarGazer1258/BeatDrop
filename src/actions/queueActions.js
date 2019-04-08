@@ -1,5 +1,6 @@
 import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS } from './types'
 import { SONG_LIST } from '../views'
+import { isModInstalled, installEssentialMods } from './modActions';
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -22,7 +23,8 @@ export const setQueueOpen = open => dispatch => {
  * @param {string} identity The hash/key of the song to download
  */
 export const downloadSong = (identity) => (dispatch, getState) => {
- let hash = identity
+  if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
+  let hash = identity
   if(!(/^[a-f0-9]{32}$/).test(identity)) {
     fetch(`https://beatsaver.com/api/songs/detail/${identity}`)
       .then(res => res.json())
@@ -413,7 +415,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
     }
     Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
       .on('file', (file) => {
-        if(file.substr(file.length - 9) === 'info.json') {
+        if(file === 'info.json') {
           count++
           fs.readFile(file, 'UTF-8', (err, data) => {
             if(err) { decrementCounter(); return }

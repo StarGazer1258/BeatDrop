@@ -1,5 +1,7 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_SOURCE, SET_RESOURCE, SET_VIEW, REFRESH, DISPLAY_WARNING } from './types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
+import { BEATSAVER, LIBRARY } from '../constants/resources'
+import { installMod } from './modActions';
 
 const { remote } = window.require('electron')
 const Walker = remote.require('walker')
@@ -7,17 +9,9 @@ const fs = remote.require('fs')
 const path = remote.require('path')
 
 const resourceUrl = {
-  beastsaber: {
-
-  },
-  beatsaver: {
-    new: 'https://beatsaver.com/api/songs/new',
-    topDownloads: 'https://beatsaver.com/api/songs/top',
-    topFinished: 'https://beatsaver.com/api/songs/plays'
-  },
-  local: {
-
-  }
+    'BEATSAVER_NEW_SONGS': 'https://beatsaver.com/api/songs/new',
+    'BEATSAVER_TOP_DOWNLOADED_SONGS': 'https://beatsaver.com/api/songs/top',
+    'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/songs/plays'
 }
 
 export const fetchNew = () => dispatch => {
@@ -34,12 +28,8 @@ export const fetchNew = () => dispatch => {
     payload: 0
   })
   dispatch({
-    type: SET_SOURCE,
-    payload: 'beatsaver'
-  })
-  dispatch({
     type: SET_RESOURCE,
-    payload: 'new'
+    payload: BEATSAVER.NEW_SONGS
   })
   fetch('https://beatsaver.com/api/songs/new')
     .then(res => res.json())
@@ -85,12 +75,8 @@ export const fetchTopDownloads = () => dispatch => {
     payload: true
   })
   dispatch({
-    type: SET_SOURCE,
-    payload: 'beatsaver'
-  })
-  dispatch({
     type: SET_RESOURCE,
-    payload: 'topDownloads'
+    payload: BEATSAVER.TOP_DOWNLOADED_SONGS
   })
   fetch('https://beatsaver.com/api/songs/top')
     .then(res => res.json())
@@ -136,12 +122,8 @@ export const fetchTopFinished = () => dispatch => {
     payload: true
   })
   dispatch({
-    type: SET_SOURCE,
-    payload: 'beatsaver'
-  })
-  dispatch({
     type: SET_RESOURCE,
-    payload: 'topFinished'
+    payload: BEATSAVER.TOP_FINISHED_SONGS
   })
   fetch('https://beatsaver.com/api/songs/plays')
     .then(res => res.json())
@@ -188,12 +170,8 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     payload: true
   })
   dispatch({
-    type: SET_SOURCE,
-    payload: 'local'
-  })
-  dispatch({
     type: SET_RESOURCE,
-    payload: 'songs'
+    payload: LIBRARY.SONGS
   })
   let songs = []
   let count = 0
@@ -214,8 +192,8 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
   }
   fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
     if(err) {
-      alert('Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
-      return
+      installMod('5ca59a468df6502043fcae22')(dispatch, getState)
+      fs.mkdirSync(path.join(state.settings.installationDirectory, 'CustomSongs'))
     }
     fs.readdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err, files) => {
       if (err) return
@@ -284,7 +262,7 @@ export const loadMore = () => (dispatch, getState) => {
     payload: true
   })
   let state = getState()
-  fetch(resourceUrl[state.source.source][state.source.resource] + '/' + state.songs.songs.length)
+  fetch(resourceUrl[state.resource] + '/' + state.songs.songs.length)
     .then(res => {
       return res.json()
     })
@@ -324,9 +302,10 @@ export const loadMore = () => (dispatch, getState) => {
     })
 }
 
+/*
 export const refresh = () => (dispatch, getState) => {
-  switch(getState().source.source + getState().source.resource) {
-    case 'localsongs':
+  switch(getState().resource) {
+    case LIBRARY.SONGS:
       fetchLocalSongs()
       return
     default:
@@ -349,6 +328,7 @@ export const refresh = () => (dispatch, getState) => {
         })
   }
 }
+*/
 
 export const setScrollTop = scrollTop => dispatch => {
   dispatch({

@@ -1,3 +1,6 @@
+//Root
+export const RESET_APP                  = 'RESET_APP'
+
 // SongList
 export const FETCH_TOP_DOWNLOADS        = 'FETCH_TOP_DOWNLOADS'
 export const FETCH_TOP_FINISHED         = 'FETCH_TOP_FINISHED'
@@ -13,6 +16,20 @@ export const SET_WAIT_LIST              = 'EST_WAIT_LIST'
 export const SET_SCANNING_FOR_SONGS     = 'SET_SCANNING_FOR SONGS'
 export const SET_LOADING                = 'SET_LOADING'
 export const SET_LOADING_MORE           = 'SET_LOADING_MORE'
+
+//ModList
+export const SET_MOD_LIST               = 'SET_MOD_LIST'
+export const APPEND_MOD_LIST            = 'APPEND_MOD_LIST'
+export const LOAD_MOD_DETAILS           = 'LOAD_MOD_DETAILS'
+export const INSTALL_MOD                = 'INSTALL_MOD'
+export const UNINSTALL_MOD              = 'UNINSTALL_MOD'
+export const ADD_PENDING_MOD            = 'ADD_PENDING_MOD'
+export const SET_SCANNING_FOR_MODS      = 'SET_SCANNING_FOR_MODS'
+export const SET_INSTALLED_MODS         = 'SET_INSTALLED_MODS'
+export const CLEAR_MODS                 = 'CLEAR_MODS'
+export const ADD_DEPENDENT              = 'ADD_DEPENDENT'
+export const REMOVE_DEPENDENT           = 'REMOVE_DEPENDENT'
+export const SET_MOD_ACTIVE             = 'SET_MOD_ACTIVE'
 
 // Playlists
 export const LOAD_NEW_PLAYLIST_IMAGE    = 'LOAD_NEW_PLAYLIST_IMAGE'
@@ -42,13 +59,16 @@ export const SET_SONG_VIEW              = 'SET_SONG_VIEW'
 
 // Window
 export const RESIZE_WINDOW              = 'RESIZE_WINDOW'
+export const SET_HAS_ERROR              = 'SET_HAS_ERROR'
 
 // Sidebar
 export const RESIZE_SIDEBAR             = 'RESIZE_SIDEBAR'
+export const SET_SECTION                = 'SET_SECTION'
 
 // Settings
 export const SET_SETTINGS_OPEN          = 'SET_SETTINGS_OPEN'
 export const SET_INSTALLATION_DIRECTORY = 'SET_INSTALLATION_DIRECTORY'
+export const SET_INSTALLATION_TYPE      = 'SET_INSTALLATION_TYPE'
 export const SET_AUTO_LOAD_MORE         = 'SET_AUTO_LOAD_MORE'
 export const SET_OFFLINE_MODE           = 'SET_OFFLINE_MODE'
 export const SET_THEME                  = 'SET_THEME'

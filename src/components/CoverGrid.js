@@ -3,7 +3,7 @@ import '../css/CoverGrid.scss'
 
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { refresh, loadMore } from '../actions/songListActions'
+import { loadMore } from '../actions/songListActions'
 
 import CoverGridItem from './CoverGridItem'
 import LoadMore from './LoadMore'
@@ -83,7 +83,7 @@ class CoverGrid extends Component {
                   </MenuItem>
                   <MenuItem divider />
                   <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); }} }>Share</MenuItem>
-                  {(!!song.key ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.key}#review`)} }>Review on BeastSaber</MenuItem> : null)}
+                  {(!!song.key ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.key}`)} }>View on BeastSaber</MenuItem> : null)}
                 </ContextMenu>
               </ContextMenuTrigger>
               )
@@ -132,7 +132,6 @@ CoverGrid.propTypes = {
   playlists: PropTypes.array.isRequired,
   scrollTop: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
-  refresh: PropTypes.func.isRequired,
   loadMore: PropTypes.func.isRequired
 }
 
@@ -146,4 +145,4 @@ const mapStateToProps = state => ({
   newPlaylistDialogOpen: state.playlists.newPlaylistDialogOpen
 })
 
-export default connect(mapStateToProps, { refresh, loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning, checkDownloadedSongs })(CoverGrid)
+export default connect(mapStateToProps, { loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning, checkDownloadedSongs })(CoverGrid)

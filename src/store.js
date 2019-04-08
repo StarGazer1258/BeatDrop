@@ -3,7 +3,9 @@ import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import thunk from 'redux-thunk'
-import rootReducer from './reducers'
+import appReducer from './reducers'
+
+import { RESET_APP } from './actions/types'
 
 const initialState = {
   window: {
@@ -30,6 +32,11 @@ const persistConfig = {
   stateReconciler: autoMergeLevel2
  };
  
+const rootReducer = (state, action) => {
+  if(action.type === RESET_APP) return initialState
+  return appReducer(state, action)
+}
+
  const pReducer = persistReducer(persistConfig, rootReducer);
 
 const middleware = [thunk]

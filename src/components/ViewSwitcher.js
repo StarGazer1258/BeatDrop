@@ -13,9 +13,11 @@ import PlaylistView from './PlaylistView'
 import SettingsView from './SettingsView'
 import SongDetails from './SongDetails'
 import Warning from './Warning'
-import { WELCOME, SONG_LIST, SONG_DETAILS, PLAYLIST_LIST, PLAYLIST_DETAILS, SETTINGS, SEARCH, DONATE } from '../views';
-import PlaylistDetails from './PlaylistDetails';
-import DonateView from './DonateView';
+import * as VIEWS from '../views'
+import PlaylistDetails from './PlaylistDetails'
+import DonateView from './DonateView'
+import ModsView from './ModsView'
+import ModDetails from './ModDetails'
 
 function Songs(props) {
   switch(props.songView) {
@@ -32,22 +34,26 @@ function Songs(props) {
 
 function MainView(props) {
   switch(props.view) {
-    case WELCOME:
+    case VIEWS.WELCOME:
       return <WelcomePage />
-    case DONATE:
+    case VIEWS.DONATE:
       return <DonateView />
-    case SONG_LIST:
+    case VIEWS.SONG_LIST:
       return <Songs songView={ props.songView } />
-    case PLAYLIST_LIST:
+    case VIEWS.PLAYLIST_LIST:
       return <PlaylistView />
-    case SETTINGS:
+    case VIEWS.MODS_VIEW:
+      return <ModsView />
+    case VIEWS.SETTINGS:
       return <SettingsView />
-    case SEARCH:
+    case VIEWS.SEARCH:
       return <SearchView />
-    case SONG_DETAILS:
+    case VIEWS.SONG_DETAILS:
       return <SongDetails />
-    case PLAYLIST_DETAILS:
+    case VIEWS.PLAYLIST_DETAILS:
       return <PlaylistDetails />
+    case VIEWS.MOD_DETAILS:
+      return <ModDetails />
     default:
       return <Songs songView={ props.songView } />
   }
@@ -70,7 +76,7 @@ class ViewSwitcher extends Component {
       <div id="view-switcher" className={ `theme-${this.props.settings.theme}` }>
         <SideBar />
         <div className={ `view-right ${this.props.sidebarOpen ? '' : 'sidebar-collapsed'}` }>
-          <SortBar hidden={ this.props.view !== SONG_LIST } />
+          <SortBar hidden={ this.props.view !== VIEWS.SONG_LIST } />
           <MainView view={ this.props.view } songView={ this.props.songView } />
           <Warnings warnings={ this.props.warnings } />
         </div>

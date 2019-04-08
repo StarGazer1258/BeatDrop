@@ -1,0 +1,187 @@
+@import './StyleConstants';
+
+#mod-details {
+  height: 100%;
+  padding: 15px;
+  overflow: scroll;
+
+  .close-icon {
+    cursor: pointer;
+    position: absolute;
+    transform: translateX(calc(100vw - 280px));
+    width: 25px;
+    height: 25px;
+    background: url(../assets/close.png);
+    background-size: 25px;
+  }
+
+  .mod-title {
+    margin-bottom: 0;
+  }
+
+  .mod-author {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .badge {
+    background-color: $theme-light-accent-color;
+  }
+
+  .mod-in-library {
+    font-weight: bold;
+    color: $beatdrop-blue;
+    margin-top: 5px;
+  }
+
+  .action-buttons {
+    margin: 15px 0;
+
+    .action-button {
+      margin: 0 3px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 8pt;
+      font-weight: 900;
+      color: white;
+      background-color: rgba($theme-light-accent-color, 0.8);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+
+      &:hover {
+        background: $theme-light-accent-color;
+      }
+
+      &.install-button {
+        padding: 2px 7px;
+        width: 65px;
+        background: rgba($theme-light-accent-color, 0.3);
+        border: 3px solid rgba($theme-light-accent-color, 0.8);
+        display: inline-flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        position: relative;
+        margin-top: -1px;
+
+        span:first-child {
+          display: inline-block;
+          position: absolute;
+          left: -1px;
+          top: -1px;
+          height: 110%;
+          background: rgba($theme-light-accent-color, 0.8);
+          z-index: -1;
+          border-radius: 10px;
+        }
+
+        &:hover {
+          border: 3px solid $theme-light-accent-color;
+
+          span:first-child {
+            background: $theme-light-accent-color;
+          }
+        }
+      }
+
+      &:not(.more-button) img {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+      }
+
+      &.modpack-add-button {
+        width: 125px;
+      }
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.more-button img {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  }
+}
+
+.sidebar-collapsed #mod-details {
+  .close-icon {
+    transform: translateX(calc(100vw - 120px));
+  }
+}
+
+.theme-dark, .theme-hc {
+  #mod-details {
+    .close-icon {
+      background: url(../assets/dark/close.png) !important;
+      background-size: 25px !important;
+    }
+  }
+}
+
+.theme-dark {
+  #mod-details {
+    .action-buttons .action-button {
+      background-color: rgba($theme-dark-accent-color, 0.8) !important;
+
+      &:hover {
+        background: $theme-dark-accent-color !important;
+      }
+
+      &.install-button {
+        background: rgba($theme-dark-accent-color, 0.3) !important;
+        border: 3px solid rgba($theme-dark-accent-color, 0.8) !important;
+        
+        span:first-child {
+          background: rgba($theme-dark-accent-color, 0.8) !important;
+        }
+
+        &:hover {
+          border: 3px solid $theme-dark-accent-color !important;
+
+          span:first-child {
+            background: $theme-dark-accent-color !important;
+          }
+        }
+      }
+    }
+
+    .badge {
+      background-color: $theme-dark-accent-color !important;
+    }
+  }
+}
+
+.theme-hc {
+  .action-buttons .action-button {
+    background-color: rgba($theme-hc-accent-color, 0.8) !important;
+
+    &:hover {
+      background: $theme-hc-accent-color !important;
+    }
+
+    &.install-button {
+      background: rgba($theme-hc-accent-color, 0.3) !important;
+      border: 3px solid rgba($theme-hc-accent-color, 0.8) !important;
+      
+      span:first-child {
+        background: rgba($theme-hc-accent-color, 0.8) !important;
+      }
+
+      &:hover {
+        border: 3px solid $theme-hc-accent-color !important;
+
+        span:first-child {
+          background: $theme-hc-accent-color !important;
+        }
+      }
+    }
+  }
+
+  .badge {
+    background-color: $theme-hc-accent-color !important;
+  }
+}

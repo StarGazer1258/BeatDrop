@@ -1,0 +1,278 @@
+@import './StyleConstants';
+
+#mod-marketplace {
+  height: 100%;
+  overflow-y: scroll;
+
+  padding: 0 50px;
+
+  h1 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 32pt;
+  }
+
+  .categories-list {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    margin-bottom: 30px;
+
+    .category-tile {
+      min-width: 200px;
+      border: 1px solid $theme-light-line-color;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform .2s;
+
+      &:hover {
+        transform: scale(1.02);
+      }
+
+      .category-image {
+        width: inherit;
+        min-height: 200px;
+        background-image: url('../assets/mod.svg');
+        background-size: 100px;
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &.library {
+          background-image: url('../assets/library.svg');
+        }
+
+        &.tweak {
+          background-image: url('../assets/tweaks.png');
+        }
+
+        &.cosmetic {
+          background-image: url('../assets/cosmetic.svg');
+        }
+
+        &.training {
+          background-image: url('../assets/training.svg');
+        }
+
+        &.multiplayer {
+          background-image: url('../assets/multiplayer.png');
+        }
+
+        &.gameplay {
+          background-image: url('../assets/gameplay.svg');
+        }
+
+        &.stream {
+          background-image: url('../assets/stream.svg');
+        }
+
+        &.lighting {
+          background-image: url('../assets/lighting.png');
+        }
+
+        &.text {
+          background-image: url('../assets/text.svg');
+        }
+      }
+
+      .category-name {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 16pt;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .mod-list {
+    display: grid;
+    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    flex-flow: row wrap;
+    padding: 5px;
+    margin-bottom: 30px;
+
+    .mod-marketplace-tile {
+      border: 1px solid $theme-light-line-color;
+      padding: 10px;
+      border-radius: 5px;
+      min-width: 300px;
+      height: 65px;
+      box-shadow: 2px 2px 3px 0px rgba(0,0,0,0.1);
+      display: flex;
+      flex-flow: row nowrap;
+      cursor: pointer;
+      transition: transform .2s;
+      position: relative;
+
+      &:hover {
+        transform: scale(1.02);
+      }
+
+      .library-indicator {
+        bottom: 5px;
+        left: 5px;
+      }
+
+      .deactivated-indicator {
+        bottom: 30px;
+        left: 5px;
+      }
+
+      .mod-image {
+        width: 65px;
+        height: 65px;
+        flex-shrink: 0;
+        border-radius: 5px;
+        margin-right: 5px;
+        background-image: url('../assets/mod.svg');
+        background-repeat: no-repeat;
+        background-position: center;
+
+        &.library {
+          background-image: url('../assets/library.svg');
+        }
+
+        &.tweak {
+          background-image: url('../assets/tweaks.png');
+        }
+
+        &.cosmetic {
+          background-image: url('../assets/cosmetic.svg');
+        }
+
+        &.training {
+          background-image: url('../assets/training.svg');
+        }
+
+        &.multiplayer {
+          background-image: url('../assets/multiplayer.png');
+        }
+
+        &.gameplay {
+          background-image: url('../assets/gameplay.svg');
+        }
+
+        &.stream {
+          background-image: url('../assets/stream.svg');
+        }
+
+        &.lighting {
+          background-image: url('../assets/lighting.png');
+        }
+
+        &.text {
+          background-image: url('../assets/text.svg');
+        }
+
+        &.loading {
+          background-image: url('../assets/loading-dots2.png') !important;
+          background-size: contain;
+        }
+      }
+
+      .mod-info {
+        flex-grow: 1;
+        max-width: calc(100% - 65px);
+      }
+
+      .first-row {
+        display: inline-flex;
+        flex-flow: row nowrap;
+        max-width: 100%;
+        align-items: flex-end;
+      }
+  
+      .mod-title {
+        display: inline-block;
+        font-size: 14pt;
+        font-weight: 700;
+        flex-shrink: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      
+      .mod-version {
+        font-size: 10pt;
+        flex-shrink: 0;
+        margin-right: 10px;
+        margin-left: 5px;
+      }
+
+      .mod-author {
+        margin-left: 10px;
+
+        a {
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .mod-category {
+        margin-left: 10px;
+        font-weight: 700;
+      }
+    }
+  }
+}
+
+.theme-dark {
+  #mod-marketplace {
+    .mod-marketplace-tile, .category-tile {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.theme-hc {
+  #mod-marketplace {
+    .mod-marketplace-tile, .category-tile {
+      border: 1px solid $theme-hc-line-color;
+    }
+  }
+}
+
+.theme-dark, .theme-hc {
+  #mod-marketplace {
+    .mod-image, .category-image {
+      background-image: url('../assets/dark/mod.png') !important;
+
+      &.library {
+        background-image: url('../assets/dark/library.png') !important;
+      }
+
+      &.tweak {
+        background-image: url('../assets/dark/tweaks.png') !important;
+      }
+
+      &.cosmetic {
+        background-image: url('../assets/dark/cosmetic.png') !important;
+      }
+
+      &.training {
+        background-image: url('../assets/dark/training.png') !important;
+      }
+
+      &.multiplayer {
+        background-image: url('../assets/dark/multiplayer.png') !important;
+      }
+
+      &.gameplay {
+        background-image: url('../assets/dark/gameplay.png') !important;
+      }
+
+      &.stream {
+        background-image: url('../assets/dark/stream.png') !important;
+      }
+
+      &.lighting {
+        background-image: url('../assets/dark/lighting.png') !important;
+      }
+
+      &.text {
+        background-image: url('../assets/dark/text.png') !important;
+      }
+    }
+  }
+}

@@ -1,2 +1,2 @@
 import * as Sentry from '@sentry/electron'
-Sentry.init({dsn: '***REMOVED***'})
+Sentry.init({ dsn: '***REMOVED***' })

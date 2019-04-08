@@ -1,4 +1,4 @@
-import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_OFFLINE_MODE, SET_THEME, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES } from './types'
+import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_OFFLINE_MODE, SET_THEME, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES, SET_INSTALLATION_TYPE } from './types'
 
 import { checkDownloadedSongs } from './queueActions'
 
@@ -17,6 +17,13 @@ export const setInstallationDirectory = directory => (dispatch, getState) => {
     payload: directory
   })
   checkDownloadedSongs()(dispatch, getState)
+}
+
+export const setInstallationType = type => dispatch => {
+  dispatch({
+    type: SET_INSTALLATION_TYPE,
+    payload: type
+  })
 }
 
 export const setAutoLoadMore = willAutoLoadMore => dispatch => {

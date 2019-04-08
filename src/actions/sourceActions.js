@@ -1,11 +1,4 @@
-import { SET_SOURCE, SET_RESOURCE, SET_RESOURCE_URL } from './types'
-
-export const setSource = (source) => dispatch => {
-  dispatch({
-    type: SET_SOURCE,
-    payload: source
-  })
-}
+import { SET_RESOURCE, SET_RESOURCE_URL } from './types'
 
 export const setResource = (resource) => dispatch => {
   dispatch({

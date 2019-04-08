@@ -1,7 +1,8 @@
-import { RESIZE_WINDOW } from '../actions/types'
+import { RESIZE_WINDOW, SET_HAS_ERROR } from '../actions/types'
 
 let initialState = {
-  isMaximized: false
+  isMaximized: false,
+  hasError: false
 }
 
 export default function(state = initialState, action) {
@@ -10,6 +11,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
        isMaximized: action.payload
+      }
+    case SET_HAS_ERROR:
+      return {
+        ...state,
+        hasError: action.payload
       }
     default:
       return state

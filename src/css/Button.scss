@@ -64,4 +64,9 @@
       background-color: rgba($beatdrop-blue, 0.9);
     }
   }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

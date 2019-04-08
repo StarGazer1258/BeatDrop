@@ -23,8 +23,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let playlists = []
   fs.access(path.join(state.settings.installationDirectory, 'Playlists'), (err) => {
     if(err) { 
-      alert('Could not find Playlists directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
-      return
+      fs.mkdirSync(path.join(state.settings.installationDirectory, 'Playlists'))
     }
     fs.readdir(path.join(state.settings.installationDirectory, 'Playlists'), (err, files) => {
       if(err) return

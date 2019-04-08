@@ -1,0 +1,218 @@
+import React, { Component, Fragment } from 'react'
+import '../css/ModsView.scss'
+
+import { connect } from 'react-redux'
+import { BEATMODS, LIBRARY } from '../constants/resources';
+
+import { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod } from '../actions/modActions'
+import { displayWarning } from '../actions/warningActions'
+import { ContextMenuTrigger, MenuItem, ContextMenu } from 'react-contextmenu';
+
+import { makeRenderKey } from '../utilities'
+import LibraryIndicator from './LibraryIndicator';
+import DeactivatedIndicator from './DeactivatedIndicator';
+
+const { clipboard, shell } = window.require('electron')
+
+const categories = [
+  {
+    class: 'core',
+    name: 'Core'
+  },
+  {
+    class: 'cosmetic',
+    name: 'Cosmetic'
+  },
+  {
+    class: 'training',
+    name: 'Practice / Training'
+  },
+  
+  {
+    class: 'gameplay',
+    name: 'Gameplay'
+  },
+  {
+    class: 'stream',
+    name: 'Streaming Tools'
+  },
+  {
+    class: 'library',
+    name: 'Libraries'
+  },
+  {
+    class: 'text',
+    name: 'UI Enhancements'
+  }
+  /*{
+    class: 'lighting',
+    name: 'Lighting Changes'
+  },
+  {
+    class: 'tweak',
+    name: 'Tweaks / Tools'
+  },
+  {
+    class: 'multiplayer',
+    name: 'Multiplayer'
+  },
+  {
+    class: 'text',
+    name: 'Text Changes'
+  },
+  {
+    class: 'other',
+    name: 'Other'
+  }*/
+]
+
+
+class ModsView extends Component {
+
+  Catergories(props) {
+    return (
+      <div className="categories-list">
+        {categories.map((category) => {
+          return (
+            <div className="category-tile" onClick={ () => { props.fetchModCategory(category.name.toLowerCase()); this.setState({ category: category.name }) } }>
+              <div className={ `category-image ${category.class}` }></div>
+              <div className="category-name">{category.name}</div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
+  SubCategory() {
+    switch(this.props.resource) {
+      case BEATMODS.NEW_MODS:
+        return <h2>All Mods</h2>
+      case BEATMODS.RECOMMENDED_MODS:
+        return <h2>Reccomended Mods</h2>
+      case BEATMODS.MOD_CATEGORIES:
+        return <h2>{ this.state.category }</h2>
+      case BEATMODS.MOD_CATEGORY_SELECT:
+        return <h2>Categories</h2>
+      case LIBRARY.MODS.ALL:
+        return <h2>Library</h2>
+      default:
+        return null
+    }
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      category: ''
+    }
+
+    this.Catergories = this.Catergories.bind(this)
+    this.SubCategory = this.SubCategory.bind(this)
+  }
+
+  render() {
+    if(this.props.loading) {
+      return (
+        <div id="mod-marketplace">
+        <h1>Mods</h1>
+        <h2>Loading...</h2>
+          <div className="mod-list">
+            { Array(50).fill(0).map((v, i) => {
+                return (
+                  <div className='mod-marketplace-tile loading' key={ i }>
+                    <div className="mod-image loading"></div>
+                    <div className="mod-info">
+                      <span className="first-row"><span className="mod-title"></span> <span className="mod-version"></span></span>
+                      <div className="mod-author"></div>
+                      <div className="mod-category"></div>
+                    </div>
+                  </div>
+                )
+            }) }
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div id="mod-marketplace">
+          <h1>Mods</h1>
+          <this.SubCategory sub={ this.props.resource } category={ this.state.category } />
+            { this.props.resource !== BEATMODS.MOD_CATEGORY_SELECT ?
+              <div className="mod-list">
+                { this.props.mods.mods.map(mod => {
+                    let category = (mod.category || 'Uncategorized')
+                    let renderTags = [
+                      {
+                        boolean: true,
+                        tag: `${mod.name}@${mod.version}`
+                      },
+                      {
+                        boolean: this.props.mods.installedMods.some(m => m.id === mod._id),
+                        tag: '.installed'
+                      },
+                      {
+                        boolean: this.props.mods.installedMods.some(m => m.name === mod.name) ? !this.props.mods.installedMods.filter(m => m.name === mod.name)[0].active : false,
+                        tag: '.activated'
+                      }
+                    ]
+                    return (
+                      <Fragment key={ makeRenderKey(renderTags) }>
+                        <ContextMenuTrigger id={ mod._id }>
+                        <div className='mod-marketplace-tile' onClick={ () => { this.props.loadModDetails(mod._id) } }>
+                          { this.props.mods.installedMods.some(m => m.name === mod.name) ? <LibraryIndicator /> : null }
+                          { this.props.mods.installedMods.some(m => m.name === mod.name) ? (!this.props.mods.installedMods.filter(m => m.name === mod.name)[0].active ? <DeactivatedIndicator /> : null) : null }
+                          <div className={ `mod-image${ category === 'libraries' ? ' library' : '' }${ category === 'tweaks / tools' ? ' tweak' : '' }${ category === 'cosmetic' ? ' cosmetic' : '' }${ category === 'practice / training' ? ' training' : '' }${ category === 'multiplayer' ? ' multiplayer' : '' }${ category === 'gameplay' ? ' gameplay' : '' }${ category === 'streaming tools' ? ' stream' : '' }${ category === 'lighting changes' ? ' lighting' : '' }${ category === 'text changes' ? ' text' : '' }${ category === 'ui enhancements' ? ' text' : '' }` }></div>
+                          <div className="mod-info">
+                            <span className="first-row"><span className="mod-title">{ mod.name }</span> <span className="mod-version">v{ mod.version }</span></span>
+                            <div className="mod-author">{ mod.name === 'YUR Fit Calorie Tracker' ? <>Join our discord: <a onClick={ (e) => { e.stopPropagation(); shell.openExternal('https://yur.chat') } }>https://yur.chat</a></> : `by ${ mod.author.username || 'Unknown' }` }</div>
+                            <div className="mod-category">{ category.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()}).replace('Ui', 'UI') }</div>
+                          </div>
+                        </div>
+                        </ContextMenuTrigger>
+                        <ContextMenu id={ mod._id }>
+                          {
+                            mod.name !== 'BSIPA' ?
+                              this.props.mods.installedMods.some(m => m.name === mod.name) ?
+                                ((!this.props.mods.installedMods.filter(m => m.name === mod.name)[0].dependencyOf.some(dependent => this.props.mods.installedMods.some(installedMod => installedMod.name === dependent))) ?
+                                  <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.uninstallMod(mod.name) } }>Uninstall { mod.name }</MenuItem>
+                                : null)
+                                : <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.installMod(mod.name) } }>Install { mod.name }</MenuItem>
+                            : null
+                          }
+                          {
+                            (this.props.mods.installedMods.some(m => m.id === mod._id) && mod.name !== 'BSIPA') ?
+                              (!this.props.mods.installedMods.filter(m => m.name === mod.name)[0].dependencyOf
+                                .some(dependent => this.props.mods.installedMods
+                                    .some(installedMod => installedMod.name === dependent))) ?
+                                (this.props.mods.installedMods.filter(m => m.name === mod.name)[0].active ?
+                                  <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.deactivateMod(mod.name) } }>Deactivate</MenuItem>
+                                : <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.activateMod(mod.name) } }>Activate</MenuItem> )
+                              : null
+                            : null
+                          }
+                           <MenuItem onClick={ (e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://mods/details/${encodeURIComponent(mod.name)}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${mod.name} copied to clipboard!` })} }>Share</MenuItem>
+                        </ContextMenu>
+                      </Fragment>
+                    )
+                }) }
+              </div> : <this.Catergories fetchModCategory={ this.props.fetchModCategory } />
+            }
+        </div>
+      )
+    }
+  }
+}
+
+const mapStateToProps = state => ({
+  loading: state.loading,
+  mods: state.mods,
+  resource: state.resource
+})
+
+export default connect(mapStateToProps, { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod, displayWarning })(ModsView)
+
+/*
+{ mod.name !== 'BSIPA' ? <MenuItem>Add to Mod Pack</MenuItem> : null }
+*/
