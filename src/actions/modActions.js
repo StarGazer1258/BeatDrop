@@ -164,7 +164,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
       let installedMods = getState().mods.installedMods
       let m = []
       for(let i = 0; i < installedMods.length; i++) {
-        m.push(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0])
+        if(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0]) m.push(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0])
         console.log(installedMods[i].name)
       }
       dispatch({
@@ -206,7 +206,7 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
       let activatedMods = getState().mods.installedMods.filter(mod => mod.active === true)
       let m = []
       for(let i = 0; i < activatedMods.length; i++) {
-        m.push(beatModsResponse.filter(mod => mod.name === activatedMods[i].name)[0])
+        if(beatModsResponse.filter(mod => mod.name === activatedMods[i].name)[0]) m.push(beatModsResponse.filter(mod => mod.name === activatedMods[i].name)[0])
         console.log(activatedMods[i].name)
       }
       dispatch({
