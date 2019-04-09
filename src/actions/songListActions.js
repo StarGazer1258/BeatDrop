@@ -1,7 +1,7 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
-import { installMod } from './modActions';
+import { installMod, installEssentialMods } from './modActions';
 
 const { remote } = window.require('electron')
 const Walker = remote.require('walker')
@@ -192,7 +192,7 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
   }
   fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
     if(err) {
-      installMod('5ca59a468df6502043fcae22')(dispatch, getState)
+      installEssentialMods()(dispatch, getState)
       fs.mkdirSync(path.join(state.settings.installationDirectory, 'CustomSongs'))
     }
     fs.readdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err, files) => {

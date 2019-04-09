@@ -21,6 +21,11 @@ let launchEvents = {
   playlists: {
     details: [],
     download: []
+  },
+  mods: {
+    details: [],
+    install: [],
+    uninstall: []
   }
 }
 
@@ -198,6 +203,11 @@ function handleArgs(argv, sendImmediately) {
         details: [],
         download: [],
         delete: []
+      },
+      mods: {
+        details: [],
+        install: [],
+        uninstall: []
       }
     }
   }
