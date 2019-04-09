@@ -12,7 +12,9 @@
   }
 
   img.patreon-button {
-    margin-top: 40px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px;
     height: 40px;
     border-radius: 5px;
     cursor: pointer;
@@ -24,10 +26,11 @@
     }
   }
 
-  h1 {
+  h1, h3 {
     width: 100%;
     text-align: center;
     margin-bottom: 0;
+    margin-top: 0;
   }
 
   p {
