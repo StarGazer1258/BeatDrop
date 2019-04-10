@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Environment:**
-Device - Device Manufacturer, Model Number, and Revison
+Device - Device Manufacturer, Model Number, and Revision
 OS - Operating System Type, Version, and Build Number
 BeatDrop Version - BeatDrop Version including build tags
 
@@ -25,7 +25,7 @@ Steps to reproduce the behavior:
 **Expected behavior:**
 A clear and concise description of what you expected to happen.
 
-**Actualbehavior**
+**Actual Behavior**
 A clear and concise description of what actually happened.
 
 **Screenshots:**
