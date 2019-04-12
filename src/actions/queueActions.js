@@ -401,11 +401,20 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
   }
   fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
     if(err) {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          text: `Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.`
+      fs.mkdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
+        if(err) {
+          dispatch({
+            type: DISPLAY_WARNING,
+            payload: {
+              text: 'Could not create CustomSongs directory. Make sure you have your Beat Saber indsatllation directory set properly.'
+            }
+          })
         }
+      })
+      installEssentialMods()(dispatch, getState)
+      dispatch({
+        type: SET_DOWNLOADED_SONGS,
+        payload: []
       })
       dispatch({
         type: SET_SCANNING_FOR_SONGS,
