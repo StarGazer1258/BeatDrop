@@ -311,8 +311,14 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       console.log(`Installing ${ modName }...`)
       if(mod.downloads.some(version => version.type === 'universal')) {
         req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
-          if(err || r.statusCode !== 200) throw err
-  
+          if(r) if(err || r.statusCode !== 200) {
+            dispatch({
+              type: DISPLAY_WARNING,
+              payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
+                                Please try again and file a bug report if the problem persists.` }
+            })
+            return
+          }
           let zip = new AdmZip(data)
           zip.extractAllTo(getState().settings.installationDirectory)
   
@@ -352,31 +358,38 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
         let installationType = getState().settings.installationType
         if(mod.downloads.some(version => version.type === installationType)) {
           req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === installationType)[0].url}`, encoding: null }, (err, r, data) => {
-          if(err || r.statusCode !== 200) throw err
-  
-          let zip = new AdmZip(data)
-          zip.extractAllTo(getState().settings.installationDirectory)
-  
-          let entries = zip.getEntries()
-          let files = []
-          for(let i = 0; i < entries.length; i++) {
-            files.push(entries[i].entryName)
-          }
-          
-          dispatch({
-            type: INSTALL_MOD,
-            payload: {
-              id: mod._id,
-              name: mod.name,
-              version: mod.version,
-              files,
-              dependencyOf: [ dependencyOf ],
-              dependsOn,
-              active: true
+            if(r) if(err || r.statusCode !== 200) {
+              dispatch({
+                type: DISPLAY_WARNING,
+                payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
+                                  Please try again and file a bug report if the problem persists.` }
+              })
+              return
             }
+
+            let zip = new AdmZip(data)
+            zip.extractAllTo(getState().settings.installationDirectory)
+    
+            let entries = zip.getEntries()
+            let files = []
+            for(let i = 0; i < entries.length; i++) {
+              files.push(entries[i].entryName)
+            }
+            
+            dispatch({
+              type: INSTALL_MOD,
+              payload: {
+                id: mod._id,
+                name: mod.name,
+                version: mod.version,
+                files,
+                dependencyOf: [ dependencyOf ],
+                dependsOn,
+                active: true
+              }
+            })
             ipcRenderer.emit('mod-installed')
           })
-        })
         } else {
           dispatch({
             type: DISPLAY_WARNING,
