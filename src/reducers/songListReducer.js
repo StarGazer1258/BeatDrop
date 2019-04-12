@@ -32,7 +32,7 @@ export default function(state = { songs: [], scrollTop: 0, downloadingCount: 0, 
       }
     case ADD_BSABER_RATING:
       let ratedState = { ...state }
-      ratedState.songs[action.payload.i].ratings = action.payload.bsaberData
+      if(ratedState.songs[action.payload.i]) ratedState.songs[action.payload.i].ratings = action.payload.bsaberData
       return ratedState
     case SET_DOWNLOADED_SONGS:
       return {
