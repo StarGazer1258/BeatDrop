@@ -17,7 +17,7 @@ export const SET_SCANNING_FOR_SONGS     = 'SET_SCANNING_FOR SONGS'
 export const SET_LOADING                = 'SET_LOADING'
 export const SET_LOADING_MORE           = 'SET_LOADING_MORE'
 
-//ModList
+//Mods
 export const SET_MOD_LIST               = 'SET_MOD_LIST'
 export const APPEND_MOD_LIST            = 'APPEND_MOD_LIST'
 export const LOAD_MOD_DETAILS           = 'LOAD_MOD_DETAILS'
@@ -30,6 +30,7 @@ export const CLEAR_MODS                 = 'CLEAR_MODS'
 export const ADD_DEPENDENT              = 'ADD_DEPENDENT'
 export const REMOVE_DEPENDENT           = 'REMOVE_DEPENDENT'
 export const SET_MOD_ACTIVE             = 'SET_MOD_ACTIVE'
+export const SET_PATCHING               = 'SET_PATCHING'
 
 // Playlists
 export const LOAD_NEW_PLAYLIST_IMAGE    = 'LOAD_NEW_PLAYLIST_IMAGE'

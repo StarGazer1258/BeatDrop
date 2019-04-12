@@ -1,4 +1,4 @@
-import { SET_MOD_LIST, SET_VIEW, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD } from './types'
+import { SET_MOD_LIST, SET_VIEW, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
@@ -326,6 +326,10 @@ export const installMod = (modName, dependencyOf = '') => (dispatch, getState) =
               type: 'DISPLAY_WARNING',
               payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
             })
+            dispatch({
+              type: SET_PATCHING,
+              payload: false
+            })
           }
 
           dispatch({
@@ -640,6 +644,11 @@ export const checkInstalledMods = () => (dispatch, getState) => {
 }
 
 export const patchGame = () => (dispatch, getState) => {
+  if(getState().mods.patching) return
+  dispatch({
+    type: SET_PATCHING,
+    payload: true
+  })
   let patchedWith = gamePatchedWith()(dispatch, getState)
   if(patchedWith === 'NONE') {
     installMod('BSIPA')(dispatch, getState)
@@ -664,6 +673,10 @@ export const patchGame = () => (dispatch, getState) => {
         payload: { text: 'Your game is already patched with BSIPA.', color: 'lightgreen' }
       })
     }
+    dispatch({
+      type: SET_PATCHING,
+      payload: false
+    })
   }
 }
 
@@ -693,7 +706,7 @@ export const gamePatchedWith = () => (dispatch, getState) => {
 
 export const isModInstalled = modName => (dispatch, getState) => {
   console.log(modName + ' installed: ' + getState().mods.installedMods.some(mod => mod.name === modName))
-  console.log('Installed mods: ' + getState().mods.installedMods)
+  console.log('Installed mods: ' + getState().mods.installedMods.join(', '))
   return getState().mods.installedMods.some(mod => mod.name === modName)
 }
 
