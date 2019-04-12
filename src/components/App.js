@@ -54,7 +54,7 @@ class App extends Component {
             downloadSong(message.songs.download[i])(store.dispatch, store.getState)
           }
           for(let i = 0; i < message.mods.install.length; i++) {
-            installMod(message.mods.install[i])(store.dispatch, store.getState)
+            installMod(message.mods.install[i], '')(store.dispatch, store.getState)
           }
           return
         default:

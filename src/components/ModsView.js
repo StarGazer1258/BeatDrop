@@ -178,7 +178,7 @@ class ModsView extends Component {
                                 ((!this.props.mods.installedMods.filter(m => m.name === mod.name)[0].dependencyOf.some(dependent => this.props.mods.installedMods.some(installedMod => installedMod.name === dependent))) ?
                                   <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.uninstallMod(mod.name) } }>Uninstall { mod.name }</MenuItem>
                                 : null)
-                                : <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.installMod(mod.name) } }>Install { mod.name }</MenuItem>
+                                : <MenuItem onClick={ (e) => { e.stopPropagation(); this.props.installMod(mod.name, mod.version) } }>Install { mod.name }</MenuItem>
                             : null
                           }
                           {

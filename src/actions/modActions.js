@@ -131,7 +131,7 @@ export const fetchModCategory = category => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?category=${ category }`)
+  fetch(`https://beatmods.com/api/v1/mod?category=${ category }&status=approved`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -252,7 +252,7 @@ export const loadModDetails = modId => dispatch => {
     })
 }
 
-export const installMod = (modName, dependencyOf = '') => (dispatch, getState) => {
+export const installMod = (modName, version, dependencyOf = '') => (dispatch, getState) => {
   if(isModPendingInstall(modName)(dispatch, getState)) {
     return
   } else {
@@ -276,7 +276,7 @@ export const installMod = (modName, dependencyOf = '') => (dispatch, getState) =
     }
     return
   }
-  fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(modName)}`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${encodeURIComponent(modName)}&version=${version}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       if(beatModsResponse.length === 0) return
@@ -300,7 +300,7 @@ export const installMod = (modName, dependencyOf = '') => (dispatch, getState) =
       // Install Dependencies
       console.log(`Installing dependencies for ${ modName }...`)
       for(let i = 0; i < mod.dependencies.length; i++) {
-        installMod(mod.dependencies[i].name, modName)(dispatch, getState)
+        installMod(mod.dependencies[i].name, mod.dependencies[i].version, modName)(dispatch, getState)
         dependsOn.push(mod.dependencies[i].name)
       }
       console.log(`Dependencies found: ${dependsOn.join(', ')}`)
@@ -402,9 +402,9 @@ export const installMod = (modName, dependencyOf = '') => (dispatch, getState) =
 }
 
 export const installEssentialMods = () => (dispatch, getState) => {
-  installMod('SongLoader')(dispatch, getState)
-  installMod('BeatSaverDownloader')(dispatch, getState)
-  installMod('ScoreSaber')(dispatch, getState)
+  installMod('SongLoader', '')(dispatch, getState)
+  installMod('BeatSaverDownloader', '')(dispatch, getState)
+  installMod('ScoreSaber', '')(dispatch, getState)
 }
 
 export const uninstallMod = modName => (dispatch, getState) => {
@@ -651,7 +651,7 @@ export const patchGame = () => (dispatch, getState) => {
   })
   let patchedWith = gamePatchedWith()(dispatch, getState)
   if(patchedWith === 'NONE') {
-    installMod('BSIPA')(dispatch, getState)
+    installMod('BSIPA', '')(dispatch, getState)
     /*
     fetch('https://api.github.com/repos/nike4613/BeatSaber-IPA-Reloaded/releases/latest')
       .then(res => res.json())

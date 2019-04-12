@@ -63,7 +63,7 @@ class ModDetails extends Component {
                   (!this.props.installedMods.filter(m => m.name === this.props.details.name)[0].dependencyOf.some(dependent => this.props.installedMods.some(installedMod => installedMod.name === dependent))) ?
                   <span className="action-button uninstall-button" title="Unistall Mod" onClick={ () => { this.props.uninstallMod(this.props.details.name); this.setState({}) } }><img src={ deleteIcon } alt='' />UNINSTALL</span>
                   : null
-                  : <span className="action-button install-button" title="Install Mod" onClick={ () => { this.props.installMod(this.props.details.name) } } ><span style={ { width: this.props.queueItems[this.props.queueItems.findIndex(mod => mod.hash === this.props.details._id)] === undefined ? '102%' : `${this.props.queueItems[this.props.queueItems.findIndex(mod => mod.hash === this.props.details._id)].progress + 5}%` } }></span><img src={ downloadIcon } alt='' />INSTALL</span>
+                  : <span className="action-button install-button" title="Install Mod" onClick={ () => { this.props.installMod(this.props.details.name, this.props.details.version) } } ><span style={ { width: this.props.queueItems[this.props.queueItems.findIndex(mod => mod.hash === this.props.details._id)] === undefined ? '102%' : `${this.props.queueItems[this.props.queueItems.findIndex(mod => mod.hash === this.props.details._id)].progress + 5}%` } }></span><img src={ downloadIcon } alt='' />INSTALL</span>
               : null
             }
             {
