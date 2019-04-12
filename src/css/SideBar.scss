@@ -13,6 +13,7 @@
     height: 30px;
     background-image: url('../assets/sidebar-collapse.png');
     background-size: 30px;
+    background-repeat: no-repeat;
     cursor: pointer;
 
     &:hover {
@@ -92,6 +93,7 @@
       height: 25px;
       transform: translate(-5px, 7px);
       background-size: 25px;
+      background-repeat: no-repeat;
     }
 
     &.section-songs {
@@ -181,6 +183,7 @@
         height: 25px;
         transform: translate(-5px, 7px);
         background-size: 25px;
+        background-repeat: no-repeat;
       }
 
       &:hover {
