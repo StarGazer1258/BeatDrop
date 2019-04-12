@@ -73,7 +73,7 @@ class SongList extends Component {
             let songTags = [
               {
                 boolean: true,
-                tag: song.hash || song.hashMd5
+                tag: song.hash || song.hashMd5 || song.songName
               },
               {
                 boolean: !!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5)),
