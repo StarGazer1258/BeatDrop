@@ -4,6 +4,6 @@ install:
   - npm install
   - sudo apt-add-repository ppa:ubuntu-wine/ppa -y
   - sudo apt-get update
-  - sudo apt-get install wine -y
+  - sudo apt-get install wine1.8 -y
 script: npm run build
 sudo: required
