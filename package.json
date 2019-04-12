@@ -65,10 +65,7 @@
     },
     "win": {
       "publish": {
-        "provider": "github",
-        "owner": "StarGazer1258",
-        "private": true,
-        "token": "***REMOVED***"
+        "provider": "github"
       },
       "protocols": {
         "name": "BeatDrop Protocol",
