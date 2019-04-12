@@ -22,10 +22,16 @@ const { clipboard } = window.require('electron')
 
 const exitDetailsShortcut = function (e) { if(e.keyCode === 27) { this.props.setView(this.props.previousView) } }
 
+const { ipcRenderer } = window.require('electron')
+
 class ModDetails extends Component {
 
   constructor(props) {
     super(props)
+
+    ipcRenderer.on('mod-installed', (_, event, message) => {
+      this.setState({})
+    })
 
     this.exitDetailsShortcut = exitDetailsShortcut.bind(this)
   }

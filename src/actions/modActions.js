@@ -14,6 +14,8 @@ const crypto = remote.require('crypto')
 const AdmZip = remote.require('adm-zip')
 const execFile = remote.require('child_process').execFile
 
+const { ipcRenderer } = window.require('electron')
+
 export const fetchApprovedMods = () => dispatch => {
   dispatch({
     type: SET_VIEW,
@@ -344,6 +346,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
               active: true
             }
           })
+          ipcRenderer.emit('mod-installed')
         })
       } else {
         let installationType = getState().settings.installationType
@@ -371,6 +374,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
               dependsOn,
               active: true
             }
+            ipcRenderer.emit('mod-installed')
           })
         })
         } else {
