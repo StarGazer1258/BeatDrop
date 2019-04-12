@@ -166,7 +166,7 @@ class ModsView extends Component {
                           <div className={ `mod-image${ category === 'libraries' ? ' library' : '' }${ category === 'tweaks / tools' ? ' tweak' : '' }${ category === 'cosmetic' ? ' cosmetic' : '' }${ category === 'practice / training' ? ' training' : '' }${ category === 'multiplayer' ? ' multiplayer' : '' }${ category === 'gameplay' ? ' gameplay' : '' }${ category === 'streaming tools' ? ' stream' : '' }${ category === 'lighting changes' ? ' lighting' : '' }${ category === 'text changes' ? ' text' : '' }${ category === 'ui enhancements' ? ' text' : '' }` }></div>
                           <div className="mod-info">
                             <span className="first-row"><span className="mod-title">{ mod.name }</span> <span className="mod-version">v{ mod.version }</span></span>
-                            <div className="mod-author">{ mod.name === 'YUR Fit Calorie Tracker' ? <>Join our discord: <a onClick={ (e) => { e.stopPropagation(); shell.openExternal('https://yur.chat') } }>https://yur.chat</a></> : `by ${ mod.author.username || 'Unknown' }` }</div>
+                            <div className="mod-author">{ mod.name === 'YUR Fit Calorie Tracker' ? <>Join our discord: <a href='https://yur.chat' onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal('https://yur.chat') } }>https://yur.chat</a></> : `by ${ mod.author.username || 'Unknown' }` }</div>
                             <div className="mod-category">{ category.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()}).replace('Ui', 'UI') }</div>
                           </div>
                         </div>
