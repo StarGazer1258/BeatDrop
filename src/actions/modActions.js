@@ -79,7 +79,7 @@ export const fetchRecommendedMods = () => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  let recommendedMods = ['CameraPlus', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
+  let recommendedMods = ['CameraPlus', 'YUR Fit Calorie Tracker', 'SyncSaber', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
   let mods = []
   for(let i = 0; i < recommendedMods.length; i++) {
     fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}`)

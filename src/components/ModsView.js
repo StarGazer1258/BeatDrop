@@ -89,7 +89,7 @@ class ModsView extends Component {
       case BEATMODS.NEW_MODS:
         return <h2>All Mods</h2>
       case BEATMODS.RECOMMENDED_MODS:
-        return <h2>Reccomended Mods</h2>
+        return <h2>Recommended Mods</h2>
       case BEATMODS.MOD_CATEGORIES:
         return <h2>{ this.state.category }</h2>
       case BEATMODS.MOD_CATEGORY_SELECT:
