@@ -1,5 +1,8 @@
-os: windows
 language: node_js
 node_js: "node"
 install: npm install
+before_script: 
+  - chmod +x install-wine.sh
+  - ./install-wine.sh
 script: npm run build
+sudo: required
