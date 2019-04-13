@@ -174,7 +174,7 @@ class SongDetails extends Component {
               <ContextMenuTrigger id={ this.props.details.hash || this.props.details.hashMd5 } holdToDisplay={ 0 }><span className="action-button more-button"><img src={ moreIcon } alt='' /></span></ContextMenuTrigger>
               <ContextMenu id={ this.props.details.hash || this.props.details.hashMd5 }>
                 <MenuItem onClick={ (e) => {e.stopPropagation(); if(this.props.details.song.hash !== undefined || this.props.details.song.hashMd5 !== undefined || this.props.details.song.key !== undefined) { clipboard.writeText(`beatdrop://songs/details/${this.props.details.song.hash || this.props.details.song.hashMd5 || this.props.song.key}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${this.props.details.song.songName} copied to clipboard!` })} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); this.props.setView(this.props.previousView) }} }>Share</MenuItem>
-                {(!!this.props.details.song.key ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${this.props.details.song.key}`)} }>View on BeastSaber</MenuItem> : null)}
+                {(!!this.props.details.song.id ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${this.props.details.song.id}`)} }>View on BeastSaber</MenuItem> : null)}
               </ContextMenu>
             </div>
             <Description details={ this.props.details } />
