@@ -9,6 +9,8 @@ import { setLatestReleaseNotes } from '../actions/settingsActions'
 
 const { ipcRenderer } = window.require('electron')
 
+const { shell } = window.require('electron')
+
 class ReleaseNotesModal extends Component {
 
   componentDidMount() {
@@ -25,22 +27,15 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li><b>Mod Support</b> is finally here! Enjoy easy installation and dependency mangement; the way it was meant to be.</li>
-              <li>Find out whats good and bad with <b>in-app BeastSaber ratings.</b></li>
-              <li>Show some love with the new <b>Donate page.</b></li>
-              <li>The lower-left icons get some <b>snazzy animations.</b></li>
-              <li>Search-by-numbers is back in style; you can now <b>search by IDs and Keys.</b></li>
-              <li>Forget what happened in the latest release? Try the new <b>View Release Notes button</b> in settings.</li>
-              <li>Credit given where credit is due; there is now a <b>credits section</b> in settings.</li>
-              <li>No internet? No problem. Added <b>offline mode</b> and <b>offline font support.</b></li>
-              <li>Dark theme not dark enough? Try the new <b>High Contrast theme</b> for a twiglight feel.</li>
+              <li>Not much, mostly bug fixes for now. :)</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>Fixed a bug that caused downloads to be inconsistent.</li>
-              <li>Fixed a bug where special characters would break searches.</li>
-              <li>Miscellaneous visual tweaks.</li>
+              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/3" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#3 - App crashes when local mods are loaded</a></li>
+              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/4" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#4 - Right-Click context menu shows options for multiple other songs, but clicked one</a></li>
+              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/5" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#5 - App installs incorrect version of mod</a></li>
+              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/7" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#7 - 'View on BeastSaber' opens wrong URL</a></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
