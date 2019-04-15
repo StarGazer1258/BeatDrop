@@ -29,6 +29,8 @@ class ReleaseNotesModal extends Component {
             <ul>
               <li>An extra special thanks to my first Patreon Supporter: <b>Shane R. Monroe</b>! Your name will now forever be engraved in the credits of BeatDrop!</li>
               <li>Want your name to be there too? <a href="https://www.patreon.com/bePatron?u=18487054" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>Become a Patron</a> at the Wave tier and above!</li>
+              <li>Added <b>labels for bottom-left buttons.</b></li>
+              <li>Better <b>animations for sidebar.</b></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
