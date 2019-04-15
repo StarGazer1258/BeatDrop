@@ -22,7 +22,6 @@ import { setView } from '../actions/viewActions'
 
 import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
 
-import '../sentry'
 import CrashMessage from './CrashMessage';
 
 const { ipcRenderer } = window.require('electron')

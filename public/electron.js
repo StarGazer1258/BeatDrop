@@ -8,9 +8,6 @@ const { autoUpdater } = require("electron-updater")
 
 const appIcon = path.join(__dirname, 'assets', 'appicons', 'ico', 'icon.ico')
 
-const Sentry = require('@sentry/electron')
-Sentry.init({ dsn: '***REMOVED***' })
-
 let mainWindow = null
 
 let launchEvents = {
