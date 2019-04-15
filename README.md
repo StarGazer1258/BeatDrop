@@ -1,4 +1,5 @@
-# BeatDrop[![Build Status](https://travis-ci.org/StarGazer1258/BeatDrop.svg?branch=master)](https://travis-ci.org/StarGazer1258/BeatDrop)
+[![Build Status](https://travis-ci.org/StarGazer1258/BeatDrop.svg?branch=master)](https://travis-ci.org/StarGazer1258/BeatDrop)
+# BeatDrop
 The ultimate content-manager for Beat Saber.
 
 ## How to get BeatDrop
