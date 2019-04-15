@@ -93,13 +93,34 @@ class SettingsView extends Component {
         <hr />
         <h2>Credits</h2>
         <b>BeatDrop Developer</b><br />
-        StarGazer1258<br /><br />
+        <ul>
+          <li>StarGazer1258</li>
+        </ul>
+        <br />
         <b>Icon and Animation Designer, BeastSaber Developer</b><br />
-        Elliotttate<br /><br />
+        <ul>
+          <li>Elliotttate</li>
+        </ul>
+        <br />
         <b>BeatMods Developer</b><br />
-        vanZeben<br /><br />
+        <ul>
+          <li>vanZeben</li>
+        </ul>
+        <br />
         <b>Additional Icons Provided by</b><br />
-        <a href="https://icons8.com/" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>Icons8</a><br /><br />
+        <ul>
+          <li><a href="https://icons8.com/" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>Icons8</a></li>
+        </ul>
+        <br />
+        <h3>Patreon Supporters</h3>
+        <ul>
+          <li>
+          <b>Wave Tier</b>
+          <ul>
+            <li>Shane R. Munroe</li>
+          </ul>
+          </li>
+        </ul>
         <br /><br />
       </div>
     )

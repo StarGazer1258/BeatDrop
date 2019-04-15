@@ -27,7 +27,8 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Not much, mostly bug fixes for now. :)</li>
+              <li>An extra special thanks to my first Patreon Supporter: <b>Shane R. Monroe</b>! Your name will now forever be engraved in the credits of BeatDrop!</li>
+              <li>Want your name to be there too? <a href="https://www.patreon.com/bePatron?u=18487054" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>Become a Patron</a> at the Wave tier and above!</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />

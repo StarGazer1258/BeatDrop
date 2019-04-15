@@ -9,6 +9,20 @@
     font-size: 32pt;
   }
 
+  h3 {
+    margin: 0;
+  }
+  
+  ul {
+    margin: 0;
+    list-style: none;
+    padding-left: 20px;
+
+    li {
+      margin: 0;
+    }
+  }
+
   #dl-location {
     display: none;
     margin-bottom: 20px;
