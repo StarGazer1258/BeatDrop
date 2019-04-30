@@ -9,8 +9,6 @@ import { setLatestReleaseNotes } from '../actions/settingsActions'
 
 const { ipcRenderer } = window.require('electron')
 
-const { shell } = window.require('electron')
-
 class ReleaseNotesModal extends Component {
 
   componentDidMount() {
@@ -27,18 +25,13 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>An extra special thanks to my first Patreon Supporter: <b>Shane R. Monroe</b>! Your name will now forever be engraved in the credits of BeatDrop!</li>
-              <li>Want your name to be there too? <a href="https://www.patreon.com/bePatron?u=18487054" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>Become a Patron</a> at the Wave tier and above!</li>
-              <li>Added <b>labels for bottom-left buttons.</b></li>
-              <li>Better <b>animations for sidebar.</b></li>
+              <li>Just fixes for now :)</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/3" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#3 - App crashes when local mods are loaded</a></li>
-              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/4" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#4 - Right-Click context menu shows options for multiple other songs, but clicked one</a></li>
-              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/5" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#5 - App installs incorrect version of mod</a></li>
-              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/7" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal(e.target.href) } }>#7 - 'View on BeastSaber' opens wrong URL</a></li>
+              <li>Fixed a big oof where <b>non-latest dependencies would not be installed.</b></li>
+              <li>Fixed <b>spelling of names in Patreon credits.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

@@ -160,7 +160,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive`)
     .then(res => res.json())
     .then(beatModsResponse => {
       let installedMods = getState().mods.installedMods
@@ -202,7 +202,7 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive`)
     .then(res => res.json())
     .then(beatModsResponse => {
       let activatedMods = getState().mods.installedMods.filter(mod => mod.active === true)
@@ -240,7 +240,7 @@ export const loadModDetails = modId => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -278,7 +278,8 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     }
     return
   }
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${encodeURIComponent(modName)}&version=${version}`)
+  console.log(`Fetching ${modName}@${version} from BeatMods...`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive&name=${encodeURIComponent(modName)}&version=${version}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       if(beatModsResponse.length === 0) return
