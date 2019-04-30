@@ -255,10 +255,13 @@ export const loadModDetails = modId => dispatch => {
 }
 
 export const installMod = (modName, version, dependencyOf = '') => (dispatch, getState) => {
+  console.log(`Asked to install ${modName}@${version}`)
   if(isModPendingInstall(modName)(dispatch, getState)) {
+    console.log(`${modName}@${version} is already pending install!`)
     return
   } else {
     if(!isModInstalled(modName)(dispatch, getState)) {
+      console.log(`${modName}@${version} isn't installed, adding it to pending installs...`)
       dispatch({
         type: ADD_PENDING_MOD,
         payload: modName
@@ -267,6 +270,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
   }
   if(gamePatchedWith()(dispatch, getState) === 'NONE' && !isModPendingInstall('BSIPA')(dispatch, getState)) patchGame()(dispatch, getState)
   if(isModInstalled(modName)(dispatch, getState)) {
+    console.log(`${modName}@${version} is already installed!`)
     if(!getState().mods.installedMods.filter(mod => mod.name === modName)[0].dependencyOf.includes(dependencyOf)) {
       dispatch({
         type: ADD_DEPENDENT,
@@ -278,9 +282,12 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     }
     return
   }
+  console.log(`Fetching ${modName}@${version} from BeatMods...`)
   fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${encodeURIComponent(modName)}&version=${version}`)
     .then(res => res.json())
     .then(beatModsResponse => {
+      console.log(`Got the BeatMods response for ${modName}@${version}`)
+      console.log(JSON.stringify(beatModsResponse))
       if(beatModsResponse.length === 0) return
       let utc = Date.now()
       let mod = beatModsResponse[beatModsResponse.length - 1]
@@ -302,6 +309,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       // Install Dependencies
       console.log(`Installing dependencies for ${ modName }...`)
       for(let i = 0; i < mod.dependencies.length; i++) {
+        console.log(`You gonna install ${mod.dependencies[i].name}@${mod.dependencies[i].version}?`)
         installMod(mod.dependencies[i].name, mod.dependencies[i].version, modName)(dispatch, getState)
         dependsOn.push(mod.dependencies[i].name)
       }
@@ -722,13 +730,9 @@ export const gamePatchedWith = () => (dispatch, getState) => {
 }
 
 export const isModInstalled = modName => (dispatch, getState) => {
-  console.log(modName + ' installed: ' + getState().mods.installedMods.some(mod => mod.name === modName))
-  console.log('Installed mods: ' + getState().mods.installedMods.join(', '))
   return getState().mods.installedMods.some(mod => mod.name === modName)
 }
 
 export const isModPendingInstall = modName => (dispatch, getState) => {
-  console.log(modName + ' pending install: ' + getState().mods.pendingInstall.some(mod => mod === modName))
-  console.log('Pending mods: ' + getState().mods.pendingInstall)
   return getState().mods.pendingInstall.some(mod => mod === modName)
 }

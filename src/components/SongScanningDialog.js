@@ -5,12 +5,14 @@ import { connect } from 'react-redux'
 import Modal from './Modal';
 import ProgressBar from './ProgressBar';
 
+import { SET_SCANNING_FOR_SONGS } from '../actions/types'
+
 class SongScanningDialog extends Component {
 
   render() {
     return (
       this.props.scanning ?
-        <Modal width={ 575 } height={ 330 }>
+        <Modal width={ 575 } height={ 330 } onClose={ () => { this.props.dispatch({ type: SET_SCANNING_FOR_SONGS, payload: false }) } }>
           <h1 id="scanning-text" className={ `theme-${this.props.theme}` }>Scanning for songs...</h1>
           <ProgressBar progress={ this.props.songsLoaded / this.props.songsDiscovered * 100 } indeterminate />
         </Modal>

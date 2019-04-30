@@ -1,0 +1,34 @@
+.checkbox {
+  width: 25px;
+  height: 25px;
+  background: url('../assets/checkbox-unchecked.png');
+  background-size: 25px !important;
+  cursor: pointer;
+
+  &.checked {
+    background: url('../assets/checkbox-checked.png');
+  }
+
+  &.indeterminate {
+    background: url('../assets/checkbox-indeterminate.png');
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.theme-dark, .theme-hc {
+  .checkbox {
+    background: url('../assets/dark/checkbox-unchecked.png');
+
+    &.checked {
+      background: url('../assets/dark/checkbox-checked.png');
+    }
+
+    &.indeterminate {
+      background: url('../assets/dark/checkbox-indeterminate.png');
+    }
+  }
+}

@@ -18,6 +18,7 @@ import PlaylistDetails from './PlaylistDetails'
 import DonateView from './DonateView'
 import ModsView from './ModsView'
 import ModDetails from './ModDetails'
+import ModsListView from './ModsListView';
 
 function Songs(props) {
   switch(props.songView) {
@@ -43,7 +44,7 @@ function MainView(props) {
     case VIEWS.PLAYLIST_LIST:
       return <PlaylistView />
     case VIEWS.MODS_VIEW:
-      return <ModsView />
+      return <ModsListView />
     case VIEWS.SETTINGS:
       return <SettingsView />
     case VIEWS.SEARCH:
@@ -76,7 +77,7 @@ class ViewSwitcher extends Component {
       <div id="view-switcher" className={ `theme-${this.props.settings.theme}` }>
         <SideBar />
         <div className={ `view-right ${this.props.sidebarOpen ? '' : 'sidebar-collapsed'}` }>
-          <SortBar hidden={ this.props.view !== VIEWS.SONG_LIST } />
+          { [VIEWS.SONG_LIST, VIEWS.MODS_VIEW].some(view => this.props.view === view) && <SortBar /> }
           <MainView view={ this.props.view } songView={ this.props.songView } />
           <Warnings warnings={ this.props.warnings } />
         </div>

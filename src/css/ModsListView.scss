@@ -1,0 +1,57 @@
+@import './StyleConstants';
+
+#mod-list {
+  height: 100%;
+  padding: 0 20px;
+
+  h1 {
+    font-size: 28pt;
+    margin-top: 15px;
+    margin-left: 10px;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    height: calc(100% - 112px);
+    overflow-y: scroll;
+  }
+
+  th, td, span {
+    text-align: left;
+  }
+
+  th span {
+    position: absolute;
+    top: 60px;
+    width: 100%;
+    display: block;
+    color: $beatdrop-blue;
+    background: white;
+    padding: 5px !important;
+    margin-top: 65px;
+    
+    font-weight: 400;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  tbody {
+    position: relative;
+    top: 50px;
+
+    td {
+      padding: 5px;
+    }
+  }
+}
+
+.theme-dark #mod-list th span {
+  color: $theme-dark-accent-color;
+  background: $theme-dark-background-color;
+}
+
+.theme-hc #mod-list th span {
+  color: $theme-hc-accent-color;
+  background: $theme-hc-background-color;
+}
