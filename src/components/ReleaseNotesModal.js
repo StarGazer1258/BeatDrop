@@ -25,13 +25,13 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Just fixes for now :)</li>
+              <li>Added a highly-requested <b>list view for mods.</b></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>Fixed a big oof where <b>non-latest dependencies would not be installed.</b></li>
-              <li>Fixed <b>spelling of names in Patreon credits.</b></li>
+              <li>You can now <b>exit the song scanning dialog</b> if it becomes stuck.</li>
+              <li>Mod categories are now <b>pulled directly from BeatMods.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
