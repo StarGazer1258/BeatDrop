@@ -122,40 +122,38 @@
   }
 }
 
-.theme-dark {
-  #mod-details {
-    .action-buttons .action-button {
-      background-color: rgba($theme-dark-accent-color, 0.8) !important;
+.theme-dark #mod-details {
+  .action-buttons .action-button {
+    background-color: rgba($theme-dark-accent-color, 0.8) !important;
+
+    &:hover {
+      background: $theme-dark-accent-color !important;
+    }
+
+    &.install-button {
+      background: rgba($theme-dark-accent-color, 0.3) !important;
+      border: 3px solid rgba($theme-dark-accent-color, 0.8) !important;
+      
+      span:first-child {
+        background: rgba($theme-dark-accent-color, 0.8) !important;
+      }
 
       &:hover {
-        background: $theme-dark-accent-color !important;
-      }
+        border: 3px solid $theme-dark-accent-color !important;
 
-      &.install-button {
-        background: rgba($theme-dark-accent-color, 0.3) !important;
-        border: 3px solid rgba($theme-dark-accent-color, 0.8) !important;
-        
         span:first-child {
-          background: rgba($theme-dark-accent-color, 0.8) !important;
-        }
-
-        &:hover {
-          border: 3px solid $theme-dark-accent-color !important;
-
-          span:first-child {
-            background: $theme-dark-accent-color !important;
-          }
+          background: $theme-dark-accent-color !important;
         }
       }
     }
+  }
 
-    .badge {
-      background-color: $theme-dark-accent-color !important;
-    }
+  .badge {
+    background-color: $theme-dark-accent-color !important;
   }
 }
 
-.theme-hc {
+.theme-hc #mod-details {
   .action-buttons .action-button {
     background-color: rgba($theme-hc-accent-color, 0.8) !important;
 

@@ -5,7 +5,7 @@ import '../css/SortBar.scss'
 import TabGroup from './TabGroup';
 import Tab from './Tab';
 
-import { setSongView } from '../actions/viewActions'
+import { setSubView } from '../actions/viewActions'
 
 import * as VIEWS from '../views'
  
@@ -14,22 +14,22 @@ class SortBar extends Component {
     if(this.props.hidden) return null
     return (
       <div className='sort-bar'>
-        { this.props.view === VIEWS.SONG_LIST && <TabGroup label="View:"><Tab active={ this.props.songView === 'list' } onClick={ () => {this.props.setSongView('list')} }>List</Tab><Tab active={ this.props.songView === 'compact-list' } onClick={ () => {this.props.setSongView('compact-list')} }>Compact List</Tab><Tab active={ this.props.songView === 'grid' } onClick={ () => {this.props.setSongView('grid')} }>Grid</Tab></TabGroup> }
-        { this.props.view === VIEWS.MODS_VIEW && <TabGroup label="View:"><Tab active={ this.props.songView === 'basic' } onClick={ () => {this.props.setSongView('basic')} }>Basic</Tab><Tab active={ this.props.songView === 'advanced' } onClick={ () => {this.props.setSongView('advanced')} }>Advanced</Tab></TabGroup> }
+        { this.props.view === VIEWS.SONG_LIST && <TabGroup label="View:"><Tab active={ this.props.subView === 'list' } onClick={ () => {this.props.setSubView('list')} }>List</Tab><Tab active={ this.props.subView === 'compact-list' } onClick={ () => {this.props.setSubView('compact-list')} }>Compact List</Tab><Tab active={ this.props.subView === 'grid' } onClick={ () => {this.props.setSubView('grid')} }>Grid</Tab></TabGroup> }
+        { this.props.view === VIEWS.MODS_VIEW && <TabGroup label="View:"><Tab active={ this.props.subView === 'list' } onClick={ () => {this.props.setSubView('list')} }>List</Tab><Tab active={ this.props.subView === 'tiles' } onClick={ () => {this.props.setSubView('tiles')} }>Tiles</Tab></TabGroup> }
       </div>
     )
   }
 }
 
 SortBar.propTypes = {
-  setSongView: PropTypes.func.isRequired
+  setsubView: PropTypes.func.isRequired
 }
 
 let mapStateToProps = (state) => ({
   view: state.view.view,
-  songView: state.view.songView
+  subView: state.view.subView
 })
 
-export default connect(mapStateToProps, { setSongView })(SortBar)
+export default connect(mapStateToProps, { setSubView })(SortBar)
 
 //<TabGroup label="Sort Order:"><Tab active={true}>Ascending</Tab><Tab>Descending</Tab></TabGroup>

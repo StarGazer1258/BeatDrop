@@ -63,7 +63,7 @@ class SideBar extends Component {
           <ul>
             <li title={ `All BeatMod Mods${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `modsaber-all${this.props.view === VIEWS.MODS_VIEW && this.props.resource === RESOURCES.BEATMODS.NEW_MODS ? ' selected' : ''}${this.props.offlineMode ? ' disabled' : ''}` } onClick={ this.props.offlineMode ? null : this.props.fetchApprovedMods }>All</li>
             <li title={ `Recommended Mods${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `modsaber-recommended${this.props.view === VIEWS.MODS_VIEW && this.props.resource === RESOURCES.BEATMODS.RECOMMENDED_MODS ? ' selected' : ''}${this.props.offlineMode ? ' disabled' : ''}` } onClick={ this.props.offlineMode ? null : this.props.fetchRecommendedMods }>Recommended</li>
-            <li title={ `Mod Categories${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `modsaber-categories${this.props.view === VIEWS.MODS_VIEW && this.props.resource === RESOURCES.BEATMODS.MOD_CATEGORIES ? ' selected' : ''}${this.props.offlineMode ? ' disabled' : ''}` } onClick={ this.props.offlineMode ? null : this.props.fetchModCategories }>Categories</li>
+            <li title={ `Mod Categories${this.props.offlineMode ? ' (Not available in offline mode)' : ''}` } className={ `modsaber-categories${this.props.view === VIEWS.MODS_VIEW && this.props.resource === RESOURCES.BEATMODS.MOD_CATEGORY_SELECT ? ' selected' : ''}${this.props.offlineMode || (this.props.view === VIEWS.MODS_VIEW && this.props.subView === 'list') ? ' disabled' : ''}` } onClick={ (this.props.offlineMode || (this.props.view === VIEWS.MODS_VIEW && this.props.subView === 'list')) ? null : this.props.fetchModCategories }>Categories</li>
           </ul>
         </div>
         <div className="buttons-bottom">
@@ -95,6 +95,7 @@ SideBar.propTypes = {
 
 const mapStateToProps = state => ({
   view: state.view.view,
+  subView: state.view.subView,
   resource: state.resource,
   sidebarOpen: state.sidebar.isOpen,
   offlineMode: state.settings.offlineMode,

@@ -21,7 +21,7 @@ import ModDetails from './ModDetails'
 import ModsListView from './ModsListView';
 
 function Songs(props) {
-  switch(props.songView) {
+  switch(props.subView) {
     case 'list':
       return <SongList />
     case 'compact-list':
@@ -40,11 +40,11 @@ function MainView(props) {
     case VIEWS.DONATE:
       return <DonateView />
     case VIEWS.SONG_LIST:
-      return <Songs songView={ props.songView } />
+      return <Songs subView={ props.subView } />
     case VIEWS.PLAYLIST_LIST:
       return <PlaylistView />
     case VIEWS.MODS_VIEW:
-      return <ModsListView />
+      return props.subView === 'list' ? <ModsListView /> : <ModsView />
     case VIEWS.SETTINGS:
       return <SettingsView />
     case VIEWS.SEARCH:
@@ -56,7 +56,7 @@ function MainView(props) {
     case VIEWS.MOD_DETAILS:
       return <ModDetails />
     default:
-      return <Songs songView={ props.songView } />
+      return <Songs subView={ props.subView } />
   }
 }
 
@@ -77,8 +77,8 @@ class ViewSwitcher extends Component {
       <div id="view-switcher" className={ `theme-${this.props.settings.theme}` }>
         <SideBar />
         <div className={ `view-right ${this.props.sidebarOpen ? '' : 'sidebar-collapsed'}` }>
-          { [VIEWS.SONG_LIST, VIEWS.MODS_VIEW].some(view => this.props.view === view) && <SortBar /> }
-          <MainView view={ this.props.view } songView={ this.props.songView } />
+          { [VIEWS.SONG_LIST].some(view => this.props.view === view) && <SortBar /> }
+          <MainView view={ this.props.view } subView={ this.props.subView } />
           <Warnings warnings={ this.props.warnings } />
         </div>
       </div>
@@ -88,7 +88,7 @@ class ViewSwitcher extends Component {
 
 ViewSwitcher.propTypes = {
   view: PropTypes.string.isRequired,
-  songView: PropTypes.string.isRequired,
+  subView: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
   details: PropTypes.object.isRequired,
   warnings: PropTypes.array,
@@ -97,7 +97,7 @@ ViewSwitcher.propTypes = {
 
 const mapStateToProps = state => ({
   view: state.view.view,
-  songView: state.view.songView,
+  subView: state.view.subView,
   settings: state.settings,
   details: state.details,
   warnings: state.warnings,

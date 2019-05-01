@@ -84,7 +84,7 @@ class SongList extends Component {
                 tag: '.ratings-loaded'
               },
               {
-                boolean: this.props.view.songView === 'compact-list',
+                boolean: this.props.view.subView === 'compact-list',
                 tag: '.compact'
               }
             ]

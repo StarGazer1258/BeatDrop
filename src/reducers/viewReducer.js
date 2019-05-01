@@ -1,10 +1,10 @@
-import  { SET_VIEW, SET_SONG_VIEW } from '../actions/types'
+import  { SET_VIEW, SET_SUB_VIEW } from '../actions/types'
 import { WELCOME, SONG_LIST } from '../views'
 
 const initialState = {
   previousView: SONG_LIST,
   view: WELCOME,
-  songView: 'list'
+  subView: 'list'
 }
 
 export default function(state = initialState, action) {
@@ -13,12 +13,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         previousView: state.view,
-        view: action.payload
+        view: action.payload,
       }
-    case SET_SONG_VIEW:
+    case SET_SUB_VIEW:
       return {
         ...state,
-        songView: action.payload
+        subView: action.payload
       }
     default:
       return state

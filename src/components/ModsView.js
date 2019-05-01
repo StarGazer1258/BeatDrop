@@ -11,76 +11,25 @@ import { ContextMenuTrigger, MenuItem, ContextMenu } from 'react-contextmenu';
 import { makeRenderKey } from '../utilities'
 import LibraryIndicator from './LibraryIndicator';
 import DeactivatedIndicator from './DeactivatedIndicator';
+import SortBar from './SortBar';
 
 const { clipboard, shell } = window.require('electron')
 
-const categories = [
-  {
-    class: 'core',
-    name: 'Core'
-  },
-  {
-    class: 'cosmetic',
-    name: 'Cosmetic'
-  },
-  {
-    class: 'training',
-    name: 'Practice / Training'
-  },
-  
-  {
-    class: 'gameplay',
-    name: 'Gameplay'
-  },
-  {
-    class: 'stream',
-    name: 'Streaming Tools'
-  },
-  {
-    class: 'library',
-    name: 'Libraries'
-  },
-  {
-    class: 'text',
-    name: 'UI Enhancements'
-  }
-  /*{
-    class: 'lighting',
-    name: 'Lighting Changes'
-  },
-  {
-    class: 'tweak',
-    name: 'Tweaks / Tools'
-  },
-  {
-    class: 'multiplayer',
-    name: 'Multiplayer'
-  },
-  {
-    class: 'text',
-    name: 'Text Changes'
-  },
-  {
-    class: 'other',
-    name: 'Other'
-  }*/
-]
-
-
 class ModsView extends Component {
-
   Catergories(props) {
     return (
-      <div className="categories-list">
-        {categories.map((category) => {
-          return (
-            <div className="category-tile" onClick={ () => { props.fetchModCategory(category.name.toLowerCase()); this.setState({ category: category.name }) } }>
-              <div className={ `category-image ${category.class}` }></div>
-              <div className="category-name">{category.name}</div>
-            </div>
-          )
-        })}
-      </div>
+      <ul className="categories-list">
+        { this.state.categories ? 
+          this.state.categories.map((category) => {
+            return (
+              <li className="category" onClick={ () => { props.fetchModCategory(category.toLowerCase()); this.setState({ category }) } }>
+                <div className="category-name">{category}</div>
+              </li>
+            )
+          })
+        :
+         null }
+      </ul>
     )
   }
 
@@ -99,6 +48,22 @@ class ModsView extends Component {
       default:
         return null
     }
+  }
+
+  componentDidMount() {
+    let categories = []
+    let prevCat = ''
+    fetch('https://beatmods.com/api/v1/mod?status=approved')
+      .then(res => res.json())
+      .then(beatModsResponse => {
+        for(let i = 0; i < beatModsResponse.length; i++) {
+          if(beatModsResponse[i].category !== prevCat) {
+            prevCat = beatModsResponse[i].category
+            categories.push(beatModsResponse[i].category)
+          }
+        }
+        this.setState({ categories })
+      })
   }
 
   constructor(props) {
@@ -136,6 +101,8 @@ class ModsView extends Component {
       )
     } else {
       return (
+        <>
+        <SortBar />
         <div id="mod-marketplace">
           <h1>Mods</h1>
           <this.SubCategory sub={ this.props.resource } category={ this.state.category } />
@@ -200,6 +167,7 @@ class ModsView extends Component {
               </div> : <this.Catergories fetchModCategory={ this.props.fetchModCategory } />
             }
         </div>
+        </>
       )
     }
   }

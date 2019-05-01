@@ -1,11 +1,16 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import '../css/ModsListView.scss'
 
 import Checkbox from './Checkbox'
 
 import { installMod, uninstallMod, loadModDetails } from '../actions/modActions'
 
+import { BEATMODS, LIBRARY } from '../constants/resources';
+
+import Loader from '../assets/loading-dots2.png'
+
 import { connect } from 'react-redux'
+import SortBar from './SortBar';
 
 class ModsListView extends Component {
   constructor(props) {
@@ -17,16 +22,41 @@ class ModsListView extends Component {
       sortBy: 'name',
       sortDirection: 0
     }
+
+    this.SubCategory = this.SubCategory.bind(this)
+  }
+
+  SubCategory() {
+    switch(this.props.resource) {
+      case BEATMODS.NEW_MODS:
+        return <h1>Approved Mods</h1>
+      case BEATMODS.RECOMMENDED_MODS:
+        return <h1>Recommended Mods</h1>
+      case BEATMODS.MOD_CATEGORIES:
+        return <h1>{ this.state.category }</h1>
+      case BEATMODS.MOD_CATEGORY_SELECT:
+        return <h1>Categories</h1>
+      case LIBRARY.MODS.ALL:
+        return <h1>Library Mods</h1>
+      case LIBRARY.MODS.ACTIVATED:
+        return <h1>Activated Mods</h1>
+      default:
+        return null
+    }
   }
 
   render() {
       return (
         <div id="mod-list">
-          <h1>Mods</h1>
+          <SortBar />
+          <this.SubCategory />
+          {this.props.loading ?
+            <img style={ { width: '200px', marginLeft: 'calc(50% - 100px)' } } src={ Loader } alt="Loading..."/>
+          :
           <table>
             <thead>
               <tr>
-                <th><span></span></th>
+                <th><span>&nbsp;</span></th>
                 <th onClick={ () => { this.setState({ sortBy: 'name', sortDirection: this.state.sortBy === 'name' ? !this.state.sortDirection : 0 }) } }><span>Mod Name{ this.state.sortBy === 'name' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
                 <th width={ 80 } onClick={ () => { this.setState({ sortBy: 'version', sortDirection: this.state.sortBy === 'version' ? !this.state.sortDirection : 0 }) } }><span>Version{ this.state.sortBy === 'version' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
                 <th onClick={ () => { this.setState({ sortBy: 'author', sortDirection: this.state.sortBy === 'author' ? !this.state.sortDirection : 0 }) } }><span>Author{ this.state.sortBy === 'author' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
@@ -47,6 +77,7 @@ class ModsListView extends Component {
                       case 'version':
                         if(a.version < b.version) return this.state.sortDirection * 2 - 1
                         if(a.version > b.version) return -(this.state.sortDirection * 2 - 1)
+                        return 0
                       case 'author':
                         if(a.author.username < b.author.username) return this.state.sortDirection * 2 - 1
                         if(a.author.username > b.author.username) return -(this.state.sortDirection * 2 - 1)
@@ -63,13 +94,19 @@ class ModsListView extends Component {
                         return 0
                     }
                   })
-                  .map((mod, i) => {
+                  .map(mod => {
                     return (
-                      <tr key={ `${mod.name}@${mod.version}${this.props.mods.pendingInstall.some(m => m.name === mod.name) ? '.installed' : ''}` }>
-                        <td width={ 20 }>
+                      <tr key={ `${mod.name}@${mod.version}${this.props.mods.pendingInstall.some(m => m.name === mod.name) ? '.installed' : ''}` }  onClick={ () => { this.props.loadModDetails(mod._id) } }>
+                        <td
+                          width={ 20 }
+                          title={
+                            this.props.mods.installedMods.some(m => m.name === mod.name) ?
+                              this.props.mods.installedMods.filter(m => m.name === mod.name)[0].dependencyOf.some(dependent => this.props.mods.installedMods.some(installedMod => installedMod.name === dependent)) ? `${mod.name} cannot be uninstalled: mod is a dependency of another installed mod.` : `Uninstall ${mod.name}`
+                            : `Install ${mod.name}` }
+                        >
                           {
                             this.props.mods.pendingInstall.some(m => m === mod.name) ?
-                              <img src={ require('../assets/loading.svg') } alt="Installing..." style={ { height: "22px" } }/>
+                              <div className="installing-mod" />
                             :
                           <Checkbox
                             checked={ this.props.mods.installedMods.some(m => m.name === mod.name) }
@@ -88,7 +125,7 @@ class ModsListView extends Component {
                           />
                         }
                         </td>
-                        <td onClick={ () => { this.props.loadModDetails(mod._id) } }>{ mod.name }</td>
+                        <td>{ mod.name }</td>
                         <td>{ mod.version }</td>
                         <td>{ mod.author.username }</td>
                         <td>{ mod.category }</td>
@@ -98,7 +135,7 @@ class ModsListView extends Component {
                   })
               }
             </tbody>
-          </table>
+          </table>}
         </div>
         
       )
@@ -106,7 +143,9 @@ class ModsListView extends Component {
 }
 
 const mapStateToProps = state => ({
-  mods: state.mods
+  mods: state.mods,
+  resource: state.resource,
+  loading: state.loading
 })
 
 export default connect(mapStateToProps, { installMod, uninstallMod, loadModDetails })(ModsListView)

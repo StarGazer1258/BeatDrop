@@ -1,4 +1,4 @@
-import { SET_VIEW, SET_SONG_VIEW, SET_SCROLLTOP } from './types'
+import { SET_VIEW, SET_SUB_VIEW, SET_SCROLLTOP } from './types'
 
 export const setView = view => dispatch => {
   dispatch({
@@ -7,9 +7,9 @@ export const setView = view => dispatch => {
   })
 }
 
-export const setSongView = view => dispatch => {
+export const setSubView = view => dispatch => {
   dispatch({
-    type: SET_SONG_VIEW,
+    type: SET_SUB_VIEW,
     payload: view
   })
   dispatch({
