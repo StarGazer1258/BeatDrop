@@ -12,6 +12,8 @@ import Loader from '../assets/loading-dots2.png'
 import { connect } from 'react-redux'
 import SortBar from './SortBar';
 
+const { shell } = window.require('electron')
+
 class ModsListView extends Component {
   constructor(props) {
     super(props)
@@ -127,7 +129,7 @@ class ModsListView extends Component {
                         </td>
                         <td>{ mod.name }</td>
                         <td>{ mod.version }</td>
-                        <td>{ mod.author.username }</td>
+                        <td>{ mod.name === 'YUR Fit Calorie Tracker' ? <a href='https://yur.chat' onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal('https://yur.chat') } }>https://yur.chat</a> : (mod.author.username || 'Unknown') }</td>
                         <td>{ mod.category }</td>
                         <td>{ `${new Date(mod.uploadDate).toLocaleDateString() }, ${ new Date(mod.uploadDate).toLocaleTimeString() }` }</td>
                       </tr>

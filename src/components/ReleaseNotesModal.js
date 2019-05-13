@@ -26,11 +26,12 @@ class ReleaseNotesModal extends Component {
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
               <li>Added a highly-requested <b>list view for mods.</b></li>
+              <li>Shoutout to the newest Wave-tier Patron: <b>Carize</b>! Thank you all for you continued support!</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>You can now <b>exit the song scanning dialog</b> if it becomes stuck.</li>
+              <li>You can now <b>exit the song scanning dialog</b> by clicking outside if it becomes stuck.</li>
               <li>Mod categories are now <b>pulled directly from BeatMods.</b></li>
             </ul>
             <br />

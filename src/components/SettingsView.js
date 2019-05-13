@@ -118,6 +118,7 @@ class SettingsView extends Component {
           <b>Wave Tier</b>
           <ul>
             <li>Shane R. Monroe</li>
+            <li>Carize</li>
           </ul>
           </li>
         </ul>
