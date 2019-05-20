@@ -25,13 +25,12 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Added a highly-requested <b>list view for mods.</b></li>
+              <li>Added <b>custom theme image</b> setting. You can now download songs while watching anime or looking at cute cats!</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>You can now <b>exit the song scanning dialog</b> if it becomes stuck.</li>
-              <li>Mod categories are now <b>pulled directly from BeatMods.</b></li>
+              <li>Nothing yet!</li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
