@@ -406,7 +406,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
           dispatch({
             type: DISPLAY_WARNING,
             payload: {
-              text: 'Could not create CustomSongs directory. Make sure you have your Beat Saber indsatllation directory set properly.'
+              text: 'Could not create CustomSongs directory. Make sure you have your Beat Saber installation directory set properly.'
             }
           })
         }
