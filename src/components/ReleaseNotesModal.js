@@ -30,7 +30,8 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>Nothing yet!</li>
+              <li>Song scanning has been completely rewritten to be <b>much more stable!</b></li>
+              <li>The song scanning modal now <b>provides more information</b> and <b>persists until exited.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

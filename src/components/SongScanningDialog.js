@@ -9,12 +9,26 @@ import { SET_SCANNING_FOR_SONGS } from '../actions/types'
 
 class SongScanningDialog extends Component {
 
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      open: false
+    }
+  }
+
+  componentWillReceiveProps(props) {
+    if(props.scanning === true) this.setState({ open: true })
+  }
+
   render() {
     return (
-      this.props.scanning ?
-        <Modal width={ 575 } height={ 330 } onClose={ () => { this.props.dispatch({ type: SET_SCANNING_FOR_SONGS, payload: false }) } }>
-          <h1 id="scanning-text" className={ `theme-${this.props.theme}` }>Scanning for songs...</h1>
-          <ProgressBar progress={ this.props.songsLoaded / this.props.songsDiscovered * 100 } indeterminate />
+      this.state.open ?
+        <Modal width={ 575 } height={ 330 } onClose={ () => { this.setState({ open: false }) } }>
+          <h1 className={ `scanning-text theme-${this.props.theme}` }>{ !this.props.scanning ? `Finished scanning for songs.` : 'Scanning for songs...' }</h1>
+          <ProgressBar progress={ this.props.processedFiles / this.props.discoveredFiles * 100 } />
+          <h5 className="scanning-text">{ `${ this.props.processedFiles } / ${ this.props.discoveredFiles } Files scanned.${ !this.props.scanning ? ` | ${this.props.songs.length } songs discovered.` : '..' }` }</h5>
+          { !this.props.scanning ? <h5 className="scanning-text">Click outside to exit.</h5> : null }
         </Modal>
       : null
     )
@@ -23,9 +37,10 @@ class SongScanningDialog extends Component {
 
 let mapStateToProps = state => ({
   theme: state.settings.theme,
+  songs: state.songs.downloadedSongs,
   scanning: state.songs.scanningForSongs,
-  songsLoaded: state.songs.songsLoaded,
-  songsDicovered: state.songs.songsDiscovered
+  discoveredFiles: state.songs.discoveredFiles,
+  processedFiles: state.songs.processedFiles
 })
 
 export default connect(mapStateToProps, null)(SongScanningDialog)

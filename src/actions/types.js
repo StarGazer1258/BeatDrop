@@ -14,6 +14,8 @@ export const SET_SCROLLTOP              = 'SET_SCROLLTOP'
 export const SET_DOWNLOADING_COUNT      = 'SET_DOWNLOADING_COUNT'
 export const SET_WAIT_LIST              = 'EST_WAIT_LIST'
 export const SET_SCANNING_FOR_SONGS     = 'SET_SCANNING_FOR SONGS'
+export const SET_DISCOVERED_FILES       = 'SET_DISCOVERED_FILES'
+export const SET_PROCESSED_FILES        = 'SET_PROCESSED_FILES'
 export const SET_LOADING                = 'SET_LOADING'
 export const SET_LOADING_MORE           = 'SET_LOADING_MORE'
 
