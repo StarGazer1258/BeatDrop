@@ -26,12 +26,13 @@ class ReleaseNotesModal extends Component {
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
               <li>Added <b>custom theme image</b> setting. You can now download songs while watching anime or looking at cute cats!</li>
+              <li>Added <b>game version support.</b> This means you can set your game version and get only the correct mods for the version. (May require mod reinstallation to update.)</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>Song scanning has been completely rewritten to be <b>much more stable!</b></li>
-              <li>The song scanning modal now <b>provides more information</b> and <b>persists until exited.</b></li>
+              <li><b>Song scanning</b> has been completely rewritten to be <b>much more stable!</b></li>
+              <li>The <b>song scanning modal</b> now <b>provides more information</b> and <b>persists until exited.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

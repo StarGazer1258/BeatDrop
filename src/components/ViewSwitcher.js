@@ -77,8 +77,18 @@ class ViewSwitcher extends Component {
       <div id="view-switcher" className={ `theme-${this.props.settings.theme}` }>
         <SideBar />
         <div className={ `view-right ${this.props.sidebarOpen ? '' : 'sidebar-collapsed'}` }>
-          { [VIEWS.SONG_LIST].some(view => this.props.view === view) && <SortBar /> }
-          <MainView view={ this.props.view } subView={ this.props.subView } />
+          { (this.props.settings.installationDirectory === ''   ||
+             this.props.settings.installationType === undefined ||
+             this.props.settings.installationType === 'choose'  ||
+             this.props.settings.gameVersion === undefined      ||
+             this.props.settings.gameVersion === 'choose')      &&
+             this.props.view !== VIEWS.WELCOME                  ?
+               <WelcomePage />                                  :
+               <>
+                 { [VIEWS.SONG_LIST].some(view => this.props.view === view) && <SortBar /> }
+                 <MainView view={ this.props.view } subView={ this.props.subView } />
+               </>
+          }
           <Warnings warnings={ this.props.warnings } />
         </div>
       </div>

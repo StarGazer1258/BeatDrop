@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 import Modal from './Modal';
 import ProgressBar from './ProgressBar';
 
-import { SET_SCANNING_FOR_SONGS } from '../actions/types'
-
 class SongScanningDialog extends Component {
 
   constructor(props) {

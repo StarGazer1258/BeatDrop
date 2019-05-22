@@ -6,7 +6,7 @@ import PatreonButton from '../assets/become-a-patron-button.png'
 import Button from './Button';
 import Modal from './Modal'
 
-import { setInstallationDirectory, setInstallationType } from '../actions/settingsActions'
+import { setInstallationDirectory, setInstallationType, setGameVersion } from '../actions/settingsActions'
 import { checkDownloadedSongs } from '../actions/queueActions'
 import { checkInstalledMods } from '../actions/modActions'
 import { fetchNew } from '../actions/songListActions'
@@ -25,7 +25,13 @@ class WelcomePage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.settings.installationDirectory === '' || this.props.settings.installationType === 'choose') { this.setState({ modalOpen: true }) }
+    if(this.props.settings.installationDirectory === ''   ||
+       this.props.settings.installationType === 'choose'  ||
+       this.props.settings.installationType === undefined ||
+       this.props.settings.gameVersion === 'choose'       ||
+       this.props.settings.gameVersion === undefined) {
+         this.setState({ modalOpen: true })
+       }
   }
 
   render() {
@@ -44,15 +50,32 @@ class WelcomePage extends Component {
             <input type="file" id="dl-location" webkitdirectory="" onChange={ (e) => {this.props.setInstallationDirectory(e.target.files[0].path || this.props.settings.installationDirectory)} } /><br />
             <label htmlFor="dl-location"><Button type="primary" onClick={ () => {} }>Choose Folder</Button></label><Button onClick={ () => {window.require('child_process').exec('start "" "' + this.props.settings.installationDirectory + '"')} }>Open Folder</Button><br /><br />
             <label htmlFor="installation-type">Installation Type</label><br /><br />
-            <select id="installation-type-select" name="installation-type-select" value={ this.props.settings.installationType } onChange={ (e) => { this.props.setInstallationType(e.target.value) } }>
-              <option value="choose">Choose One</option>
-              <option value="steam">Steam</option>
-              <option value="oculus">Oculus</option>
-            </select>
+            <table>
+              <tr>
+                <th>Installation Type&emsp;</th>
+                <th>Game Version</th>
+              </tr>
+              <br />
+              <tr>
+                <td>
+                  <select id="installation-type-select" name="installation-type-select" value={ this.props.settings.installationType } onChange={ (e) => { this.props.setInstallationType(e.target.value) } }>
+                    <option value="choose">Choose One</option>
+                    <option value="steam">Steam</option>
+                    <option value="oculus">Oculus</option>
+                  </select>
+                </td>
+                <td>
+                  <select id="game-version-select" name="game-version-select" value={ this.props.settings.gameVersion } onChange={ (e) => { this.props.setGameVersion(e.target.value) } }>
+                    <option value="choose">Choose One</option>
+                    { this.state.gameVersions.map(version => <option value={ version }>{ version }</option>) }
+                  </select>
+                </td>
+              </tr>
+            </table>
             <br /><br />
             { this.props.settings.installationType === 'steam' && this.props.settings.installationDirectory.includes('Oculus') ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Oculus version of BeatSaber. If this is the case, please set "Installation Type" to "Oculus". Otherwise, you can ignore this message.</span><br /><br /></> : null }
             { this.props.settings.installationType === 'oculus' && this.props.settings.installationDirectory.includes('Steam') ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Steam version of BeatSaber. If this is the case, please set "Installation Type" to "Steam". Otherwise, you can ignore this message.</span><br /><br /></> : null }
-            <Button type='primary' onClick={ () => { this.props.checkDownloadedSongs(); this.props.checkInstalledMods(); this.setState({ modalOpen: false }) } } disabled={ this.props.settings.installationDirectory === '' || this.props.settings.installationType === 'choose' }>Continue</Button>
+            <Button type='primary' onClick={ () => { this.props.checkDownloadedSongs(); this.props.checkInstalledMods(); this.setState({ modalOpen: false }) } } disabled={ this.props.settings.installationDirectory === '' || this.props.settings.installationType === 'choose' || this.props.settings.installationType === undefined || this.props.settings.gameVersion === 'choose' || this.props.settings.gameVersion === undefined }>Continue</Button>
           </Modal> : null }
       </div>
     )
@@ -64,4 +87,4 @@ const mapStateToProps = state => ({
   settings: state.settings
 })
 
-export default connect(mapStateToProps, { fetchNew, checkDownloadedSongs, checkInstalledMods, setInstallationDirectory, setInstallationType })(WelcomePage)
+export default connect(mapStateToProps, { fetchNew, checkDownloadedSongs, checkInstalledMods, setInstallationDirectory, setInstallationType, setGameVersion })(WelcomePage)
