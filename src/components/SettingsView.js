@@ -143,7 +143,20 @@ class SettingsView extends Component {
           <ul>
             <li>Shane R. Monroe</li>
             <li>Carize</li>
+            <li>Marc Smith</li>
           </ul>
+          </li>
+          <li>
+            <b>Hurricane Tiere</b>
+            <ul>
+              <li><i>Your name here...</i></li>
+            </ul>
+          </li>
+          <li>
+            <b>Tsunami Tier</b>
+            <ul>
+              <li><i>This could be you...</i></li>
+            </ul>
           </li>
         </ul>
         <br /><br />

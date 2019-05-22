@@ -20,7 +20,8 @@ class WelcomePage extends Component {
     super(props)
 
     this.state = {
-      modalOpen: false
+      modalOpen: false,
+      gameVersions: []
     }
   }
 
@@ -32,6 +33,10 @@ class WelcomePage extends Component {
        this.props.settings.gameVersion === undefined) {
          this.setState({ modalOpen: true })
        }
+
+    fetch('https://beatmods.com/api/v1/version')
+      .then(res => res.json())
+      .then(gameVersions => this.setState({ gameVersions }))
   }
 
   render() {
