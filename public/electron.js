@@ -212,9 +212,9 @@ function handleArgs(argv, sendImmediately) {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1015, 
+    width: 1080, 
     height: 615, 
-    minWidth: 1015, 
+    minWidth: 1090, 
     minHeight: 615,
     resizable: true, 
     frame: false,

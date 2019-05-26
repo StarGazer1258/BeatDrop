@@ -142,7 +142,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
       let installedMods = getState().mods.installedMods
       let m = []
       for(let i = 0; i < installedMods.length; i++) {
-        if(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0]) m.push(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0])
+        if(beatModsResponse.filter(mod => mod._id === installedMods[i].id)[0]) m.push(beatModsResponse.filter(mod => mod._id === installedMods[i].id)[0])
         console.log(installedMods[i].name)
       }
       dispatch({
@@ -259,7 +259,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     return
   }
   console.log(`Fetching ${modName}@${version} from BeatMods...`)
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive&name=${encodeURIComponent(modName)}&gameVersion=${getState().settings.gameVersion}&version=${version}`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved${!!version ? `&status=inactive&version=${version}` : ''}&name=${encodeURIComponent(modName)}&gameVersion=${getState().settings.gameVersion}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       console.log(`Got the BeatMods response for ${modName}@${version}`)
