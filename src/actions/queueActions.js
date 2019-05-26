@@ -1,4 +1,4 @@
-import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS } from './types'
+import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../views'
 import { isModInstalled, installEssentialMods } from './modActions';
 
@@ -7,7 +7,6 @@ const fs = remote.require('fs')
 const path = remote.require('path')
 const md5 = remote.require('md5')
 const AdmZip = remote.require('adm-zip')
-const Walker = remote.require('walker')
 const request = remote.require('request')
 const rimraf = remote.require('rimraf')
 
@@ -376,106 +375,99 @@ export const deleteSong = (identity) => (dispatch, getState) => {
 }
 
 export const checkDownloadedSongs = () => (dispatch, getState) => {
-  setTimeout(() => {
+  let discoveredFiles = 0, processedFiles = 0
+  dispatch({
+    type: SET_DISCOVERED_FILES,
+    payload: discoveredFiles
+  })
+  dispatch({
+    type: SET_PROCESSED_FILES,
+    payload: processedFiles
+  })
+  const walk = function(pathName, cb) {
+    let songs = []
+    fs.readdir(pathName, (err, files) => {
+      if(err) return cb(err)
+      let pending = files.length
+      dispatch({
+        type: SET_DISCOVERED_FILES,
+        payload: discoveredFiles += pending
+      })
+      if(!pending) return cb(null, songs)
+      for(let i = 0; i < files.length; i++) {
+        const file = path.join(pathName, files[i])
+        fs.stat(file, (err, stat) => { // eslint-disable-line no-loop-func
+          if(err) return cb(err)
+          if(stat && stat.isDirectory()) {
+            walk(file, (_, s) => {
+              songs = songs.concat(s)
+              dispatch({
+                type: SET_PROCESSED_FILES,
+                payload: ++processedFiles
+              })
+              if(!--pending) cb(null, songs)
+            })
+          } else {
+            if(files[i].toLowerCase() === 'info.json') {
+              fs.readFile(file, { encoding: 'UTF-8' }, (err, data) => {
+                if(err) return cb(err)
+                let song = JSON.parse(data)
+                if(song.hasOwnProperty('hash')) {
+                  songs.push({ hash: song.hash, file })
+                  dispatch({
+                    type: SET_PROCESSED_FILES,
+                    payload: ++processedFiles
+                  })
+                  if(!--pending) cb(null, songs)
+                } else {
+                  let to_hash = ''
+                  for(let i = 0; i < song.difficultyLevels.length; i++) {
+                    try {
+                      let dir = file.split(path.sep)
+                      dir.pop()
+                      to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+                    } catch(err) {}
+                  }
+                  let hash = md5(to_hash)
+                  song.hash = hash
+                  fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+                  songs.push({ hash, file })
+                  dispatch({
+                    type: SET_PROCESSED_FILES,
+                    payload: ++processedFiles
+                  })
+                  if(!--pending) cb(null, songs)
+                }
+              })
+            } else {
+              dispatch({
+                type: SET_PROCESSED_FILES,
+                payload: ++processedFiles
+              })
+              if(!--pending) cb(null, songs)
+            }
+          }
+        })
+      }
+    })
+  }
+
   dispatch({
     type: SET_SCANNING_FOR_SONGS,
     payload: true
   })
-  let state = { ...getState() }
-  let songs = []
-  let count = 0
-  let ended = false
-  let decrementCounter = () => {
-    count--
-    if(ended && count === 0) {
-      dispatch({
-        type: SET_DOWNLOADED_SONGS,
-        payload: songs
-      })
-      dispatch({
-        type: SET_SCANNING_FOR_SONGS,
-        payload: false
-      })
-      return
-    }
-  }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
-    if(err) {
-      fs.mkdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
-        if(err) {
-          dispatch({
-            type: DISPLAY_WARNING,
-            payload: {
-              text: 'Could not create CustomSongs directory. Make sure you have your Beat Saber installation directory set properly.'
-            }
-          })
-        }
-      })
-      installEssentialMods()(dispatch, getState)
-      dispatch({
-        type: SET_DOWNLOADED_SONGS,
-        payload: []
-      })
-      dispatch({
-        type: SET_SCANNING_FOR_SONGS,
-        payload: false
-      })
-      return
-    }
-    Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
-      .on('file', (file) => {
-        if(file === 'info.json') {
-          count++
-          fs.readFile(file, 'UTF-8', (err, data) => {
-            if(err) { decrementCounter(); return }
-            let dirs = file.split('\\')
-            dirs.pop()
-            let dir = dirs.join('\\')
-            let song
-            try {
-              song = JSON.parse(data)
-            } catch(err) {
-              decrementCounter()
-              return
-            }
-            if(song.hasOwnProperty('hash')) {
-              songs.push({ hash: song.hash, file })
-              decrementCounter()
-            } else {
-              let to_hash = ''
-              for(let i = 0; i < song.difficultyLevels.length; i++) {
-                try {
-                  to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
-                } catch(err) {
-                  decrementCounter()
-                  return
-                }
-              }
-              let hash = md5(to_hash)
-              song.hash = hash
-              fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-              songs.push({ hash, file })
-              decrementCounter()
-            }
-          })
-        }
-      })
-      .on('end', () => {
-        if(count === 0) {
-          dispatch({
-            type: SET_DOWNLOADED_SONGS,
-            payload: songs
-          })
-          dispatch({
-            type: SET_SCANNING_FOR_SONGS,
-            payload: false
-          })
-          return
-        }
-        ended = true
-      })
+
+  walk(path.join(getState().settings.installationDirectory, 'CustomSongs'), (err, songs) => {
+    dispatch({
+      type: SET_DOWNLOADED_SONGS,
+      payload: songs
+    })
+
+    dispatch({
+      type: SET_SCANNING_FOR_SONGS,
+      payload: false
+    })
   })
-  }, 1000)
 }
 
 export const clearQueue = () => dispatch => {

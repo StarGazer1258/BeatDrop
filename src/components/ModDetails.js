@@ -59,6 +59,7 @@ class ModDetails extends Component {
           <h1 className="mod-title">{ this.props.details.name }</h1>
           <h3 className="mod-author">by { this.props.details.author.username }</h3>
           <Badge>{ this.props.details.category.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()}) }</Badge>
+          <Badge>Beat Saber v{ this.props.details.gameVersion }</Badge>
           { this.props.installedMods.some(mod => mod.id === this.props.details._id) ? <div className="mod-in-library">This mod is in your library.</div> : null }
           { this.props.details.name === 'BSIPA' ? <div className="mod-in-library">BSIPA is required to load mods and cannot be uninstalled or deactivated.</div> : null }
           { this.props.installedMods.some(mod => mod.id === this.props.details._id) && (this.props.installedMods.filter(m => m.name === this.props.details.name)[0].dependencyOf.some(dependent => this.props.installedMods.some(installedMod => installedMod.name === dependent))) ? <div className="mod-in-library">{ this.props.details.name } is required by { this.props.installedMods.filter(m => m.name === this.props.details.name)[0].dependencyOf.filter(dependent => this.props.installedMods.some(installedMod => installedMod.name === dependent)).join(', ') } and cannot be uninstalled or deactivated.</div> : null }

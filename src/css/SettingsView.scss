@@ -23,7 +23,12 @@
     }
   }
 
-  #dl-location {
+  th {
+    font-weight: 400;
+    margin-bottom: 5px;
+  }
+
+  #dl-location, #theme-image-path {
     display: none;
     margin-bottom: 20px;
   }
