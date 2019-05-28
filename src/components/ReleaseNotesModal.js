@@ -36,6 +36,7 @@ class ReleaseNotesModal extends Component {
               <li><b>Song scanning</b> has been completely rewritten to be <b>much more stable!</b></li>
               <li>The <b>song scanning modal</b> now <b>provides more information</b> and <b>persists until exited.</b></li>
               <li>2.3.1: Fixed bug where <b>app would crash on startup.</b> (Thanks <b>Rocker</b>!)</li>
+              <li>2.3.3: Fixed bug where <b>playlists would not save properly.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
