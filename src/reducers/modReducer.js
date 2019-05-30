@@ -1,4 +1,4 @@
-import { SET_MOD_LIST, APPEND_MOD_LIST, LOAD_MOD_DETAILS, INSTALL_MOD, UNINSTALL_MOD, CLEAR_MODS, SET_INSTALLED_MODS, SET_SCANNING_FOR_MODS, SET_MOD_ACTIVE, ADD_PENDING_MOD, ADD_DEPENDENT, SET_PATCHING } from '../actions/types'
+import { SET_MOD_LIST, APPEND_MOD_LIST, LOAD_MOD_DETAILS, INSTALL_MOD, UNINSTALL_MOD, CLEAR_MODS, SET_INSTALLED_MODS, SET_SCANNING_FOR_MODS, SET_MOD_ACTIVE, ADD_PENDING_MOD, ADD_DEPENDENT, SET_PATCHING, REMOVE_DEPENDENT } from '../actions/types'
 
 const initialState = {
   mods: [],
@@ -43,6 +43,10 @@ export default function(state = initialState, action) {
       let newDependentState = { ...state }
       newDependentState.installedMods[action.payload.index].dependencyOf.push(action.payload.dependent)
       return newDependentState
+    case REMOVE_DEPENDENT:
+      let removedDependantState = { ...state }
+      removedDependantState.installedMods[action.payload.index].dependencyOf.splice(removedDependantState.installedMods[action.payload.index].dependencyOf.findIndex(m => m.name === action.payload.dependant), 1)
+      return removedDependantState
     case UNINSTALL_MOD:
       let uninstalledState = { ...state }
       uninstalledState.installedMods.splice(action.payload, 1)

@@ -2,7 +2,6 @@ import { SET_MOD_LIST, SET_VIEW, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, IN
 import { MODS_VIEW, MOD_DETAILS } from '../views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
-import { MODS as EMERGENCY_MODS } from '../constants/emergencyMods'
 
 import modIcon from '../assets/dark/mod.png'
 
@@ -18,7 +17,7 @@ const { ipcRenderer } = window.require('electron')
 
 const os = remote.require('os')
 
-export const fetchApprovedMods = () => dispatch => {
+export const fetchApprovedMods = () => (dispatch, getState) => {
   dispatch({
     type: SET_VIEW,
     payload: MODS_VIEW
@@ -31,7 +30,7 @@ export const fetchApprovedMods = () => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  fetch('https://beatmods.com/api/v1/mod?status=approved')
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&gameVersion=${getState().settings.gameVersion}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -45,30 +44,7 @@ export const fetchApprovedMods = () => dispatch => {
     })
 }
 
-export const fetchEmergencyMods = () => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
-  dispatch({
-    type: SET_RESOURCE,
-    payload: BEATMODS.NEW_MODS
-  })
-  dispatch({
-    type: SET_LOADING,
-    payload: true
-  })
-  dispatch({
-    type: SET_MOD_LIST,
-    payload: EMERGENCY_MODS
-  })
-  dispatch({
-    type: SET_LOADING,
-    payload: false
-  })
-}
-
-export const fetchRecommendedMods = () => dispatch => {
+export const fetchRecommendedMods = () => (dispatch, getState) => {
   dispatch({
     type: SET_VIEW,
     payload: MODS_VIEW
@@ -84,7 +60,7 @@ export const fetchRecommendedMods = () => dispatch => {
   let recommendedMods = ['CameraPlus', 'YUR Fit Calorie Tracker', 'SyncSaber', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
   let mods = []
   for(let i = 0; i < recommendedMods.length; i++) {
-    fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}`)
+    fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}&gameVersion=${getState().settings.gameVersion}`)
       .then(res => res.json())
       .then(beatModsResponse => {
         if(beatModsResponse.length === 0) { recommendedMods.splice(i, 1); return }
@@ -122,7 +98,7 @@ export const fetchModCategories = () => dispatch => {
   })
 }
 
-export const fetchModCategory = category => dispatch => {
+export const fetchModCategory = category => (dispatch, getState) => {
   dispatch({
     type: SET_VIEW,
     payload: MODS_VIEW
@@ -135,7 +111,7 @@ export const fetchModCategory = category => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?category=${ category }&status=approved`)
+  fetch(`https://beatmods.com/api/v1/mod?category=${ category }&status=approved&gameVersion=${getState().settings.gameVersion}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -168,7 +144,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
       let installedMods = getState().mods.installedMods
       let m = []
       for(let i = 0; i < installedMods.length; i++) {
-        if(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0]) m.push(beatModsResponse.filter(mod => mod.name === installedMods[i].name)[0])
+        if(beatModsResponse.filter(mod => mod._id === installedMods[i].id)[0]) m.push(beatModsResponse.filter(mod => mod._id === installedMods[i].id)[0])
         console.log(installedMods[i].name)
       }
       dispatch({
@@ -285,7 +261,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     return
   }
   console.log(`Fetching ${modName}@${version} from BeatMods...`)
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive&name=${encodeURIComponent(modName)}&version=${version}`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved${!!version ? `&status=inactive&version=${version}` : ''}&name=${encodeURIComponent(modName)}&gameVersion=${getState().settings.gameVersion}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       console.log(`Got the BeatMods response for ${modName}@${version}`)
@@ -449,7 +425,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
           dispatch({
             type: DISPLAY_WARNING,
             payload: {
-              text: `The mod ${mod.name} does not have a version for ${installationType} installations.`
+              text: `The mod ${mod.name} does not have a version for ${installationType} v${getState().settings.gameVersion} installations.`
             }
           })
         }
