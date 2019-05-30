@@ -22,7 +22,6 @@
   #close-button, #resize-button, #minimize-button {
     width: 45px;
     height: 100%;
-    background: white;
     float: right;
     display: flex;
     flex-flow: row wrap;
@@ -89,21 +88,9 @@
   }
 
   &.theme-dark {
-    background: #252525;
+    background: rgba(0, 0, 0, 0.6);
     color: white;
     border-bottom: 1px solid #454545;
-
-    #close-button {
-      background: #252525;
-    }
-
-    #resize-button {
-      background: #252525;
-    }
-
-    #minimize-button {
-      background: #252525;
-    }
   }
 
   &.theme-hc {
@@ -125,14 +112,14 @@
 
   #close-button {
     &:hover {
-      background: #e0021f;
+      background: #ff1938;
       transition: 0s;
     }
   }
 
   #resize-button, #minimize-button {
     &:hover {
-      background: silver;
+      background: rgba(128, 128, 128, 0.3);
       transition: 0s;
     }
   }
