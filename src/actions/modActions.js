@@ -16,6 +16,8 @@ const execFile = remote.require('child_process').execFile
 
 const { ipcRenderer } = window.require('electron')
 
+const os = remote.require('os')
+
 export const fetchApprovedMods = () => dispatch => {
   dispatch({
     type: SET_VIEW,
@@ -338,10 +340,20 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
           
           if(modName === 'BSIPA') {
             execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
-            dispatch({
-              type: 'DISPLAY_WARNING',
-              payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
-            })
+            if( os.platform() == 'win32' )
+            {
+                dispatch({
+                  type: 'DISPLAY_WARNING',
+                  payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
+                })
+            }
+            else
+            {
+                dispatch({
+                  type: 'DISPLAY_WARNING',
+                  payload: { text: 'Unable to run IPA.exe on this platform, you\'ll ned to run it yourself with wine for now.', color: 'red' }
+                })
+            }
             dispatch({
               type: SET_PATCHING,
               payload: false
