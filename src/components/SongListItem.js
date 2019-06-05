@@ -16,7 +16,7 @@ import { COMPACT_LIST } from '../views'
 
 function Uploader(props) {
   if(!props.isDownloaded && !!props.uploader) return (
-    <div className="uploader">Uploaded by: {props.uploader}</div>
+    <div className="uploader">Uploaded by: {props.uploader}<span className="upload-date">{(!!props.uploadDate ? props.uploadDate : '')}</span></div>
   )
   return null
 }
@@ -104,7 +104,7 @@ class SongListItem extends Component {
             <div className="song-title">{this.props.title}<span className="id">{!!this.props.songKey ? this.props.songKey : ''}</span></div>
             {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) && this.props.view.songView === COMPACT_LIST ? <LibraryIndicator /> : null}
             <div className="song-artist">{this.props.artist}</div>
-            <Uploader uploader={ this.props.uploader } isDownloaded={ this.props.isDownloaded } />
+            <Uploader uploader={ this.props.uploader } isDownloaded={ this.props.isDownloaded } uploadDate={ this.props.view.songView !== COMPACT_LIST && !!this.props.uploadDate ? this.props.uploadDate : null } />
             <Difficulties difficulties={ this.props.difficulties } />
           </div>
           <Details downloads={ this.props.downloads } upvotes={ this.props.upvotes } downvotes={ this.props.downvotes } ratings={ this.props.ratings } plays={ this.props.plays } />
