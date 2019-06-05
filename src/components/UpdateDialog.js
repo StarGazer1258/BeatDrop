@@ -50,7 +50,7 @@ class UpdateDialog extends Component {
         <Modal width={ 575 } height={ 500 } onClose={ () => { this.setState({ updateAvailable: false }) } }>
           <h1 id="update-dialog-text" className={ this.state.updateProgress > 0 ? ' downloading-update' : '' }>{ this.state.updateProgress > 0 ? 'Downloading Update...' : 'Update Available!' }</h1>
           { this.state.updateProgress > 0 ?
-              <ProgressBar progress={ this.state.updateProgress } />
+              <div className="upadte-progress"><ProgressBar progress={ this.state.updateProgress } /></div>
           :
             <>
               <div className={ `current-version${ this.state.updateProgress > 0 ? ' hidden' : '' }` }>Current Version: { require('../../package.json').version }</div>

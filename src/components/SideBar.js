@@ -68,6 +68,7 @@ class SideBar extends Component {
         </div>
         <div className="buttons-bottom">
           <div id="settings-button" className={ this.props.view === VIEWS.SETTINGS ? 'open' : '' } title="Settings" onClick={ () => this.props.setView(VIEWS.SETTINGS) }> Settings</div>
+          <div id="quest-button" className={ this.props.view === VIEWS.DEVICES || this.props.view === VIEWS.DEVICE_DETAILS ? 'open' : '' } title="Quest" onClick={ () => this.props.setView(VIEWS.DEVICES) }> Devices</div>
           <div id="search-button" className={ this.props.view === VIEWS.SEARCH ? 'open' : '' } title="Search" onClick={ () => this.props.setView(VIEWS.SEARCH) }> Search</div>
           <div id="queue-button" className={ `i-download-queue${this.props.isQueueOpen ? ' open' : ''}` } title="Download Queue" onClick={ () => { this.props.setQueueOpen(!this.props.isQueueOpen) } }>Downloads</div>
           <div id="donate-button" className={ this.props.view === VIEWS.DONATE ? 'open' : '' } title="Donate" onClick={ () => { this.props.setView(VIEWS.DONATE) } }> Donate</div>

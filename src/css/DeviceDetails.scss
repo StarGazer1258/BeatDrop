@@ -1,0 +1,125 @@
+@import './StyleConstants';
+
+#device-details {
+  display: flex;
+  flex-flow: row nowrap;
+  padding: 15px;
+  height: calc(100vh - 85px);
+  animation: song-details-fade-in .2s forwards;
+  
+  .close-icon {
+    cursor: pointer;
+    position: absolute;
+    transform: translateX(calc(100vw - 280px));
+    width: 25px;
+    height: 25px;
+    background: url(../assets/close.png);
+    background-size: 25px;
+  }
+
+  .device-image {
+    width: 15vw;
+    height: 15vw;
+    object-fit: contain;
+    filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
+    border-radius: 5px;
+    margin: 0 20px;
+  }
+
+  .status-indicator {
+    display: inline-block;
+    margin-right: 7px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: grey;
+    transform: translateY(-1px);
+
+    &.STATUS-CONNECTED {
+      filter: drop-shadow(0px 0px 3px rgb(50, 205, 50));
+      background-color: rgb(50, 205, 50);
+    }
+
+    &.STATUS-OFFLINE {
+      filter: drop-shadow(0px 0px 3px rgb(255, 0, 0));
+      background-color: rgb(255, 0, 0);
+    }
+  }
+
+  .progress-bar {
+    margin-bottom: 10px;
+  }
+
+  .action-buttons {
+    margin: 15px 0;
+
+    .action-button {
+      margin: 0 3px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 8pt;
+      font-weight: 900;
+      color: white;
+      background-color: rgba($beatdrop-blue, 0.8);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+
+      &:hover {
+        background: $beatdrop-blue;
+      }
+
+      &.download-button {
+        padding: 2px 7px;
+        width: 90px;
+        background: rgba($beatdrop-blue, 0.3);
+        border: 3px solid rgba($beatdrop-blue, 0.8);
+        display: inline-flex;
+        flex-flow: row nowrap;
+        justify-content: flex-start;
+        position: relative;
+        margin-top: -1px;
+
+        span:first-child {
+          display: inline-block;
+          position: absolute;
+          left: -1px;
+          top: -1px;
+          height: 110%;
+          background: rgba($beatdrop-blue, 0.8);
+          z-index: -1;
+          border-radius: 10px;
+        }
+
+        &:hover {
+          border: 3px solid $beatdrop-blue;
+
+          span:first-child {
+            background: $beatdrop-blue;
+          }
+        }
+      }
+
+      &:not(.more-button) img {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+      }
+
+      &.playlist-add-button {
+        width: 110px;
+      }
+
+      &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.more-button img {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  }
+
+}

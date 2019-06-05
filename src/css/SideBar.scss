@@ -51,6 +51,18 @@
       }
     }
 
+    #quest-button {
+      &:before {
+        background-image: url(../assets/oculus.svg);
+      }
+    
+      &:hover, &.open {
+        &::before {
+          background-image: url(../assets/oculus-filled.svg);
+        }
+      }
+    }
+
     #settings-button {
       &:before {
         background-image: url(../assets/settings.png);
@@ -350,6 +362,18 @@
     color: $theme-dark-text-color;
 
     .buttons-bottom {
+      #quest-button {
+        &:before {
+          background-image: url(../assets/dark/oculus.svg);
+        }
+      
+        &:hover, &.open {
+          &::before {
+            background-image: url(../assets/dark/oculus-filled.svg);
+          }
+        }
+      }
+
       #settings-button {
         &::before {
           background-image: url(../assets/dark/settings.png);

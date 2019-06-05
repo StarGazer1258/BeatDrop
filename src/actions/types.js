@@ -99,3 +99,7 @@ export const UPDATE_PROGRESS            = 'UPDATE_PROGRESS'
 export const DOWNLOAD_SONG              = 'DOWNLOAD_SONG'
 export const DELETE_SONG                = 'DELETE_SONG'
 export const SET_DOWNLOADED_SONGS       = 'SET_DOWNLOADED_SONGS'
+
+// Devices
+export const SCAN_DEVICES               = 'SCAN_DEVICES'
+export const SELECT_DEVICE              = 'SELECT_DEVICE'

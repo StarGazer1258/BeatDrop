@@ -8,6 +8,8 @@ export const MOD_DETAILS      = 'MOD_DETAILS'
 export const SETTINGS         = 'SETTINGS'
 export const SEARCH           = 'SEARCH'
 export const DONATE           = 'DONATE'
+export const DEVICES          = 'DEVICES'
+export const DEVICE_DETAILS   = 'DEVICE_DETAILS'
 
 export const LIST             = 'list'
 export const COMPACT_LIST     = 'compact-list'

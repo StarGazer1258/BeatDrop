@@ -12,7 +12,8 @@ import queueReducer from './queueReducer'
 import warningsReducer from './warningsReducer'
 import playlistsReducer from './playlistsReducer'
 import searchReducer from './searchReducer'
-import modReducer from './modReducer';
+import modReducer from './modReducer'
+import deviceReducer from './deviceReducer'
 
 export default combineReducers({
   songs: songListReducer,
@@ -28,5 +29,6 @@ export default combineReducers({
   loadingMore: loadingMoreReducer,
   queue: queueReducer,
   warnings: warningsReducer,
-  search: searchReducer
+  search: searchReducer,
+  devices: deviceReducer
 })

@@ -27,3 +27,10 @@ h5.scanning-text {
     background-repeat: no-repeat;
   }
 }
+
+.scanning-progress {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
