@@ -18,7 +18,7 @@ import PlaylistDetails from './PlaylistDetails'
 import DonateView from './DonateView'
 import ModsView from './ModsView'
 import ModDetails from './ModDetails'
-import ModsListView from './ModsListView';
+import ModsListView from './ModsListView'
 
 function Songs(props) {
   switch(props.subView) {
@@ -40,7 +40,7 @@ function MainView(props) {
     case VIEWS.DONATE:
       return <DonateView />
     case VIEWS.SONG_LIST:
-      return <Songs subView={ props.subView } sortBy={ props.sortBy} />
+      return <Songs subView={ props.subView } sortBy={ props.sortBy } />
     case VIEWS.PLAYLIST_LIST:
       return <PlaylistView />
     case VIEWS.MODS_VIEW:

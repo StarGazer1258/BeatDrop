@@ -23,4 +23,4 @@ export const setSortBy = sort => dispatch => {
       type: SET_SORT_BY,
       payload: sort
   })
-};
+}
