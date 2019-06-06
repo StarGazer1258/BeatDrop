@@ -1,4 +1,4 @@
-import { SET_VIEW, SET_SUB_VIEW, SET_SCROLLTOP } from './types'
+import { SET_VIEW, SET_SUB_VIEW, SET_SCROLLTOP, SET_SORT_BY } from './types'
 
 export const setView = view => dispatch => {
   dispatch({
@@ -17,3 +17,10 @@ export const setSubView = view => dispatch => {
     payload: 0
   })
 }
+
+export const setSortBy = sort => dispatch => {
+  dispatch({
+      type: SET_SORT_BY,
+      payload: sort
+  })
+};

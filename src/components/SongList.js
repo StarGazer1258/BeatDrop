@@ -23,6 +23,7 @@ const { clipboard, shell } = window.require('electron')
 
 const upArrowShortcut   = function(e) { if(e.keyCode === 38 && this.state.highlighted > 0)                             { this.setState({ highlighted: this.state.highlighted - 1 }) } }
 const downArrowShortcut = function(e) { if(e.keyCode === 40 && this.state.highlighted < this.props.songs.songs.length) { this.setState({ highlighted: this.state.highlighted + 1 }) } }
+const sortJsonArray = require('sort-json-array');
 
 class SongList extends Component {
 
@@ -69,7 +70,7 @@ class SongList extends Component {
         {(this.props.loading) ?
           <SongListItem loading />
         :
-          this.props.songs.songs.map((song, i) => {
+          sortJsonArray(this.props.songs.songs, 'songName', 'asc').map((song, i) => {
             let songTags = [
               {
                 boolean: true,
@@ -153,6 +154,7 @@ SongList.propTypes = {
 
 const mapStateToProps = state => ({
   view: state.view,
+  sortBy: state.sortBy,
   songs: state.songs,
   playlists: state.playlists.playlists,
   scrollTop: state.songs.scrollTop,

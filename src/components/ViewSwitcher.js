@@ -40,7 +40,7 @@ function MainView(props) {
     case VIEWS.DONATE:
       return <DonateView />
     case VIEWS.SONG_LIST:
-      return <Songs subView={ props.subView } />
+      return <Songs subView={ props.subView } sortBy={ props.sortBy} />
     case VIEWS.PLAYLIST_LIST:
       return <PlaylistView />
     case VIEWS.MODS_VIEW:
@@ -56,7 +56,7 @@ function MainView(props) {
     case VIEWS.MOD_DETAILS:
       return <ModDetails />
     default:
-      return <Songs subView={ props.subView } />
+      return <Songs subView={ props.subView } sortBy={ props.sortBy } />
   }
 }
 
@@ -86,7 +86,7 @@ class ViewSwitcher extends Component {
                <WelcomePage />                                  :
                <>
                  { [VIEWS.SONG_LIST].some(view => this.props.view === view) && <SortBar /> }
-                 <MainView view={ this.props.view } subView={ this.props.subView } />
+                 <MainView view={ this.props.view } subView={ this.props.subView } sortBy={ this.props.sortBy }/>
                </>
           }
           <Warnings warnings={ this.props.warnings } />
@@ -99,6 +99,7 @@ class ViewSwitcher extends Component {
 ViewSwitcher.propTypes = {
   view: PropTypes.string.isRequired,
   subView: PropTypes.string.isRequired,
+  sortBy: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
   details: PropTypes.object.isRequired,
   warnings: PropTypes.array,
@@ -108,6 +109,7 @@ ViewSwitcher.propTypes = {
 const mapStateToProps = state => ({
   view: state.view.view,
   subView: state.view.subView,
+  sortBy: state.view.sortBy,
   settings: state.settings,
   details: state.details,
   warnings: state.warnings,

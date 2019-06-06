@@ -1,6 +1,5 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, LOAD_MORE, REFRESH, ADD_BSABER_RATING, FETCH_LOCAL_SONGS, SET_DOWNLOADED_SONGS, SET_SCROLLTOP, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from '../actions/types'
 
-const sortJsonArray = require('sort-json-array');
 const initialState = {
   songs: [],
   scrollTop: 0,
@@ -29,18 +28,18 @@ export default function(state = initialState, action) {
     case FETCH_LOCAL_SONGS:
       return {
         ...state,
-        songs:  sortJsonArray([
+        songs: [
           ...action.payload
-        ], 'name', 'asc'),
+        ],
         totalSongs: action.payload.length
       }
-    case LOAD_MORE:
+      case LOAD_MORE:
       return {
         ...state,
-        songs:  sortJsonArray([
+        songs:  [
           ...state.songs,
           ...action.payload.songs
-        ], 'name', 'asc'),
+        ],
         totalSongs: action.payload.total
       }
     case ADD_BSABER_RATING:
