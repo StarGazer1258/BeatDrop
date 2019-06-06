@@ -70,7 +70,7 @@ class SongList extends Component {
         {(this.props.loading) ?
           <SongListItem loading />
         :
-          sortJsonArray(this.props.songs.songs, 'songName', 'asc').map((song, i) => {
+          (this.props.view == VIEWS.LOCAL) ? sortJsonArray(this.props.songs.songs, 'songName', 'asc') : this.props.songs.songs.map((song, i) => {
             let songTags = [
               {
                 boolean: true,
