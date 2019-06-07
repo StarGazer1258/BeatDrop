@@ -7,6 +7,7 @@ import { loadMore } from '../actions/songListActions'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
 import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
 import { displayWarning } from '../actions/warningActions'
+import * as RESOURCES from '../constants/resources'
 
 import SongListItem from './SongListItem'
 import LoadMore from './LoadMore';
@@ -29,7 +30,6 @@ class SongList extends Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
       song: '',
       highlighted: -1
@@ -70,7 +70,7 @@ class SongList extends Component {
         {(this.props.loading) ?
           <SongListItem loading />
         :
-          (this.props.view == VIEWS.LOCAL) ? sortJsonArray(this.props.songs.songs, 'songName', 'asc') : this.props.songs.songs.map((song, i) => {
+          ((this.props.resource === RESOURCES.LIBRARY.SONGS) ? sortJsonArray(this.props.songs.songs, this.props.view.sortBy, this.props.view.sortOrder) : this.props.songs.songs).map((song, i) => {
             let songTags = [
               {
                 boolean: true,
@@ -149,13 +149,14 @@ SongList.propTypes = {
   songs: PropTypes.object.isRequired,
   scrollTop: PropTypes.number.isRequired,
   loadMore: PropTypes.func.isRequired,
-  autoLoadMore: PropTypes.bool.isRequired
+  autoLoadMore: PropTypes.bool.isRequired,
+  resource: PropTypes.string.isRequired,
 }
 
 const mapStateToProps = state => ({
   view: state.view,
-  sortBy: state.sortBy,
   songs: state.songs,
+  resource: state.resource,
   playlists: state.playlists.playlists,
   scrollTop: state.songs.scrollTop,
   loading: state.loading,

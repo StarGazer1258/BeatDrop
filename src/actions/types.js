@@ -60,6 +60,7 @@ export const SET_RESOURCE_URL           = 'SET_RESOURCE_URL'
 export const SET_VIEW                   = 'SET_VIEW'
 export const SET_SUB_VIEW               = 'SET_SONG_VIEW'
 export const SET_SORT_BY                = 'SET_SORT_BY'
+export const SET_SORT_ORDER             = 'SET_SORT_ORDER'
 
 // Window
 export const RESIZE_WINDOW              = 'RESIZE_WINDOW'

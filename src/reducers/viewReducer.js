@@ -1,11 +1,12 @@
-import {SET_VIEW, SET_SUB_VIEW, SET_SORT_BY} from '../actions/types'
+import {SET_VIEW, SET_SUB_VIEW, SET_SORT_BY, SET_SORT_ORDER} from '../actions/types'
 import { WELCOME, SONG_LIST } from '../views'
 
 const initialState = {
   previousView: SONG_LIST,
   view: WELCOME,
   subView: 'list',
-  sortBy: 'songName'
+  sortBy: 'songName',
+  sortOrder: 'asc'
 };
 
 export default function(state = initialState, action) {
@@ -25,6 +26,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         sortBy: action.payload
+      };
+    case SET_SORT_ORDER:
+      return {
+        ...state,
+        sortOrder: action.payload
       };
     default:
       return state

@@ -1,4 +1,4 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, LOAD_MORE, REFRESH, ADD_BSABER_RATING, FETCH_LOCAL_SONGS, SET_DOWNLOADED_SONGS, SET_SCROLLTOP, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from '../actions/types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, LOAD_MORE, REFRESH, ADD_BSABER_RATING, FETCH_LOCAL_SONGS, SET_DOWNLOADED_SONGS, SET_SCROLLTOP, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES, SET_SORT_BY, SET_SORT_ORDER } from '../actions/types'
 
 const initialState = {
   songs: [],
@@ -80,6 +80,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         processedFiles: action.payload
+      }
+    case SET_SORT_BY:
+      return {
+        ...state,
+        sortBy: action.payload
+      }
+    case SET_SORT_ORDER:
+      return {
+        ...state,
+        sortBy: action.payload
       }
     default:
       return state
