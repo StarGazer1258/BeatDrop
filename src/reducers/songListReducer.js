@@ -28,7 +28,7 @@ export default function(state = initialState, action) {
     case FETCH_LOCAL_SONGS:
       return {
         ...state,
-        songs:[
+        songs:  [
           ...action.payload
         ],
         totalSongs: action.payload.length
