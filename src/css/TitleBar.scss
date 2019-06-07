@@ -1,4 +1,4 @@
-@import './StyleConstants';
+@import "./StyleConstants";
 
 #titlebar {
   width: 100%;
@@ -13,13 +13,16 @@
   background-position: 20px 0;
   border-bottom: 1px solid silver;
   z-index: 999;
+  margin-top: 1px;
 
   img {
     width: 15px;
     margin-right: 5px;
   }
 
-  #close-button, #resize-button, #minimize-button {
+  #close-button,
+  #resize-button,
+  #minimize-button {
     width: 45px;
     height: 100%;
     float: right;
@@ -28,7 +31,7 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: .2s;
+    transition: 0.2s;
     -webkit-app-region: no-drag;
   }
 
@@ -69,7 +72,8 @@
     align-items: center;
   }
 
-  &.theme-dark, &.theme-hc {
+  &.theme-dark,
+  &.theme-hc {
     #close-button #close-icon {
       background-image: url(../assets/dark/close.png);
     }
@@ -117,7 +121,8 @@
     }
   }
 
-  #resize-button, #minimize-button {
+  #resize-button,
+  #minimize-button {
     &:hover {
       background: rgba(128, 128, 128, 0.3);
       transition: 0s;
