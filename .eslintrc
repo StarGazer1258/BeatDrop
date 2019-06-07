@@ -13,7 +13,6 @@
   "rules": {
       "space-infix-ops": "warn",
       "object-curly-spacing": ["warn", "always"],
-      "react/jsx-curly-spacing": ["warn", "always"],
-      "semi": ["warn", "never"]
+      "react/jsx-curly-spacing": ["warn", "always"]
   }
 }

@@ -40,7 +40,7 @@ function MainView(props) {
     case VIEWS.DONATE:
       return <DonateView />
     case VIEWS.SONG_LIST:
-      return <Songs subView={ props.subView }/>
+      return <Songs subView={ props.subView } />
     case VIEWS.PLAYLIST_LIST:
       return <PlaylistView />
     case VIEWS.MODS_VIEW:
@@ -56,7 +56,7 @@ function MainView(props) {
     case VIEWS.MOD_DETAILS:
       return <ModDetails />
     default:
-      return <Songs subView={ props.subView }/>
+      return <Songs subView={ props.subView } />
   }
 }
 
@@ -86,7 +86,7 @@ class ViewSwitcher extends Component {
                <WelcomePage />                                  :
                <>
                  { [VIEWS.SONG_LIST].some(view => this.props.view === view) && <SortBar /> }
-                 <MainView view={ this.props.view } subView={ this.props.subView }/>
+                 <MainView view={ this.props.view } subView={ this.props.subView } />
                </>
           }
           <Warnings warnings={ this.props.warnings } />
