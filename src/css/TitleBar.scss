@@ -1,4 +1,4 @@
-@import "./StyleConstants";
+@import './StyleConstants';
 
 #titlebar {
   width: 100%;
@@ -20,9 +20,7 @@
     margin-right: 5px;
   }
 
-  #close-button,
-  #resize-button,
-  #minimize-button {
+  #close-button, #resize-button, #minimize-button {
     width: 45px;
     height: 100%;
     float: right;
@@ -31,7 +29,7 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: 0.2s;
+    transition: .2s;
     -webkit-app-region: no-drag;
   }
 
@@ -72,8 +70,7 @@
     align-items: center;
   }
 
-  &.theme-dark,
-  &.theme-hc {
+  &.theme-dark, &.theme-hc {
     #close-button #close-icon {
       background-image: url(../assets/dark/close.png);
     }
@@ -121,8 +118,7 @@
     }
   }
 
-  #resize-button,
-  #minimize-button {
+  #resize-button, #minimize-button {
     &:hover {
       background: rgba(128, 128, 128, 0.3);
       transition: 0s;
