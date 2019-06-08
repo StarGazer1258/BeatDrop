@@ -424,10 +424,6 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                   for(let i = 0; i < song.difficultyLevels.length; i++) {
                     try {
                       to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
-                      let hash = md5(to_hash)
-                      song.hash = hash
-                      fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-                      songs.push({ hash, file })
                     } catch(err) {
                       dispatch({
                         type: DISPLAY_WARNING,
@@ -437,6 +433,10 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                       })
                     }
                   }
+                  let hash = md5(to_hash)
+                  song.hash = hash
+                  fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+                  songs.push({ hash, file })
                   dispatch({
                     type: SET_PROCESSED_FILES,
                     payload: ++processedFiles
