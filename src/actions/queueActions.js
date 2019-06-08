@@ -423,9 +423,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                   let to_hash = ''
                   for(let i = 0; i < song.difficultyLevels.length; i++) {
                     try {
-                      let dir = file.split(path.sep)
-                      dir.pop()
-                      to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+                      to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
                     } catch(err) {}
                   }
                   let hash = md5(to_hash)
