@@ -410,7 +410,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
           } else {
             if(files[i].toLowerCase() === 'info.json') {
               fs.readFile(file, { encoding: 'UTF-8' }, (err, data) => {
-                if(err) return cb(`Failed to generate hash: file ${file} could not be accessed`)
+                if(err) return cb(err)
                 let song = JSON.parse(data)
                 if(song.hasOwnProperty('hash')) {
                   songs.push({ hash: song.hash, file })
@@ -428,7 +428,14 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                       song.hash = hash
                       fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
                       songs.push({ hash, file })
-                    } catch(err) {}
+                    } catch(err) {
+                      dispatch({
+                        type: DISPLAY_WARNING,
+                        payload: {
+                          text: `Failed to generate hash: file ${file} could not be accessed.`
+                        }
+                      })
+                    }
                   }
                   dispatch({
                     type: SET_PROCESSED_FILES,
