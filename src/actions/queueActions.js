@@ -421,22 +421,22 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                   if(!--pending) cb(null, songs)
                 } else {
                   let to_hash = ''
-                  for(let i = 0; i < song.difficultyLevels.length; i++) {
-                    try {
+                  try {
+                    for (let i = 0; i < song.difficultyLevels.length; i++) {
                       to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
-                    } catch(err) {
-                      dispatch({
-                        type: DISPLAY_WARNING,
-                        payload: {
-                          text: `Failed to generate hash: file ${file} could not be accessed.`
-                        }
-                      })
                     }
+                    let hash = md5(to_hash)
+                    song.hash = hash
+                    fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+                    songs.push({ hash, file })
+                  } catch(err) {
+                    dispatch({
+                      type: DISPLAY_WARNING,
+                      payload: {
+                        text: `Failed to generate hash: a file could not be accessed.`
+                      }
+                    })
                   }
-                  let hash = md5(to_hash)
-                  song.hash = hash
-                  fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-                  songs.push({ hash, file })
                   dispatch({
                     type: SET_PROCESSED_FILES,
                     payload: ++processedFiles
