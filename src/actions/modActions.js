@@ -158,7 +158,8 @@ export const fetchLocalMods = () => (dispatch, getState) => {
           type: DISPLAY_WARNING,
           payload: {
             color: 'gold',
-            text: 'No mods found!'
+            text: 'No mods found!',
+            timeout: 2500
           }
         })
       }
@@ -200,7 +201,8 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
           type: DISPLAY_WARNING,
           payload: {
             color: 'gold',
-            text: 'No mods found!'
+            text: 'No mods found!',
+            timeout: 2500
           }
         })
       }
@@ -299,7 +301,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
             dispatch({
               type: DISPLAY_WARNING,
               payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
-                                Please try again and file a bug report if the problem persists.` }
+                                Please try again and file a bug report if the problem persists.`, timeout: 4000 }
             })
             return
           }
@@ -346,7 +348,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
-                                  Please try again and file a bug report if the problem persists.` }
+                                  Please try again and file a bug report if the problem persists.`, timeout: 2500 }
               })
               return
             }
@@ -378,7 +380,8 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
           dispatch({
             type: DISPLAY_WARNING,
             payload: {
-              text: `The mod ${mod.name} does not have a version for ${installationType} v${getState().settings.gameVersion} installations.`
+              text: `The mod ${mod.name} does not have a version for ${installationType} v${getState().settings.gameVersion} installations.`,
+              timeout: 2500
             }
           })
         }
@@ -516,7 +519,8 @@ export const checkInstalledMods = () => (dispatch, getState) => {
         dispatch({
           type: DISPLAY_WARNING,
           payload: {
-            text: `Could not find Plugins directory. Please make sure you have your installation directory and type set correctly.`
+            text: `Could not find Plugins directory. Please make sure you have your installation directory and type set correctly.`,
+            timeout: 4000
           }
         })
         dispatch({

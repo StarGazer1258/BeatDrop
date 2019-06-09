@@ -78,7 +78,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                     dispatch({
                       type: DISPLAY_WARNING,
                       payload: {
-                        text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                        text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+                        timeout: 4000
                       }
                     })
                     return
@@ -97,7 +98,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   dispatch({
                     type: DISPLAY_WARNING,
                     payload: {
-                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`,
+                      timeout: 4000
                     }
                   })
                   return
@@ -148,7 +150,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`,
+                  timeout: 4000
                 }
               })
             }
@@ -170,7 +173,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             dispatch({
               type: DISPLAY_WARNING,
               payload: {
-                text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+                timeout: 4000
               }
             })
           })
@@ -179,7 +183,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         dispatch({
           type: DISPLAY_WARNING,
           payload: {
-            text: `There was an error downloading the song with key ${identity}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+            text: `There was an error downloading the song with key ${identity}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+            timeout: 4000
           }
         })
         return
@@ -234,7 +239,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 dispatch({
                   type: DISPLAY_WARNING,
                   payload: {
-                    text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                    text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+                    timeout: 4000
                   }
                 })
                 return
@@ -304,7 +310,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           dispatch({
             type: DISPLAY_WARNING,
             payload: {
-              text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+              text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`,
+              timeout: 4000
             }
           })
         }
@@ -326,7 +333,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         dispatch({
           type: DISPLAY_WARNING,
           payload: {
-            text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+            text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+            timeout: 6000
           }
         })
       })

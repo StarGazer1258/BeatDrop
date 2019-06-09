@@ -296,7 +296,8 @@ export const loadMore = () => (dispatch, getState) => {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          text: 'There was error loading more songs. Check your connection to the internet and try again.'
+          text: 'There was error loading more songs. Check your connection to the internet and try again.',
+          timeout: 5000
         }
       })
     })

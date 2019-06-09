@@ -40,7 +40,8 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
           type: DISPLAY_WARNING,
           payload: {
             color: 'gold',
-            text: 'No playlists found!'
+            text: 'No playlists found!',
+            timeout: 2500
           }
         })
       }
@@ -108,7 +109,8 @@ export const deletePlaylist = playlistFile => dispatch => {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.'
+          text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.',
+          timeout: 2500
         }
       })
       return
@@ -152,7 +154,8 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
         type: DISPLAY_WARNING,
         payload: {
           color: 'gold',
-          text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.'
+          text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.',
+          timeout: 3000
         }
       })
       return
@@ -346,7 +349,7 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
           } catch(err) {
             dispatch({
               type: DISPLAY_WARNING,
-              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.' }
+              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.', timeout: 4000 }
             })
             return
           }
