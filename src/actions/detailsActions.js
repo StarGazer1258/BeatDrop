@@ -30,7 +30,8 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           dispatch({
             type: DISPLAY_WARNING,
             payload: {
-              text: '404: Song details not found!'
+              text: '404: Song details not found!',
+              timeout: 2500
             }
           })
         }

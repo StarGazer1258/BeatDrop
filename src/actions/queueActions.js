@@ -1,4 +1,4 @@
-import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS } from './types'
+import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../views'
 import { isModInstalled, installEssentialMods } from './modActions';
 
@@ -7,7 +7,6 @@ const fs = remote.require('fs')
 const path = remote.require('path')
 const md5 = remote.require('md5')
 const AdmZip = remote.require('adm-zip')
-const Walker = remote.require('walker')
 const request = remote.require('request')
 const rimraf = remote.require('rimraf')
 
@@ -79,7 +78,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                     dispatch({
                       type: DISPLAY_WARNING,
                       payload: {
-                        text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                        text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+                        timeout: 4000
                       }
                     })
                     return
@@ -98,7 +98,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   dispatch({
                     type: DISPLAY_WARNING,
                     payload: {
-                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`,
+                      timeout: 4000
                     }
                   })
                   return
@@ -149,7 +150,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`,
+                  timeout: 4000
                 }
               })
             }
@@ -171,7 +173,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             dispatch({
               type: DISPLAY_WARNING,
               payload: {
-                text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+                timeout: 4000
               }
             })
           })
@@ -180,7 +183,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         dispatch({
           type: DISPLAY_WARNING,
           payload: {
-            text: `There was an error downloading the song with key ${identity}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+            text: `There was an error downloading the song with key ${identity}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+            timeout: 4000
           }
         })
         return
@@ -235,7 +239,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 dispatch({
                   type: DISPLAY_WARNING,
                   payload: {
-                    text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                    text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+                    timeout: 4000
                   }
                 })
                 return
@@ -305,7 +310,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           dispatch({
             type: DISPLAY_WARNING,
             payload: {
-              text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+              text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`,
+              timeout: 4000
             }
           })
         }
@@ -327,7 +333,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         dispatch({
           type: DISPLAY_WARNING,
           payload: {
-            text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+            text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`,
+            timeout: 6000
           }
         })
       })
@@ -376,106 +383,99 @@ export const deleteSong = (identity) => (dispatch, getState) => {
 }
 
 export const checkDownloadedSongs = () => (dispatch, getState) => {
-  setTimeout(() => {
+  let discoveredFiles = 0, processedFiles = 0
+  dispatch({
+    type: SET_DISCOVERED_FILES,
+    payload: discoveredFiles
+  })
+  dispatch({
+    type: SET_PROCESSED_FILES,
+    payload: processedFiles
+  })
+  const walk = function(pathName, cb) {
+    let songs = []
+    fs.readdir(pathName, (err, files) => {
+      if(err) return cb(err)
+      let pending = files.length
+      dispatch({
+        type: SET_DISCOVERED_FILES,
+        payload: discoveredFiles += pending
+      })
+      if(!pending) return cb(null, songs)
+      for(let i = 0; i < files.length; i++) {
+        const file = path.join(pathName, files[i])
+        fs.stat(file, (err, stat) => { // eslint-disable-line no-loop-func
+          if(err) return cb(err)
+          if(stat && stat.isDirectory()) {
+            walk(file, (_, s) => {
+              songs = songs.concat(s)
+              dispatch({
+                type: SET_PROCESSED_FILES,
+                payload: ++processedFiles
+              })
+              if(!--pending) cb(null, songs)
+            })
+          } else {
+            if(files[i].toLowerCase() === 'info.json') {
+              fs.readFile(file, { encoding: 'UTF-8' }, (err, data) => {
+                if(err) return cb(err)
+                let song = JSON.parse(data)
+                if(song.hasOwnProperty('hash')) {
+                  songs.push({ hash: song.hash, file })
+                  dispatch({
+                    type: SET_PROCESSED_FILES,
+                    payload: ++processedFiles
+                  })
+                  if(!--pending) cb(null, songs)
+                } else {
+                  let to_hash = ''
+                  for(let i = 0; i < song.difficultyLevels.length; i++) {
+                    try {
+                      let dir = file.split(path.sep)
+                      dir.pop()
+                      to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+                    } catch(err) {}
+                  }
+                  let hash = md5(to_hash)
+                  song.hash = hash
+                  fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+                  songs.push({ hash, file })
+                  dispatch({
+                    type: SET_PROCESSED_FILES,
+                    payload: ++processedFiles
+                  })
+                  if(!--pending) cb(null, songs)
+                }
+              })
+            } else {
+              dispatch({
+                type: SET_PROCESSED_FILES,
+                payload: ++processedFiles
+              })
+              if(!--pending) cb(null, songs)
+            }
+          }
+        })
+      }
+    })
+  }
+
   dispatch({
     type: SET_SCANNING_FOR_SONGS,
     payload: true
   })
-  let state = { ...getState() }
-  let songs = []
-  let count = 0
-  let ended = false
-  let decrementCounter = () => {
-    count--
-    if(ended && count === 0) {
-      dispatch({
-        type: SET_DOWNLOADED_SONGS,
-        payload: songs
-      })
-      dispatch({
-        type: SET_SCANNING_FOR_SONGS,
-        payload: false
-      })
-      return
-    }
-  }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
-    if(err) {
-      fs.mkdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
-        if(err) {
-          dispatch({
-            type: DISPLAY_WARNING,
-            payload: {
-              text: 'Could not create CustomSongs directory. Make sure you have your Beat Saber indsatllation directory set properly.'
-            }
-          })
-        }
-      })
-      installEssentialMods()(dispatch, getState)
-      dispatch({
-        type: SET_DOWNLOADED_SONGS,
-        payload: []
-      })
-      dispatch({
-        type: SET_SCANNING_FOR_SONGS,
-        payload: false
-      })
-      return
-    }
-    Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
-      .on('file', (file) => {
-        if(file === 'info.json') {
-          count++
-          fs.readFile(file, 'UTF-8', (err, data) => {
-            if(err) { decrementCounter(); return }
-            let dirs = file.split('\\')
-            dirs.pop()
-            let dir = dirs.join('\\')
-            let song
-            try {
-              song = JSON.parse(data)
-            } catch(err) {
-              decrementCounter()
-              return
-            }
-            if(song.hasOwnProperty('hash')) {
-              songs.push({ hash: song.hash, file })
-              decrementCounter()
-            } else {
-              let to_hash = ''
-              for(let i = 0; i < song.difficultyLevels.length; i++) {
-                try {
-                  to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
-                } catch(err) {
-                  decrementCounter()
-                  return
-                }
-              }
-              let hash = md5(to_hash)
-              song.hash = hash
-              fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-              songs.push({ hash, file })
-              decrementCounter()
-            }
-          })
-        }
-      })
-      .on('end', () => {
-        if(count === 0) {
-          dispatch({
-            type: SET_DOWNLOADED_SONGS,
-            payload: songs
-          })
-          dispatch({
-            type: SET_SCANNING_FOR_SONGS,
-            payload: false
-          })
-          return
-        }
-        ended = true
-      })
+
+  walk(path.join(getState().settings.installationDirectory, 'CustomSongs'), (err, songs) => {
+    dispatch({
+      type: SET_DOWNLOADED_SONGS,
+      payload: songs
+    })
+
+    dispatch({
+      type: SET_SCANNING_FOR_SONGS,
+      payload: false
+    })
   })
-  }, 1000)
 }
 
 export const clearQueue = () => dispatch => {

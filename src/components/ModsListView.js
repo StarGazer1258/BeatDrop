@@ -12,6 +12,8 @@ import Loader from '../assets/loading-dots2.png'
 import { connect } from 'react-redux'
 import SortBar from './SortBar';
 
+const { shell } = window.require('electron')
+
 class ModsListView extends Component {
   constructor(props) {
     super(props)
@@ -59,6 +61,7 @@ class ModsListView extends Component {
                 <th><span>&nbsp;</span></th>
                 <th onClick={ () => { this.setState({ sortBy: 'name', sortDirection: this.state.sortBy === 'name' ? !this.state.sortDirection : 0 }) } }><span>Mod Name{ this.state.sortBy === 'name' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
                 <th width={ 80 } onClick={ () => { this.setState({ sortBy: 'version', sortDirection: this.state.sortBy === 'version' ? !this.state.sortDirection : 0 }) } }><span>Version{ this.state.sortBy === 'version' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
+                <th width={ 80 } onClick={ () => { this.setState({ sortBy: 'gameVersion', sortDirection: this.state.sortBy === 'gameVersion' ? !this.state.sortDirection : 0 }) } }><span>Game V.{ this.state.sortBy === 'gameVersion' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
                 <th onClick={ () => { this.setState({ sortBy: 'author', sortDirection: this.state.sortBy === 'author' ? !this.state.sortDirection : 0 }) } }><span>Author{ this.state.sortBy === 'author' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
                 <th onClick={ () => { this.setState({ sortBy: 'category', sortDirection: this.state.sortBy === 'category' ? !this.state.sortDirection : 0 }) } }><span>Category{ this.state.sortBy === 'category' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
                 <th onClick={ () => { this.setState({ sortBy: 'uploadDate', sortDirection: this.state.sortBy === 'uploadDate' ? !this.state.sortDirection : 0 }) } }><span>Upload Date{ this.state.sortBy === 'uploadDate' ? this.state.sortDirection ? '▼' : '▲' : null }</span></th>
@@ -77,6 +80,10 @@ class ModsListView extends Component {
                       case 'version':
                         if(a.version < b.version) return this.state.sortDirection * 2 - 1
                         if(a.version > b.version) return -(this.state.sortDirection * 2 - 1)
+                        return 0
+                      case 'gameVersion':
+                        if(a.gameVersion < b.gameVersion) return this.state.sortDirection * 2 - 1
+                        if(a.gameVersion > b.gameVersion) return -(this.state.sortDirection * 2 - 1)
                         return 0
                       case 'author':
                         if(a.author.username < b.author.username) return this.state.sortDirection * 2 - 1
@@ -127,7 +134,8 @@ class ModsListView extends Component {
                         </td>
                         <td>{ mod.name }</td>
                         <td>{ mod.version }</td>
-                        <td>{ mod.author.username }</td>
+                        <td>{ mod.gameVersion }</td>
+                        <td>{ mod.name === 'YUR Fit Calorie Tracker' ? <a href='https://yur.chat' onClick={ (e) => { e.preventDefault(); e.stopPropagation(); shell.openExternal('https://yur.chat') } }>https://yur.chat</a> : (mod.author.username || 'Unknown') }</td>
                         <td>{ mod.category }</td>
                         <td>{ `${new Date(mod.uploadDate).toLocaleDateString() }, ${ new Date(mod.uploadDate).toLocaleTimeString() }` }</td>
                       </tr>

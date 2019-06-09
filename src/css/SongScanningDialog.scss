@@ -1,7 +1,7 @@
-#scanning-text {
+.scanning-text {
   text-align: center;
 
-  &::before {
+  &:first-child::before {
     content: "";
     display: block;
     position: relative;
@@ -10,10 +10,15 @@
     width: 100px;
     height: 100px;
     padding: 30px 0;
+    margin-top: -20px;
     background: url(../assets/update.png);
     background-repeat: no-repeat;
     transition: .5s;
   }
+}
+
+h5.scanning-text {
+  margin: 10px 0;
 }
 
 #scanning-text.theme-dark, #scanning-text.theme-hc {

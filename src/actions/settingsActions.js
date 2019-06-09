@@ -1,4 +1,4 @@
-import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_OFFLINE_MODE, SET_THEME, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES, SET_INSTALLATION_TYPE } from './types'
+import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_OFFLINE_MODE, SET_THEME, SET_THEME_IMAGE, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES, SET_INSTALLATION_TYPE, SET_GAME_VERSION } from './types'
 
 import { checkDownloadedSongs } from './queueActions'
 
@@ -26,6 +26,13 @@ export const setInstallationType = type => dispatch => {
   })
 }
 
+export const setGameVersion = version => dispatch => {
+  dispatch({
+    type: SET_GAME_VERSION,
+    payload: version
+  })
+}
+
 export const setAutoLoadMore = willAutoLoadMore => dispatch => {
   dispatch({
     type: SET_AUTO_LOAD_MORE,
@@ -44,6 +51,13 @@ export const setTheme = theme => dispatch => {
   dispatch({
     type: SET_THEME,
     payload: theme
+  })
+}
+
+export const setThemeImage = imagePath => dispatch => {
+  dispatch({
+    type: SET_THEME_IMAGE,
+    payload: imagePath
   })
 }
 

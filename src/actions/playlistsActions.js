@@ -40,7 +40,8 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
           type: DISPLAY_WARNING,
           payload: {
             color: 'gold',
-            text: 'No playlists found!'
+            text: 'No playlists found!',
+            timeout: 2500
           }
         })
       }
@@ -108,7 +109,8 @@ export const deletePlaylist = playlistFile => dispatch => {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.'
+          text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.',
+          timeout: 2500
         }
       })
       return
@@ -152,7 +154,8 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
         type: DISPLAY_WARNING,
         payload: {
           color: 'gold',
-          text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.'
+          text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.',
+          timeout: 3000
         }
       })
       return
@@ -264,19 +267,12 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
   let file = details.playlistFile
   delete details.playlistFile
   let newSongs = []
-  function findWithAttr(array, attr, value) {
-    for(var i = 0; i < array.length; i += 1) {
-      if(array[i][attr] === value) {
-          return i;
-      }
-    }
-    return -1;
-  }
   for(let i = 0; i < details.newOrder.length; i++) {
-    if(findWithAttr(details.songs, 'hash', details.newOrder[i]) >= 0) {
-      newSongs.push({ hash: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].hash, songName: details.songs[findWithAttr(details.songs, 'hash', details.newOrder[i])].songName })
+    let identifier = details.newOrder[i].split('.')[0]
+    if(details.songs.findIndex((v) => v.hash === identifier) >= 0) {
+      newSongs.push({ hash: details.songs[details.songs.findIndex((v) => v.hash === identifier)].hash, songName: details.songs[details.songs.findIndex((v) => v.hash === identifier)].songName })
     } else {
-      newSongs.push({ key: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].key, songName: details.songs[findWithAttr(details.songs, 'key', details.newOrder[i])].songName })
+      newSongs.push({ key: details.songs[details.songs.findIndex((v) => v.key === identifier)].key, songName: details.songs[details.songs.findIndex((v) => v.key === identifier)].songName })
     }
   }
   details.songs = newSongs
@@ -353,7 +349,7 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
           } catch(err) {
             dispatch({
               type: DISPLAY_WARNING,
-              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.' }
+              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.', timeout: 4000 }
             })
             return
           }

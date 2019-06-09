@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setInstallationDirectory, setInstallationType, setAutoLoadMore, setOfflineMode, setTheme, setFolderStructure, setUpdateChannel, setLatestReleaseNotes } from '../actions/settingsActions'
+import { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes } from '../actions/settingsActions'
 import { checkDownloadedSongs } from '../actions/queueActions'
 import { checkInstalledMods } from '../actions/modActions'
 import '../css/SettingsView.scss'
@@ -16,7 +16,8 @@ class SettingsView extends Component {
     super(props)
 
     this.state = {
-      updateStatus: ''
+      updateStatus: '',
+      gameVersions: []
     }
   }
 
@@ -26,6 +27,10 @@ class SettingsView extends Component {
         this.setState({ updateStatus: event })
       }
     })
+
+    fetch('https://beatmods.com/api/v1/version')
+      .then(res => res.json())
+      .then(gameVersions => this.setState({ gameVersions }))
   }
 
   updateValue() {
@@ -52,11 +57,26 @@ class SettingsView extends Component {
         <span id="installation-directory-display"><input className="text-box" type="text" id="dl-loc-box" value={ this.props.settings.installationDirectory } disabled /></span>
         <input type="file" id="dl-location" webkitdirectory="" onChange={ (e) => {this.props.setInstallationDirectory(e.target.files[0].path || this.props.settings.installationDirectory)} } /><br />
         <label htmlFor="dl-location"><Button type="primary" onClick={ () => {} }>Choose Folder</Button></label><Button onClick={ () => {window.require('child_process').exec('start "" "' + this.props.settings.installationDirectory + '"')} }>Open Folder</Button><br /><br />
-        <label htmlFor="installation-type">Installation Type</label><br /><br />
-        <select id="installation-type-select" name="installation-type-select" value={ this.props.settings.installationType } onChange={ (e) => { this.props.setInstallationType(e.target.value) } }>
-          <option value="steam">Steam</option>
-          <option value="oculus">Oculus</option>
-        </select>
+        <table>
+          <tr>
+            <th>Installation Type&emsp;</th>
+            <th>Game Version</th>
+          </tr>
+          <br />
+          <tr>
+            <td>
+              <select id="installation-type-select" name="installation-type-select" value={ this.props.settings.installationType } onChange={ (e) => { this.props.setInstallationType(e.target.value) } }>
+                <option value="steam">Steam</option>
+                <option value="oculus">Oculus</option>
+              </select>
+            </td>
+            <td>
+              <select id="game-version-select" name="game-version-select" value={ this.props.settings.gameVersion } onChange={ (e) => { this.props.setGameVersion(e.target.value) } }>
+                { this.state.gameVersions.map(version => <option value={ version }>{ version }</option>) }
+              </select>
+            </td>
+          </tr>
+        </table>
         { this.props.settings.installationType === 'steam' && this.props.settings.installationDirectory.includes('Oculus') ? <><br /><br /><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Oculus version of BeatSaber. If this is the case, please set "Installation Type" to "Oculus". Otherwise, you can ignore this message.</span><br /><br /></> : null }
         { this.props.settings.installationType === 'oculus' && this.props.settings.installationDirectory.includes('Steam') ? <><br /><br /><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Steam version of BeatSaber. If this is the case, please set "Installation Type" to "Steam". Otherwise, you can ignore this message.</span><br /><br /></> : null }
         <hr />
@@ -77,7 +97,11 @@ class SettingsView extends Component {
           <option value="light">Light</option>
           <option value="dark">Dark</option>
           <option value="hc">High Contrast</option>
-        </select>
+        </select><br /><br />
+        <label>Custom Theme Image</label><br /><br />
+        <span id="installation-directory-display"><input className="text-box" type="text" id="theme-image-box" placeholder="No Image Set" value={ this.props.settings.themeImagePath } disabled /></span>
+        <input type="file" id="theme-image-path" onChange={ (e) => {this.props.setThemeImage(e.target.files[0].path || this.props.settings.themeImagePath)} } /><br />
+        <label htmlFor="theme-image-path"><Button type="primary" onClick={ () => {} }>Choose Image</Button></label><Button onClick={ () => { this.props.setThemeImage('') } }>Clear Image</Button><br /><br />
         <hr />
         <h2>Updates</h2>
         <b>Current Version: </b>{ require('../../package.json').version }<br /><br />
@@ -118,7 +142,21 @@ class SettingsView extends Component {
           <b>Wave Tier</b>
           <ul>
             <li>Shane R. Monroe</li>
+            <li>Carize</li>
+            <li>Marc Smith</li>
           </ul>
+          </li>
+          <li>
+            <b>Hurricane Tiere</b>
+            <ul>
+              <li><i>Your name here...</i></li>
+            </ul>
+          </li>
+          <li>
+            <b>Tsunami Tier</b>
+            <ul>
+              <li><i>This could be you...</i></li>
+            </ul>
           </li>
         </ul>
         <br /><br />
@@ -144,6 +182,6 @@ const mapStateToProps = state => ({
   scanningForMods: state.mods.scanning
 })
 
-export default connect(mapStateToProps, { setInstallationDirectory, setInstallationType, setAutoLoadMore, setOfflineMode, setTheme, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, checkDownloadedSongs, checkInstalledMods })(SettingsView)
+export default connect(mapStateToProps, { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, checkDownloadedSongs, checkInstalledMods })(SettingsView)
 
 //<input type="checkbox" name="auto-refresh" id="auto-refresh" checked={this.props.settings.autoRefresh} onClick={() => this.props.setAutoLoadMore(!this.props.settings.autoLoadMore)} /><label htmlFor="auto-refresh">Refresh feed every </label><input type="number" name="auto-refresh-interval" id="auto-refresh-interval"/><label htmlFor="auto-refresh-interval"> seconds</label>
