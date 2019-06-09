@@ -78,7 +78,7 @@
         "ext": "bplist",
         "name": "Playlist",
         "description": "Beat Saber Playlist",
-        "role": "Editor"
+        "icon": "resources/bplist.ico"
       }
     ]
   },
