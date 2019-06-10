@@ -295,7 +295,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       console.log(`Installing ${ modName }...`)
       if(mod.downloads.some(version => version.type === 'universal')) {
         req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
-          if(r) if(err || r.statusCode !== 200) {
+          if(r) if(err || (r.hasOwnProperty('statusCode') && r.statusCode !== 200)) {
             dispatch({
               type: DISPLAY_WARNING,
               payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
