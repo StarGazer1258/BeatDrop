@@ -7,7 +7,7 @@ import Button from './Button'
 import { connect } from 'react-redux'
 import { setLatestReleaseNotes } from '../actions/settingsActions'
 
-const { ipcRenderer } = window.require('electron')
+const { ipcRenderer, shell } = window.require('electron')
 
 class ReleaseNotesModal extends Component {
 
@@ -25,18 +25,14 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Added <b>custom theme image</b> setting. You can now download songs while watching anime or looking at cute cats!</li>
-              <li>Added <b>game version support.</b> This means you can set your game version and get only the correct mods for the version. (May require mod reinstallation to update.)</li>
-              <li>We have a new Wave tier Patron! Welcome to the credits <b>Marc Smith!</b></li>
-              <li>2.3.2: Add <b>game version tag</b> to all mods. Now you can see for what version of the game a mod was made for.</li>
+              <li>Added <b>.bplist file association.</b> Simply open a .bplist file with BeatDrop and it will be installed for you!</li>
+              <li>Big thanks to our newest Patreon supporter <b>Myles Hecht!</b></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li><b>Song scanning</b> has been completely rewritten to be <b>much more stable!</b></li>
-              <li>The <b>song scanning modal</b> now <b>provides more information</b> and <b>persists until exited.</b></li>
-              <li>2.3.1: Fixed bug where <b>app would crash on startup.</b> (Thanks <b>Rocker</b>!)</li>
-              <li>2.3.3: Fixed bug where <b>playlists would not save properly.</b></li>
+              <li>Fix <a href="https://github.com/StarGazer1258/BeatDrop/issues/11" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#11</a>. Credit to <b>ARXChrono</b> for th fix.</li>
+              <li>Bugged code in <b>song hash calulation</b> has finally been fixed. Thanks to <b>Yuuki</b> for this find.</li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
