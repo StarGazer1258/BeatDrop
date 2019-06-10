@@ -7,7 +7,7 @@ import Button from './Button'
 import { connect } from 'react-redux'
 import { setLatestReleaseNotes } from '../actions/settingsActions'
 
-const { ipcRenderer, shell } = window.require('electron')
+const { ipcRenderer } = window.require('electron')
 
 class ReleaseNotesModal extends Component {
 
