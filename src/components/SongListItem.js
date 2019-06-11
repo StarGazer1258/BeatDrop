@@ -106,8 +106,9 @@ class SongListItem extends Component {
             <div className="song-artist">{this.props.artist}</div>
             <Uploader uploader={ this.props.uploader } isDownloaded={ this.props.isDownloaded } uploadDate={ this.props.view.songView !== COMPACT_LIST && !!this.props.uploadDate ? this.props.uploadDate : null } />
             <Difficulties difficulties={ this.props.difficulties } />
+            <div className="bpm">BPM: { Math.round(this.props.bpm) }</div>
           </div>
-          <Details downloads={ this.props.downloads } upvotes={ this.props.upvotes } downvotes={ this.props.downvotes } ratings={ this.props.ratings } plays={ this.props.plays } />
+          <Details downloads={ this.props.downloads } upvotes={ this.props.upvotes } downvotes={ this.props.downvotes } ratings={ this.props.ratings } plays={ this.props.plays } bpm={ this.props.bpm } />
         </li>
       )
     }
