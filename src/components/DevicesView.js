@@ -4,6 +4,7 @@ import '../css/DevicesView.scss'
 import { connect } from 'react-redux'
 
 import { selectDevice } from '../actions/deviceActions'
+import { getDevices } from '../actions/deviceActions'
 import { setView } from '../actions/viewActions'
 
 import { DEVICE_DETAILS } from '../views'
@@ -45,6 +46,7 @@ let devices = [
 
 class DevicesView extends Component {
     render() {
+      getDevices();
         return (
           <div id="quest-view">
             <h1>Devices</h1>
@@ -76,4 +78,4 @@ const mapStateToProps = state => ({
 
 })
 
-export default connect(mapStateToProps, { selectDevice, setView })(DevicesView)
+export default connect(mapStateToProps, { selectDevice, setView, getDevices })(DevicesView)
