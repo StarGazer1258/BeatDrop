@@ -9,9 +9,9 @@ const fs = remote.require('fs')
 const path = remote.require('path')
 
 const resourceUrl = {
-    'BEATSAVER_NEW_SONGS': 'https://beatsaver.com/api/songs/new',
-    'BEATSAVER_TOP_DOWNLOADED_SONGS': 'https://beatsaver.com/api/songs/top',
-    'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/songs/plays'
+    'BEATSAVER_NEW_SONGS': 'https://beatsaver.com/api/maps/latest',
+    'BEATSAVER_TOP_DOWNLOADED_SONGS': 'https://beatsaver.com/api/maps/downloads',
+    'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/maps/plays'
 }
 
 export const fetchNew = () => dispatch => {
@@ -31,9 +31,10 @@ export const fetchNew = () => dispatch => {
     type: SET_RESOURCE,
     payload: BEATSAVER.NEW_SONGS
   })
-  fetch('https://beatsaver.com/api/songs/new')
+  fetch('https://beatsaver.com/api/maps/latest')
     .then(res => res.json())
     .then(data =>  {
+      console.log(data)
       dispatch({
         type: FETCH_NEW,
         payload:  data
@@ -42,8 +43,9 @@ export const fetchNew = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+      console.log(data);
+      for(let i = 0; i < data.docs.length; i++) {
+        fetch(`https://beatsaver.com/api/maps/by-hash/${data.docs[i].hash}`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -78,7 +80,7 @@ export const fetchTopDownloads = () => dispatch => {
     type: SET_RESOURCE,
     payload: BEATSAVER.TOP_DOWNLOADED_SONGS
   })
-  fetch('https://beatsaver.com/api/songs/top')
+  fetch('https://beatsaver.com/api/maps/downloads')
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -90,7 +92,7 @@ export const fetchTopDownloads = () => dispatch => {
         payload: false
       })
       for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+        fetch(`https://beatsaver.com/api/maps/by-hash/${data.docs[i].hash}`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -125,7 +127,7 @@ export const fetchTopFinished = () => dispatch => {
     type: SET_RESOURCE,
     payload: BEATSAVER.TOP_FINISHED_SONGS
   })
-  fetch('https://beatsaver.com/api/songs/plays')
+  fetch('https://beatsaver.com/api/maps/plays')
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -136,8 +138,8 @@ export const fetchTopFinished = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+      for(let i = 0; i < data.docs.length; i++) {
+        fetch(`https://beatsaver.com/api/maps/by-hash/${data.docs[i].hash}`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -276,7 +278,7 @@ export const loadMore = () => (dispatch, getState) => {
         payload: false
       })
       for(let i = state.songs.songs.length; i < state.songs.songs.length + data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i - state.songs.songs.length].key.split('-')[0]}/ratings`)
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key.split('-')[0]}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({

@@ -23,8 +23,8 @@ export const loadDetails = (identity) => (dispatch, getState) => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  if(!isNaN(identity.replace('-', ''))) {
-    fetch('https://beatsaver.com/api/songs/detail/' + identity)
+  if(identity) {
+    fetch('https://beatsaver.com/api/maps/detail/' + identity)
       .then(res => {
         if(res.status === 404){
           dispatch({
@@ -38,7 +38,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
       })
       .then(res => res.json())
       .then(details => {
-        fetch(details.song.downloadUrl)
+        fetch(`http://beatsaver.com/${details.downloadUrl}`)
           .then(res => res.arrayBuffer())
           .then(data => {
             let zip = new AdmZip(new Buffer(data))
@@ -66,7 +66,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
       type: SET_VIEW,
       payload: SONG_DETAILS
     })
-    fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${identity.split('-')[0]}/ratings`)
+    fetch(`https://beatsaver.com/api/maps/detail/${identity}`)
       .then(res => res.json())
       .then(bsaberData => {
         dispatch({
@@ -120,7 +120,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           payload: SONG_DETAILS
         })
       } else {
-        fetch(`https://beatsaver.com/api/songs/search/hash/${identity}`)
+        fetch(`https://beatsaver.com/api/maps/detail/${identity}`)
           .then(res =>  res.json())
           .then(results => {
             if(results.songs.length === 1) {
@@ -139,7 +139,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
                     }
                   }
                 })
-              fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${song.id}/ratings`)
+              fetch(`https://beatsaver.com/api/maps/by-hash/${identity}`)
                 .then(res => res.json())
                 .then(bsaberData => {
                   dispatch({

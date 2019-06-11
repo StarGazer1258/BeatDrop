@@ -87,10 +87,10 @@ class SongList extends Component {
                 boolean: this.props.view.subView === 'compact-list',
                 tag: '.compact'
               }
-            ]
+            ];
             return (
               <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
-                <SongListItem key={ makeRenderKey(songTags) } title={ song.songName } ratings={ song.ratings } artist={ song.authorName } uploader={ song.uploader } difficulties={ song.difficulties || song.difficultyLevels } imageSource={ song.coverUrl } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.downloadCount } upvotes={ song.upVotes } downvotes={ song.downVotes } plays={ song.playedCount } uploadDate={ !!song.createdAt && !!song.createdAt.date && !!song.createdAt.timezone ? new Date(Date.parse(song.createdAt.date + " " + song.createdAt.timezone)).toLocaleString() : '' } />
+                <SongListItem key={ makeRenderKey(songTags) } title={ song.metadata.songName } ratings={ song.stats.rating } artist={ song.metadata.songAuthorName } uploader={ song.uploader.username } difficulties={ song.metadata.difficulties || song.difficultyLevels } imageSource={ song.coverURL } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.stats.downloads } upvotes={ song.stats.upVotes } downvotes={ song.stats.downVotes } plays={ song.stats.plays } uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' } />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}

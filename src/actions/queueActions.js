@@ -25,10 +25,10 @@ export const downloadSong = (identity) => (dispatch, getState) => {
   if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
   let hash = identity
   if(!(/^[a-f0-9]{32}$/).test(identity)) {
-    fetch(`https://beatsaver.com/api/songs/detail/${identity}`)
+    fetch(`https://beatsaver.com/api/maps/detail/${identity}`)
       .then(res => res.json())
       .then(song => {
-        hash = song.song.hashMd5
+        hash = song.hash
         let state = { ...getState() }
         if(state.songs.downloadingCount >= 3) {
           dispatch({
@@ -45,17 +45,17 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         setTimeout(() => {
           document.getElementById('queue-button').classList.remove('notify')
         }, 1000)
-        fetch(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+        fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
           .then(res =>  res.json())
           .then(results => {
             let utc = Date.now()
-            if(results.songs.length === 1) {
+            if(results.length === 1) {
               dispatch({
                 type: ADD_TO_QUEUE,
                 payload: { ...results.songs[0], utc }
               })
               let req = request.get({
-                url: results.songs[0].downloadUrl,
+                url: results.downloadUrl,
                 encoding: null
               }, (err, r, data) => {
                 try {
