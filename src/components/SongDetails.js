@@ -25,7 +25,6 @@ const exitDetailsShortcut = function (e) { if(e.keyCode === 27) { this.props.set
 function Difficulties(props) {
   let difficulties = props.difficulties
   let badges = []
-  console.log(difficulties)
   if(difficulties.easy) {
     badges.push({
       text: 'Easy',
@@ -95,13 +94,13 @@ function BeatSaver(props) {
       <br />
       <br />
       <b>BeastSaber Ratings:</b>
-      <div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;<b>Overall Rating: </b>{props.details.ratings ? props.details.ratings.overall_rating > 0 ? props.details.ratings.overall_rating : 'No Rating' : '...'}</div>
-      <div className="details-fun-factor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span role="img" aria-label="rhythm">😃</span><b>Fun Factor: </b>{props.details.ratings ? props.details.ratings.average_ratings.fun_factor > 0 ? props.details.ratings.average_ratings.fun_factor : 'N/A' : '...'}</div>
-      <div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="rhythm">🎶</span>Rhythm: </b>{props.details.ratings ? props.details.ratings.average_ratings.rhythm > 0 ? props.details.ratings.average_ratings.rhythm : 'N/A' : '...'}&emsp;&emsp;&emsp;</div>
-      <div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="flow">🌊</span>Flow: </b>{props.details.ratings ? props.details.ratings.average_ratings.flow > 0 ? props.details.ratings.average_ratings.flow : 'N/A' : '...'}&emsp;&emsp;&emsp;&emsp;</div>
-      <div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="pattern quality">💠</span>Pattern Quality: </b>{props.details.ratings ? props.details.ratings.average_ratings.pattern_quality > 0 ? props.details.ratings.average_ratings.pattern_quality : 'N/A' : '...'}</div>
-      <div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="readability">👓</span>Readability: </b>{props.details.ratings ? props.details.ratings.average_ratings.readability > 0 ? props.details.ratings.average_ratings.readability : 'N/A' : '...'}</div>
-      <div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="level quality">✔️</span>Level Quality: </b>{props.details.ratings ? props.details.ratings.average_ratings.level_quality > 0 ? props.details.ratings.average_ratings.level_quality : 'N/A' : '...'}</div>
+      {/*<div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;<b>Overall Rating: </b>{props.details.ratings ? props.details.ratings.overall_rating > 0 ? props.details.ratings.overall_rating : 'No Rating' : '...'}</div>*/}
+      {/*<div className="details-fun-factor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span role="img" aria-label="rhythm">😃</span><b>Fun Factor: </b>{props.details.ratings ? props.details.ratings.average_ratings.fun_factor > 0 ? props.details.ratings.average_ratings.fun_factor : 'N/A' : '...'}</div>*/}
+      {/*<div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="rhythm">🎶</span>Rhythm: </b>{props.details.ratings ? props.details.ratings.average_ratings.rhythm > 0 ? props.details.ratings.average_ratings.rhythm : 'N/A' : '...'}&emsp;&emsp;&emsp;</div>*/}
+      {/*<div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="flow">🌊</span>Flow: </b>{props.details.ratings ? props.details.ratings.average_ratings.flow > 0 ? props.details.ratings.average_ratings.flow : 'N/A' : '...'}&emsp;&emsp;&emsp;&emsp;</div>*/}
+      {/*<div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="pattern quality">💠</span>Pattern Quality: </b>{props.details.ratings ? props.details.ratings.average_ratings.pattern_quality > 0 ? props.details.ratings.average_ratings.pattern_quality : 'N/A' : '...'}</div>*/}
+      {/*<div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="readability">👓</span>Readability: </b>{props.details.ratings ? props.details.ratings.average_ratings.readability > 0 ? props.details.ratings.average_ratings.readability : 'N/A' : '...'}</div>*/}
+      {/*<div className="details-overall-rating">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span role="img" aria-label="level quality">✔️</span>Level Quality: </b>{props.details.ratings ? props.details.ratings.average_ratings.level_quality > 0 ? props.details.ratings.average_ratings.level_quality : 'N/A' : '...'}</div>*/}
     </div>
   )
 }
@@ -149,7 +148,6 @@ class SongDetails extends Component {
         </div>
       )
     } else {
-      console.log(this.props)
       return (
         <div id="song-details">
           <div className="close-icon" title="Close" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
@@ -174,7 +172,7 @@ class SongDetails extends Component {
             </div>
             <Description details={ this.props.details } />
             <Uploader details={ this.props.details } />
-            <Difficulties difficulties={ this.props.details.difficulties || this.props.details.difficultyLevels } />
+            <Difficulties difficulties={ this.props.details.metadata.difficulties || this.props.details.difficultyLevels } />
             <div className="preview"><b>Preview:</b><br /><audio id="preview" src={ this.props.details.audioSource } controls controlsList="nodownload" /></div>
           </div>
           <BeatSaver details={ this.props.details } />
