@@ -90,7 +90,22 @@ class SongList extends Component {
             ];
             return (
               <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
-                <SongListItem key={ makeRenderKey(songTags) } title={ song.metadata.songName } ratings={ song.stats.rating } artist={ song.metadata.songAuthorName } uploader={ song.uploader.username } difficulties={ song.metadata.difficulties || song.difficultyLevels } imageSource={ song.coverURL } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.stats.downloads } upvotes={ song.stats.upVotes } downvotes={ song.stats.downVotes } plays={ song.stats.plays } uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' } />
+                <SongListItem
+                    key={ makeRenderKey(songTags) }
+                    title={ song.metadata.songName }
+                    ratings={ song.stats.rating }
+                    artist={ song.metadata.songAuthorName }
+                    uploader={ song.uploader.username }
+                    difficulties={ song.metadata.difficulties || song.difficultyLevels }
+                    imageSource={ song.coverURL }
+                    songKey={ song.key }
+                    hash={ song.hash || song.hashMd5 }
+                    file={ song.file }
+                    downloads={ song.stats.downloads }
+                    upvotes={ song.stats.upVotes }
+                    downvotes={ song.stats.downVotes }
+                    plays={ song.stats.plays }
+                    uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' } />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}
