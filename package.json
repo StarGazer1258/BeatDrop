@@ -28,6 +28,7 @@
     "redux-thunk": "^2.3.0",
     "remarkable": "^1.7.1",
     "rimraf": "^2.6.2",
+    "sort-json-array": "^0.1.7",
     "sortablejs": "^1.8.0-rc1",
     "walker": "^1.0.7"
   },

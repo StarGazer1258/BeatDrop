@@ -7,6 +7,7 @@ import { loadMore } from '../actions/songListActions'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
 import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
 import { displayWarning } from '../actions/warningActions'
+import * as RESOURCES from '../constants/resources'
 
 import SongListItem from './SongListItem'
 import LoadMore from './LoadMore';
@@ -23,12 +24,12 @@ const { clipboard, shell } = window.require('electron')
 
 const upArrowShortcut   = function(e) { if(e.keyCode === 38 && this.state.highlighted > 0)                             { this.setState({ highlighted: this.state.highlighted - 1 }) } }
 const downArrowShortcut = function(e) { if(e.keyCode === 40 && this.state.highlighted < this.props.songs.songs.length) { this.setState({ highlighted: this.state.highlighted + 1 }) } }
+const sortJsonArray = require('sort-json-array');
 
 class SongList extends Component {
 
   constructor(props) {
     super(props)
-
     this.state = {
       song: '',
       highlighted: -1
@@ -69,7 +70,7 @@ class SongList extends Component {
         {(this.props.loading) ?
           <SongListItem loading />
         :
-          this.props.songs.songs.map((song, i) => {
+          ((this.props.resource === RESOURCES.LIBRARY.SONGS) ? sortJsonArray(this.props.songs.songs, this.props.view.sortBy, this.props.view.sortOrder) : this.props.songs.songs).map((song, i) => {
             let songTags = [
               {
                 boolean: true,
@@ -90,7 +91,7 @@ class SongList extends Component {
             ]
             return (
               <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
-                <SongListItem key={ makeRenderKey(songTags) } title={ song.songName } ratings={ song.ratings } artist={ song.authorName } uploader={ song.uploader } difficulties={ song.difficulties || song.difficultyLevels } imageSource={ song.coverUrl } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.downloadCount } upvotes={ song.upVotes } downvotes={ song.downVotes } plays={ song.playedCount } uploadDate={ !!song.createdAt && !!song.createdAt.date && !!song.createdAt.timezone ? new Date(Date.parse(song.createdAt.date + " " + song.createdAt.timezone)).toLocaleString() : '' } />
+                <SongListItem key={ makeRenderKey(songTags) } title={ song.songName } ratings={ song.ratings } artist={ song.authorName } uploader={ song.uploader } difficulties={ song.difficulties || song.difficultyLevels } imageSource={ song.coverUrl } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.downloadCount } upvotes={ song.upVotes } downvotes={ song.downVotes } plays={ song.playedCount } uploadDate={ !!song.createdAt && !!song.createdAt.date && !!song.createdAt.timezone ? new Date(Date.parse(song.createdAt.date + " " + song.createdAt.timezone)).toLocaleString() : '' } bpm={ song.beatsPerMinute } />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}
@@ -148,12 +149,14 @@ SongList.propTypes = {
   songs: PropTypes.object.isRequired,
   scrollTop: PropTypes.number.isRequired,
   loadMore: PropTypes.func.isRequired,
-  autoLoadMore: PropTypes.bool.isRequired
+  autoLoadMore: PropTypes.bool.isRequired,
+  resource: PropTypes.string.isRequired,
 }
 
 const mapStateToProps = state => ({
   view: state.view,
   songs: state.songs,
+  resource: state.resource,
   playlists: state.playlists.playlists,
   scrollTop: state.songs.scrollTop,
   loading: state.loading,

@@ -18,7 +18,7 @@ import PlaylistDetails from './PlaylistDetails'
 import DonateView from './DonateView'
 import ModsView from './ModsView'
 import ModDetails from './ModDetails'
-import ModsListView from './ModsListView';
+import ModsListView from './ModsListView'
 
 function Songs(props) {
   switch(props.subView) {
@@ -102,12 +102,13 @@ ViewSwitcher.propTypes = {
   settings: PropTypes.object.isRequired,
   details: PropTypes.object.isRequired,
   warnings: PropTypes.array,
-  sidebarOpen: PropTypes.bool.isRequired,
+  sidebarOpen: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({
   view: state.view.view,
   subView: state.view.subView,
+  resources: state.resources,
   settings: state.settings,
   details: state.details,
   warnings: state.warnings,
