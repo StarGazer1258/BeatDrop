@@ -92,7 +92,7 @@ class SongListItem extends Component {
     } else {
       return (
         <li className={ `song-list-item${this.props.view.subView === 'compact-list' ? ' compact' : ''}` } onClick={ () => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) } }>
-          <img className="cover-image" src={ this.props.imageSource.startsWith('C:')? this.props.imageSource : `https://beatsaver.com/${this.props.imageSource}` } alt={ this.props.songKey } />
+          <img className="cover-image" src={ this.props.imageSource.startsWith('C:')? this.props.imageSource : `https://beatsaver.com${this.props.imageSource}` } alt={ this.props.songKey } />
           {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) && this.props.view.songView !== COMPACT_LIST ? <LibraryIndicator /> : null}
           <div className="song-details">
             <div className="song-title">{this.props.title}<span className="id">{!!this.props.songKey ? this.props.songKey : ''}</span></div>

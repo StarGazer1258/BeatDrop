@@ -201,7 +201,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
     setTimeout(() => {
       document.getElementById('queue-button').classList.remove('notify')
     }, 1000)
-    fetch(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
       .then(res =>  res.json())
       .then(results => {
         let utc = Date.now()
