@@ -49,13 +49,13 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           .then(res =>  res.json())
           .then(results => {
             let utc = Date.now()
-            if(results.length === 1) {
+            if(results) {
               dispatch({
                 type: ADD_TO_QUEUE,
-                payload: { ...results.songs[0], utc }
+                payload: { ...results, utc }
               })
               let req = request.get({
-                url: results.downloadUrl,
+                url: `http://www.beatsaver.com${results.downloadURL}`,
                 encoding: null
               }, (err, r, data) => {
                 try {
@@ -87,7 +87,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 let zipEntries = zip.getEntries()
                 let infoEntry, infoObject
                 for(let i = 0; i < zipEntries.length; i++) {
-                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json') {
+                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json' || zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 8, 8) === 'info.dat') {
                     infoEntry  = zipEntries[i]
                   }
                 }
@@ -97,15 +97,15 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   dispatch({
                     type: DISPLAY_WARNING,
                     payload: {
-                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                      text: `There was an error unpacking the song "${results.name}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.uploader.username}, if problem persists.`
                     }
                   })
                   return
                 }
-                infoObject.key = results.songs[0].key
+                infoObject.key = results.key
                 infoObject.hash = hash
                 zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
-                let extractTo = (getState().settings.folderStructure === 'idKey' ? results.songs[0].key : results.songs[0].name.replace(/[\\/:*?"<>|.]/g, ''))
+                let extractTo = (getState().settings.folderStructure === 'idKey' ? results.key : results.name.replace(/[\\/:*?"<>|.]/g, ''))
                 zip.extractAllTo(path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo))
                 dispatch({
                   type: SET_DOWNLOADED_SONGS,
@@ -139,7 +139,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   type: UPDATE_PROGRESS,
                   payload: {
                     utc,
-                    hash: results.songs[0].hashMd5,
+                    hash: results.hash,
                     progress: Math.trunc((chunks / len) * 100)
                   }
                 })
@@ -211,7 +211,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             payload: { ...results.songs[0], utc }
           })
           let req = request.get({
-            url: results.songs[0].downloadUrl,
+            url: results.downloadURL,
             encoding: null
           }, (err, r, data) => {
             try {
