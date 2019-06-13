@@ -7,15 +7,10 @@ const fs = remote.require('fs')
 const path = remote.require('path')
 
 /**
- * Loads and presents the details page for a song.
- * @param {string} identity The key/hash/file for a song
+ * Loads and presents the details page for a song from a file.
+ * @param {string} file The path to the song
  */
-export const loadDetails = (identity) => (dispatch, getState) => {
-  /*
-    Key:  !isNaN(identity.replace('-', ''))     fetch from api
-    Hash: (/^[a-f0-9]{32}$/).test(identity)     check if local, else from api
-    File: else                                  fetch from local
-  */
+export const loadDetailsFromFile = file => dispatch => {
   dispatch({
     type: CLEAR_DETAILS
   })
@@ -23,9 +18,49 @@ export const loadDetails = (identity) => (dispatch, getState) => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  if(identity) {
-    let detailsLink = identity.startsWith("C:") ? identity : 'https://beatsaver.com/api/maps/detail/' + identity;
-    fetch(detailsLink)
+  dispatch({
+    type: SET_VIEW,
+    payload: SONG_DETAILS
+  })
+  fs.readFile(file, 'UTF-8', (err, data) => {
+    if(err) return
+    let details = JSON.parse(data)
+    let dir = path.dirname(file)
+    details.coverURL = `file://${ path.join(dir, details.coverImagePath) }`
+    details.file = path.join(dir, 'info.json' || 'info.dat')
+    dispatch({
+      type: LOAD_DETAILS,
+      payload: details
+    })
+    dispatch({
+      type: LOAD_DETAILS,
+      payload: { audioSource: `file://${ path.join(dir, details.difficultyLevels[0].audioPath) }` }
+    })
+    dispatch({
+      type: SET_DETAILS_LOADING,
+      payload: false
+    })
+  })
+}
+
+/**
+ * Loads and presents the details page for a song from a key.
+ * @param {string} key The key of the song
+ */
+export const loadDetailsFromKey = key => dispatch => {
+  dispatch({
+    type: CLEAR_DETAILS
+  })
+  dispatch({
+    type: SET_DETAILS_LOADING,
+    payload: true
+  })
+  dispatch({
+    type: SET_VIEW,
+    payload: SONG_DETAILS
+  })
+  if((/^[a-f0-9]+$/).test(key)) {
+    fetch(`https://beatsaver.com/api/maps/detail/${key}`)
       .then(res => {
         if(res.status === 404){
           dispatch({
@@ -62,136 +97,46 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           payload: false
         })
       })
-      .catch(() => { })
-    dispatch({
-      type: SET_VIEW,
-      payload: SONG_DETAILS
-    })
-    let ratingsLink = identity.startsWith("C:") ? identity : `https://bsaber.com/wp-json/bsaber-api/songs/${identity}/ratings`;
-    fetch(ratingsLink)
-      .then(res => res.json())
-      .then(bsaberData => {
+      .catch(err => {
         dispatch({
-          type: LOAD_DETAILS,
-          payload: { ratings: bsaberData }
-        })
-      })
-      .catch(() => { dispatch({
-        type: LOAD_DETAILS,
-        payload: {
-          ratings: {
-            overall_rating: 0,
-            average_ratings: {
-              fun_factor: 0,
-              rythm: 0,
-              flow: 0,
-              pattern_quality: 0,
-              readability: 0,
-              level_quality: 0
-            }
+          type: DISPLAY_WARNING,
+          payload: {
+            text: `Error downloading song: ${err}. For help, please file a bug report with this error message.`
           }
-        }
-      }) })
-  } else {
-    if((/^[a-f0-9]{32}$/).test(identity)) {
-      if(getState().songs.downloadedSongs.some(song => song.hash === identity)) {
-        let file = getState().songs.downloadedSongs[getState().songs.downloadedSongs.findIndex(song => song.hash === identity)].file
-        fs.readFile(file, 'UTF-8', (err, data) => {
-          if(err) return
-          let song = JSON.parse(data)
-          let dirs = file.split('\\')
-          dirs.pop()
-          let dir = dirs.join('\\')
-          song.coverUrl = path.join(dir, song.coverImagePath)
-          song.file = path.join(dir, 'info.json' || 'info.dat')
-          console.log(song)
+        })
+      })
+      fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${key}/ratings`)
+        .then(res => res.json())
+        .then(bsaberData => {
           dispatch({
             type: LOAD_DETAILS,
-            payload: { audioSource: path.join(dir, song.difficultyLevels[0].audioPath) }
+            payload: { ratings: bsaberData }
           })
+        })
+        .catch(() => {
           dispatch({
             type: LOAD_DETAILS,
-            payload: { song }
-          })
-          dispatch({
-            type: SET_DETAILS_LOADING,
-            payload: false
-          })
-        })
-        dispatch({
-          type: SET_VIEW,
-          payload: SONG_DETAILS
-        })
-      } else {
-        fetch(`https://beatsaver.com/api/maps/detail/${identity}`)
-          .then(res =>  res.json())
-          .then(results => {
-            if(results.songs.length === 1) {
-              let song = results.songs[0]
-              fetch(song.downloadURL)
-                .then(res => res.arrayBuffer())
-                .then(data => {
-                  let zip = new AdmZip(new Buffer(data))
-                  let entries = zip.getEntries()
-                  for(let i = 0; i < entries.length; i++) {
-                    console.log(entries[i].name)
-                    if(entries[i].name.split('.')[1] === 'ogg' || entries[i].name.split('.')[1] === 'wav' || entries[i].name.split('.')[1] === 'mp3' || entries[i].name.split('.')[1] === 'egg') {
-                      dispatch({
-                        type: LOAD_DETAILS,
-                        payload: { audioSource: URL.createObjectURL(new Blob([entries[i].getData()])) }
-                      })
-                    }
-                  }
-                })
-              fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${identity}/ratings`)
-                .then(res => res.json())
-                .then(bsaberData => {
-                  dispatch({
-                    type: LOAD_DETAILS,
-                    payload: { ratings: bsaberData }
-                  })
-                })
-                dispatch({
-                  type: LOAD_DETAILS,
-                  payload: { song }
-                })
-                dispatch({
-                  type: SET_DETAILS_LOADING,
-                  payload: false
-                })
+            payload: {
+              ratings: {
+                overall_rating: 0,
+                average_ratings: {
+                  fun_factor: 0,
+                  rythm: 0,
+                  flow: 0,
+                  pattern_quality: 0,
+                  readability: 0,
+                  level_quality: 0
+                }
+              }
             }
           })
-          dispatch({
-            type: SET_VIEW,
-            payload: SONG_DETAILS
-          })
+        })
+  } else {
+    dispatch({
+      type: DISPLAY_WARNING,
+      payload: {
+        text: `Error loading details from key: "${key}" is not a valid key. If you are seeing this, please file  a bug report.`
       }
-    } else {
-      fs.readFile(identity, 'UTF-8', (err, data) => {
-        if(err) return
-        let song = JSON.parse(data)
-        let dirs = identity.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
-        song.coverUrl = path.join(dir, song.coverImagePath)
-        song.file = path.join(dir, 'info.json' || 'info.dat')
-        dispatch({
-          type: LOAD_DETAILS,
-          payload: { audioSource: path.join(dir, song.difficultyLevels[0].audioPath) }
-        })
-        dispatch({
-          type: LOAD_DETAILS,
-          payload: { song }
-        })
-        dispatch({
-          type: SET_DETAILS_LOADING,
-          payload: false
-        })
-      })
-      dispatch({
-        type: SET_VIEW,
-        payload: SONG_DETAILS
-      })
-    }
+    })
   }
 }

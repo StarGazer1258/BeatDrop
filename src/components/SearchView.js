@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import '../css/SearchView.scss'
 
 import { submitSearch } from '../actions/searchActions'
-import { loadDetails } from '../actions/detailsActions'
+import { loadDetailsFromFile, loadDetailsFromKey } from '../actions/detailsActions'
 import { connect } from 'react-redux'
 import SearchLoading from '../assets/search-loading.svg'
 import PropTypes from 'prop-types'
@@ -20,7 +20,7 @@ class SearchView extends Component {
         <div>{this.props.results.library.map((song, i) => {
             console.log(song)
           return (
-            <div className="search-result" onClick={ () => { this.props.loadDetails(song.file) } } key={ i }>
+            <div className="search-result" onClick={ () => { this.props.loadDetailsFromFile(song.file) } } key={ i }>
               <img src={ song.coverUrl } alt=""/>
               <div className="search-result-info">
                 <b>{song.songName}</b><br/>
@@ -33,7 +33,7 @@ class SearchView extends Component {
         {/*<h2 style={ { display: 'inline-block', marginRight: '5px' } }>BeatSaver</h2><span>{this.props.results.beatSaver.length} result{(this.props.results.beatSaver.length !== 1 ? 's' : '')}</span>*/}
         <div>{this.props.results.beatSaver.map((song, i) => {
           return (
-            <div className="search-result" onClick={ () => { this.props.loadDetails(song.key) } } key={ i }>
+            <div className="search-result" onClick={ () => { this.props.loadDetailsFromKey(song.key) } } key={ i }>
               <img src={ song.coverUrl } alt="" />
               <div className="search-result-info">
                 <b>{song.songName}</b><br/>
@@ -51,7 +51,8 @@ SearchView.propTypes = {
   results: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
   submitSearch: PropTypes.func.isRequired,
-  loadDetails: PropTypes.func.isRequired
+  loadDetailsFromFile: PropTypes.func.isRequired,
+  loadDetailsFromKey: PropTypes.func.isRequired
 }
 
 let mapStateToProps = state => ({
@@ -59,6 +60,6 @@ let mapStateToProps = state => ({
   loading: state.loading
 })
 
-export default connect(mapStateToProps, { submitSearch, loadDetails })(SearchView)
+export default connect(mapStateToProps, { submitSearch, loadDetailsFromFile, loadDetailsFromKey })(SearchView)
 
 //<div id="search-sources"><input type="checkbox" name="library-source-checkbox" id="library-source-checkbox" onChange={() => {}} defaultChecked/><label htmlFor="library-source-checkbox">Library</label><input type="checkbox" name="beatsaver-source-checkbox" id="beatsaver-source-checkbox" defaultChecked/><label htmlFor="beatsaver-source-checkbox">BeatSaver</label></div>

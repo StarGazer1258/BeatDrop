@@ -83,7 +83,7 @@ function Uploader(props) {
 }
 
 function BeatSaver(props) {
-  if(props.details.stats.downloads === undefined) return null
+  if(props.details.stats === undefined) return null
   return (
     <div className="details-ratings">
       <b>BeatSaver Details:</b>
@@ -152,7 +152,7 @@ class SongDetails extends Component {
       return (
         <div id="song-details">
           <div className="close-icon" title="Close" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
-          <img className="cover-image" src={ `https://beatsaver.com${this.props.details.coverURL}` } alt='' />
+          <img className="cover-image" src={ this.props.details.coverURL.startsWith('file://') ? this.props.details.coverURL : `https://beatsaver.com${this.props.details.coverURL}` } alt='' />
           <div className="details-info">
             <span className="details-title" title={ this.props.details.metadata ? this.props.details.metadata.songName : this.props.songName }>{this.props.details.metadata ? this.props.details.metadata.songName : this.props.songName}</span>
             <div className="details-subtitle" title={ this.props.details.metadata ? this.props.details.metadata.songSubName : this.props.details.songSubName }>{this.props.details.metadata ? this.props.details.metadata.songSubName : this.props.details.songSubName}</div>
@@ -173,7 +173,7 @@ class SongDetails extends Component {
             </div>
             <Description details={ this.props.details } />
             <Uploader details={ this.props.details } />
-            <Difficulties difficulties={ this.props.details.metadata.difficulties || this.props.details.difficultyLevels } />
+            <Difficulties difficulties={ this.props.details.difficultyLevels || this.props.details.metadata.difficulties } />
             <div className="preview"><b>Preview:</b><br /><audio id="preview" src={ this.props.details.audioSource } controls controlsList="nodownload" /></div>
           </div>
           <BeatSaver details={ this.props.details } />

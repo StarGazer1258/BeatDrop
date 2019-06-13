@@ -9,7 +9,7 @@ import LibraryIndicator from './LibraryIndicator'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { loadDetails } from '../actions/detailsActions'
+import { loadDetailsFromFile, loadDetailsFromKey } from '../actions/detailsActions'
 import { setScrollTop } from '../actions/songListActions'
 
 import { COMPACT_LIST } from '../views'
@@ -91,8 +91,8 @@ class SongListItem extends Component {
       )
     } else {
       return (
-        <li className={ `song-list-item${this.props.view.subView === 'compact-list' ? ' compact' : ''}` } onClick={ () => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) } }>
-          <img className="cover-image" src={ this.props.imageSource.startsWith('C:')? this.props.imageSource : `https://beatsaver.com${this.props.imageSource}` } alt={ this.props.songKey } />
+        <li className={ `song-list-item${this.props.view.subView === 'compact-list' ? ' compact' : ''}` } onClick={ () => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); if(this.props.file) { this.props.loadDetailsFromFile(this.props.file) } else { this.props.loadDetailsFromKey(this.props.songKey) } } }>
+          <img className="cover-image" src={ this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }` } alt={ this.props.songKey } />
           {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) && this.props.view.songView !== COMPACT_LIST ? <LibraryIndicator /> : null}
           <div className="song-details">
             <div className="song-title">{this.props.title}<span className="id">{!!this.props.songKey ? this.props.songKey : ''}</span></div>
@@ -109,7 +109,8 @@ class SongListItem extends Component {
 }
 
 SongListItem.propTypes = ({
-  loadDetails: PropTypes.func.isRequired,
+  loadDetailsFromFile: PropTypes.func.isRequired,
+  loadDetailsFromKey: PropTypes.func.isRequired,
   details: PropTypes.object.isRequired
 })
 
@@ -119,4 +120,4 @@ const mapStateToProps = state => ({
   downloadedSongs: state.songs.downloadedSongs
 })
 
-export default connect(mapStateToProps, { loadDetails, setScrollTop })(SongListItem)
+export default connect(mapStateToProps, { loadDetailsFromFile, loadDetailsFromKey, setScrollTop })(SongListItem)

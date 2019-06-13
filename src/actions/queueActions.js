@@ -73,7 +73,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                         type: SET_WAIT_LIST,
                         payload: state.songs.waitingToDownload
                       })
-                      downloadSong(toDownload)(dispatch)
+                      downloadSong(toDownload)(dispatch, getState)
                     }
                     dispatch({
                       type: DISPLAY_WARNING,

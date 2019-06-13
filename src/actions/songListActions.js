@@ -220,9 +220,7 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     })
     Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
       .on('file', (file) => {
-        let dirs = file.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
+        let dir = path.dirname(file)
         if(file.substr(file.length - 9) === 'info.json') {
           if(!isModInstalled('SongCore')(dispatch, getState)) installEssentialMods()(dispatch, getState)
           count++
@@ -235,7 +233,7 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
               decrementCounter()
               return
             }
-            song.coverUrl = path.join(dir, song.coverImagePath)
+            song.coverUrl = `file://${ path.join(dir, (song.coverImagePath || song._coverImageFilename)) }`
             song.file = path.join(dir, 'info.json')
             songs.push(song)
             decrementCounter()
