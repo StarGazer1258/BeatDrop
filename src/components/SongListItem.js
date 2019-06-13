@@ -9,14 +9,14 @@ import LibraryIndicator from './LibraryIndicator'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { loadDetails } from '../actions/detailsActions'
+import { loadDetailsFromFile, loadDetailsFromKey } from '../actions/detailsActions'
 import { setScrollTop } from '../actions/songListActions'
 
 import { COMPACT_LIST } from '../views'
 
 function Uploader(props) {
   if(!props.isDownloaded && !!props.uploader) return (
-    <div className="uploader">Uploaded by: {props.uploader}<span className="upload-date">{(!!props.uploadDate ? props.uploadDate : '')}</span></div>
+    <div className="uploader">Uploaded by: {props.uploader.username ? props.uploader.username : props.uploader}<span className="upload-date">{(!!props.uploadDate ? props.uploadDate : '')}</span></div>
   )
   return null
 }
@@ -35,42 +35,36 @@ function Details(props) {
 
 function Difficulties(props) {
   let difficulties = props.difficulties
-  if(typeof props.difficulties[0] === 'object') {
-    difficulties = {}
-    for(let i = 0; i < props.difficulties.length; i++) {
-      difficulties[props.difficulties[i].difficulty] = props.difficulties[i]
-    }
-  }
   let badges = []
-  if(Object.keys(difficulties).includes('Easy')) {
+  if(difficulties.easy) {
     badges.push({
       text: 'Easy',
       backgroundColor: 'teal',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Normal')) {
+  if(difficulties.normal) {
     badges.push({
       text: 'Normal',
       backgroundColor: 'green',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Hard')) {
+  if(difficulties.hard) {
     badges.push({
       text: 'Hard',
       backgroundColor: 'orange',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Expert')) {
+  if(difficulties.expert) {
     badges.push({
       text: 'Expert',
       backgroundColor: 'darkred',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('ExpertPlus')) {
+  if(difficulties.expertPlus) {
     badges.push({
       text: 'Expert+',
       backgroundColor: 'purple',
@@ -97,8 +91,8 @@ class SongListItem extends Component {
       )
     } else {
       return (
-        <li className={ `song-list-item${this.props.view.subView === 'compact-list' ? ' compact' : ''}` } onClick={ () => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) } }>
-          <img className="cover-image" src={ this.props.imageSource } alt={ this.props.songKey } />
+        <li className={ `song-list-item${this.props.view.subView === 'compact-list' ? ' compact' : ''}` } onClick={ () => { this.props.setScrollTop(document.getElementById('song-list').scrollTop); if(this.props.file) { this.props.loadDetailsFromFile(this.props.file) } else { this.props.loadDetailsFromKey(this.props.songKey) } } }>
+          <img className="cover-image" src={ this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }` } alt={ this.props.songKey } />
           {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) && this.props.view.songView !== COMPACT_LIST ? <LibraryIndicator /> : null}
           <div className="song-details">
             <div className="song-title">{this.props.title}<span className="id">{!!this.props.songKey ? this.props.songKey : ''}</span></div>
@@ -115,7 +109,8 @@ class SongListItem extends Component {
 }
 
 SongListItem.propTypes = ({
-  loadDetails: PropTypes.func.isRequired,
+  loadDetailsFromFile: PropTypes.func.isRequired,
+  loadDetailsFromKey: PropTypes.func.isRequired,
   details: PropTypes.object.isRequired
 })
 
@@ -125,4 +120,4 @@ const mapStateToProps = state => ({
   downloadedSongs: state.songs.downloadedSongs
 })
 
-export default connect(mapStateToProps, { loadDetails, setScrollTop })(SongListItem)
+export default connect(mapStateToProps, { loadDetailsFromFile, loadDetailsFromKey, setScrollTop })(SongListItem)

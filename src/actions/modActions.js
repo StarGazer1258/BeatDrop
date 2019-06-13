@@ -406,6 +406,7 @@ export const installEssentialMods = () => (dispatch, getState) => {
   installMod('SongLoader', '')(dispatch, getState)
   installMod('BeatSaverDownloader', '')(dispatch, getState)
   installMod('ScoreSaber', '')(dispatch, getState)
+  installMod('SongCore', '')(dispatch, getState)
 }
 
 export const uninstallMod = modName => (dispatch, getState) => {
@@ -447,11 +448,7 @@ export const deactivateMod = modName => (dispatch, getState) => {
     for(let i = 0; i < mod.files.length; i++) {
       try {
         if(fs.lstatSync(path.join(getState().settings.installationDirectory, mod.files[i])).isDirectory()) continue
-        let dir = mod.files[i]
-        let dirs = dir.split('/')
-        dirs.pop()
-        dir = dirs.join('/')
-        zip.addLocalFile(path.join(getState().settings.installationDirectory, mod.files[i]), dir)
+        zip.addLocalFile(path.join(getState().settings.installationDirectory, mod.files[i]), path.dirname(mod.files[i]))
         fs.unlinkSync(path.join(getState().settings.installationDirectory, mod.files[i]))
       } catch {}
     }

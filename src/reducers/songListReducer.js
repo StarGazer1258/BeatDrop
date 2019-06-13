@@ -21,7 +21,7 @@ export default function(state = initialState, action) {
     return {
       ...state,
       songs:  [
-        ...action.payload.songs
+        ...action.payload.docs
       ],
       totalSongs: action.payload.total
     }
@@ -38,7 +38,7 @@ export default function(state = initialState, action) {
         ...state,
         songs:  [
           ...state.songs,
-          ...action.payload.songs
+          ...action.payload.docs
         ],
         totalSongs: action.payload.total
       }

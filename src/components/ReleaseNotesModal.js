@@ -25,14 +25,15 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Added <b>.bplist file association.</b> Simply open a .bplist file with BeatDrop and it will be installed for you!</li>
-              <li>Big thanks to our newest Patreon supporter <b>Myles Hecht!</b></li>
+              <li>All fixes for now!</li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>Fix <a href="https://github.com/StarGazer1258/BeatDrop/issues/11" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#11</a>. Credit to <b>ARXChrono</b> for th fix.</li>
-              <li>Bugged code in <b>song hash calulation</b> has finally been fixed. Thanks to <b>Yuuki</b> for this find.</li>
+              <li>BeatDrop is now <b>compatible with the new BeatSaver API.</b></li>
+              <li>UI now has <b>better compatibility with macOS.</b></li>
+              <li>Implemented a bunch of <b>stability enhancements for playlists.</b></li>
+              <li>Fixed a bug where <b>app would crash when moving to next song in queue after error.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
