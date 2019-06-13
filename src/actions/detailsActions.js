@@ -66,7 +66,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
       type: SET_VIEW,
       payload: SONG_DETAILS
     })
-    fetch(`https://beatsaver.com/api/maps/detail/${identity}`)
+    fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${identity}/ratings`)
       .then(res => res.json())
       .then(bsaberData => {
         dispatch({
@@ -139,7 +139,7 @@ export const loadDetails = (identity) => (dispatch, getState) => {
                     }
                   }
                 })
-              fetch(`https://beatsaver.com/api/maps/by-hash/${identity}`)
+              fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${identity}/ratings`)
                 .then(res => res.json())
                 .then(bsaberData => {
                   dispatch({

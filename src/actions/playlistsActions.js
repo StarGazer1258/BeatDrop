@@ -218,10 +218,10 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
             })
           }
         } else {
-          fetch(`https://beatsaver.com/api/songs/detail/${playlist.songs[i].key}`)
+          fetch(`https://beatsaver.com/api/maps/detail/${playlist.songs[i].key}`)
             .then(res => res.json())
             .then(details => {
-              if(state.songs.downloadedSongs.some(song => song.hash === details.song.hashMd5)) {
+              if(state.songs.downloadedSongs.some(song => song.hash === details.song.hash)) {
                 let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.song.hashMd5)].file
                 fs.readFile(file, 'UTF8', (err, data) => {
                   if(err) {

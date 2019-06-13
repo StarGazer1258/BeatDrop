@@ -45,7 +45,7 @@ export const fetchNew = () => dispatch => {
       })
       console.log(data);
       for(let i = 0; i < data.docs.length; i++) {
-        fetch(`https://beatsaver.com/api/maps/by-hash/${data.docs[i].hash}`)
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -92,7 +92,7 @@ export const fetchTopDownloads = () => dispatch => {
         payload: false
       })
       for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://beatsaver.com/api/maps/by-hash/${data.docs[i].hash}`)
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -139,7 +139,7 @@ export const fetchTopFinished = () => dispatch => {
         payload: false
       })
       for(let i = 0; i < data.docs.length; i++) {
-        fetch(`https://beatsaver.com/api/maps/by-hash/${data.docs[i].hash}`)
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -277,8 +277,9 @@ export const loadMore = () => (dispatch, getState) => {
         type: SET_LOADING_MORE,
         payload: false
       })
-      for(let i = state.songs.songs.length; i < state.songs.songs.length + data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key.split('-')[0]}/ratings`)
+      console.log(data)
+      for(let i = state.songs.songs.length; i < state.songs.songs.length + data.docs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({

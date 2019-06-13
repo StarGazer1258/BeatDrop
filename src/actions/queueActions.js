@@ -24,8 +24,8 @@ export const setQueueOpen = open => dispatch => {
 export const downloadSong = (identity) => (dispatch, getState) => {
   if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
   let hash = identity
-  if(!(/^[a-f0-9]{32}$/).test(identity)) {
-    fetch(`https://beatsaver.com/api/maps/detail/${identity}`)
+  if(identity) {
+    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
       .then(res => res.json())
       .then(song => {
         hash = song.hash
@@ -148,7 +148,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer available for download.`
                 }
               })
             }

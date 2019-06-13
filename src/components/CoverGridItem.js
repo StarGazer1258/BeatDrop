@@ -14,42 +14,37 @@ const getColors = window.require('get-image-colors')
 
 function Difficulties(props) {
   let difficulties = props.difficulties
-  if(typeof props.difficulties[0] === 'object') {
-    difficulties = {}
-    for(let i = 0; i < props.difficulties.length; i++) {
-      difficulties[props.difficulties[i].difficulty] = props.difficulties[i]
-    }
-  }
+  if (!difficulties) return null
   let badges = []
-  if(Object.keys(difficulties).includes('Easy')) {
+  if(difficulties.easy) {
     badges.push({
       text: 'Easy',
       backgroundColor: 'teal',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Normal')) {
+  if(difficulties.normal) {
     badges.push({
       text: 'Normal',
       backgroundColor: 'green',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Hard')) {
+  if(difficulties.hard) {
     badges.push({
       text: 'Hard',
       backgroundColor: 'orange',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Expert')) {
+  if(difficulties.expert) {
     badges.push({
       text: 'Expert',
       backgroundColor: 'darkred',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('ExpertPlus')) {
+  if(difficulties.expertPlus) {
     badges.push({
       text: 'Expert+',
       backgroundColor: 'purple',
