@@ -16,7 +16,7 @@ import { COMPACT_LIST } from '../views'
 
 function Uploader(props) {
   if(!props.isDownloaded && !!props.uploader) return (
-    <div className="uploader">Uploaded by: {props.uploader}<span className="upload-date">{(!!props.uploadDate ? props.uploadDate : '')}</span></div>
+    <div className="uploader">Uploaded by: {props.uploader.username ? props.uploader.username : props.uploader}<span className="upload-date">{(!!props.uploadDate ? props.uploadDate : '')}</span></div>
   )
   return null
 }
