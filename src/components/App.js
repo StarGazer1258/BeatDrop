@@ -19,6 +19,7 @@ import { downloadSong } from '../actions/queueActions'
 import { loadModDetails, installMod } from '../actions/modActions'
 import { loadDetails } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
+import { downloadConverter } from '../actions/converterAction'
 
 import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
 
@@ -29,6 +30,7 @@ const { ipcRenderer } = window.require('electron')
 class App extends Component {
   
   componentDidMount() {
+    downloadConverter();
     ipcRenderer.send('launch-events', 'check-launch-events')
     ipcRenderer.on('launch-events', (_, event, message) => {
       switch(event) {
