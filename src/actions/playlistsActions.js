@@ -193,14 +193,14 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
               let dirs = file.split('\\')
               dirs.pop()
               let dir = dirs.join('\\')
-              song.coverUrl = path.join(dir, song.coverImagePath)
+              song.coverUrl = path.join(dir, song.coverImagePath || song._coverImageFilename)
               dispatch({
                 type: LOAD_PLAYLIST_SONGS,
                 payload: { ...song, file, order: i }
               })
             })
           } else {
-            fetch(`https://beatsaver.com/api/songs/search/hash/${playlist.songs[i].hash}`)
+            fetch(`https://beatsaver.com/api/maps/by-hash/${playlist.songs[i].hash}`)
             .then(res => res.json())
             .then(results => {
               if(results.songs.length === 1) {

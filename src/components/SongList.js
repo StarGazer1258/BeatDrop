@@ -95,7 +95,7 @@ class SongList extends Component {
                     title={ song.metadata ? song.metadata.songName : song.songName }
                     ratings={ song.stats ? song.stats.rating : song.ratings }
                     artist={ song.metadata ? song.metadata.songAuthorName : song.authorName }
-                    uploader={ song.uploader || song.uploader.username }
+                    uploader={!!song.uploader ? song.uploader || song.uploader.username : ''}
                     difficulties={ song.metadata ? song.metadata.difficulties : song.difficultyLevels || song.difficulties }
                     imageSource={ song.coverURL || song.coverUrl }
                     songKey={ song.key }

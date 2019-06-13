@@ -86,12 +86,12 @@ class PlaylistDetails extends Component {
                     for(let i = 0; i < this.props.playlistDetails.songs.length; i++) {
                       if(!this.props.playlistDetails.songs[i].hash) {
                         try {
-                          fetch(`https://beatsaver.com/api/songs/detail/${this.props.playlistDetails.songs[i].key}`)
+                          fetch(`https://beatsaver.com/api/maps/detail/${this.props.playlistDetails.songs[i].key}`)
                             .then(res => res.json())
                             // eslint-disable-next-line
                             .then(data => {
-                              if(!this.props.downloadedSongs.some(song => song.hash === data.song.hashMd5)) {
-                                this.props.downloadSong(data.song.hashMd5)
+                              if(!this.props.downloadedSongs.some(song => song.hash === data.song.hash)) {
+                                this.props.downloadSong(data.song.hash)
                                 neededSongs++
                               }
                               checkedSongs++
