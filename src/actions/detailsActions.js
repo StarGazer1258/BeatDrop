@@ -173,7 +173,6 @@ export const loadDetails = (identity) => (dispatch, getState) => {
         let dir = dirs.join('\\')
         song.coverUrl = path.join(dir, song.coverImagePath)
         song.file = path.join(dir, 'info.json' || 'info.dat')
-        console.log(song)
         dispatch({
           type: LOAD_DETAILS,
           payload: { audioSource: path.join(dir, song.difficultyLevels[0].audioPath) }
