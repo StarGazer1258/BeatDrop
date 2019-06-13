@@ -38,13 +38,13 @@ export const loadDetails = (identity) => (dispatch, getState) => {
       })
       .then(res => res.json())
       .then(details => {
-        fetch(`http://beatsaver.com/${details.downloadUrl}`)
+        fetch(`http://beatsaver.com${details.downloadURL}`)
           .then(res => res.arrayBuffer())
           .then(data => {
             let zip = new AdmZip(new Buffer(data))
             let entries = zip.getEntries()
             for(let i = 0; i < entries.length; i++) {
-              if(entries[i].name.split('.')[1] === 'ogg' || entries[i].name.split('.')[1] === 'wav' || entries[i].name.split('.')[1] === 'mp3') {
+              if(entries[i].name.split('.')[1] === 'ogg' || entries[i].name.split('.')[1] === 'wav' || entries[i].name.split('.')[1] === 'mp3' || entries[i].name.split('.')[1] === 'egg') {
                 dispatch({
                   type: LOAD_DETAILS,
                   payload: { audioSource: URL.createObjectURL(new Blob([entries[i].getData()])) }
@@ -101,7 +101,8 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           dirs.pop()
           let dir = dirs.join('\\')
           song.coverUrl = path.join(dir, song.coverImagePath)
-          song.file = path.join(dir, 'info.json')
+          song.file = path.join(dir, 'info.json' || 'info.dat')
+          console.log(song)
           dispatch({
             type: LOAD_DETAILS,
             payload: { audioSource: path.join(dir, song.difficultyLevels[0].audioPath) }
@@ -125,13 +126,14 @@ export const loadDetails = (identity) => (dispatch, getState) => {
           .then(results => {
             if(results.songs.length === 1) {
               let song = results.songs[0]
-              fetch(song.downloadUrl)
+              fetch(song.downloadURL)
                 .then(res => res.arrayBuffer())
                 .then(data => {
                   let zip = new AdmZip(new Buffer(data))
                   let entries = zip.getEntries()
                   for(let i = 0; i < entries.length; i++) {
-                    if(entries[i].name.split('.')[1] === 'ogg' || entries[i].name.split('.')[1] === 'wav' || entries[i].name.split('.')[1] === 'mp3') {
+                    console.log(entries[i].name)
+                    if(entries[i].name.split('.')[1] === 'ogg' || entries[i].name.split('.')[1] === 'wav' || entries[i].name.split('.')[1] === 'mp3' || entries[i].name.split('.')[1] === 'egg') {
                       dispatch({
                         type: LOAD_DETAILS,
                         payload: { audioSource: URL.createObjectURL(new Blob([entries[i].getData()])) }
@@ -170,7 +172,8 @@ export const loadDetails = (identity) => (dispatch, getState) => {
         dirs.pop()
         let dir = dirs.join('\\')
         song.coverUrl = path.join(dir, song.coverImagePath)
-        song.file = path.join(dir, 'info.json')
+        song.file = path.join(dir, 'info.json' || 'info.dat')
+        console.log(song)
         dispatch({
           type: LOAD_DETAILS,
           payload: { audioSource: path.join(dir, song.difficultyLevels[0].audioPath) }
