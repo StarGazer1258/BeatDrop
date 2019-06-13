@@ -86,12 +86,11 @@ class PlaylistDetails extends Component {
                     for(let i = 0; i < this.props.playlistDetails.songs.length; i++) {
                       if(!this.props.playlistDetails.songs[i].hash) {
                         try {
-                          fetch(`https://beatsaver.com/api/songs/detail/${this.props.playlistDetails.songs[i].key}`)
+                          fetch(`https://beatsaver.com/api/maps/detail/${this.props.playlistDetails.songs[i].key}`)
                             .then(res => res.json())
-                            // eslint-disable-next-line
-                            .then(data => {
-                              if(!this.props.downloadedSongs.some(song => song.hash === data.song.hashMd5)) {
-                                this.props.downloadSong(data.song.hashMd5)
+                            .then(data => { // eslint-disable-line no-loop-func
+                              if(!this.props.downloadedSongs.some(song => song.hash === data.song.hash)) {
+                                this.props.downloadSong(data.song.hash)
                                 neededSongs++
                               }
                               checkedSongs++
@@ -131,7 +130,7 @@ class PlaylistDetails extends Component {
                     tag: '.downloaded'
                   }
                 ]
-                return <li className={ `playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}` } key={ makeRenderKey(songTags) } data-id={ makeRenderKey(songTags) }><span><img style={ { boxShadow: 'none', background: 'transparent' } } src={ song.coverUrl || errorIcon } alt="?" /><div className="playlist-item-title">{song.name || song.songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={ (e) => {e.target.parentNode.parentNode.remove()} }></div> : null}</span></li>
+                return <li className={ `playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}` } key={ makeRenderKey(songTags) } data-id={ makeRenderKey(songTags) }><span><img style={ { boxShadow: 'none', background: 'transparent' } } src={ song.coverURL || errorIcon } alt="?" /><div className="playlist-item-title">{song.name || song.songName || song._songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={ (e) => {e.target.parentNode.parentNode.remove()} }></div> : null}</span></li>
               })}
             </ol>
           </div>

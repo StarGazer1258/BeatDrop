@@ -24,11 +24,11 @@ export const setQueueOpen = open => dispatch => {
 export const downloadSong = (identity) => (dispatch, getState) => {
   if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
   let hash = identity
-  if(!(/^[a-f0-9]{32}$/).test(identity)) {
-    fetch(`https://beatsaver.com/api/songs/detail/${identity}`)
+  if(identity) {
+    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
       .then(res => res.json())
       .then(song => {
-        hash = song.song.hashMd5
+        hash = song.hash
         let state = { ...getState() }
         if(state.songs.downloadingCount >= 3) {
           dispatch({
@@ -45,17 +45,17 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         setTimeout(() => {
           document.getElementById('queue-button').classList.remove('notify')
         }, 1000)
-        fetch(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+        fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
           .then(res =>  res.json())
           .then(results => {
             let utc = Date.now()
-            if(results.songs.length === 1) {
+            if(results) {
               dispatch({
                 type: ADD_TO_QUEUE,
-                payload: { ...results.songs[0], utc }
+                payload: { ...results, utc }
               })
               let req = request.get({
-                url: results.songs[0].downloadUrl,
+                url: `http://www.beatsaver.com${results.downloadURL}`,
                 encoding: null
               }, (err, r, data) => {
                 try {
@@ -73,7 +73,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                         type: SET_WAIT_LIST,
                         payload: state.songs.waitingToDownload
                       })
-                      downloadSong(toDownload)(dispatch)
+                      downloadSong(toDownload)(dispatch, getState)
                     }
                     dispatch({
                       type: DISPLAY_WARNING,
@@ -87,7 +87,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 let zipEntries = zip.getEntries()
                 let infoEntry, infoObject
                 for(let i = 0; i < zipEntries.length; i++) {
-                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json') {
+                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json' || zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 8, 8) === 'info.dat') {
                     infoEntry  = zipEntries[i]
                   }
                 }
@@ -97,15 +97,15 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   dispatch({
                     type: DISPLAY_WARNING,
                     payload: {
-                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                      text: `There was an error unpacking the song "${results.name}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.uploader.username}, if problem persists.`
                     }
                   })
                   return
                 }
-                infoObject.key = results.songs[0].key
+                infoObject.key = results.key
                 infoObject.hash = hash
                 zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
-                let extractTo = (getState().settings.folderStructure === 'idKey' ? results.songs[0].key : results.songs[0].name.replace(/[\\/:*?"<>|.]/g, ''))
+                let extractTo = (getState().settings.folderStructure === 'idKey' ? results.key : results.name.replace(/[\\/:*?"<>|.]/g, ''))
                 zip.extractAllTo(path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo))
                 dispatch({
                   type: SET_DOWNLOADED_SONGS,
@@ -139,7 +139,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   type: UPDATE_PROGRESS,
                   payload: {
                     utc,
-                    hash: results.songs[0].hashMd5,
+                    hash: results.hash,
                     progress: Math.trunc((chunks / len) * 100)
                   }
                 })
@@ -148,7 +148,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer available for download.`
                 }
               })
             }
@@ -201,7 +201,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
     setTimeout(() => {
       document.getElementById('queue-button').classList.remove('notify')
     }, 1000)
-    fetch(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
       .then(res =>  res.json())
       .then(results => {
         let utc = Date.now()
@@ -211,7 +211,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             payload: { ...results.songs[0], utc }
           })
           let req = request.get({
-            url: results.songs[0].downloadUrl,
+            url: results.downloadURL,
             encoding: null
           }, (err, r, data) => {
             try {
@@ -421,17 +421,22 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                   if(!--pending) cb(null, songs)
                 } else {
                   let to_hash = ''
-                  for(let i = 0; i < song.difficultyLevels.length; i++) {
-                    try {
-                      let dir = file.split(path.sep)
-                      dir.pop()
-                      to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
-                    } catch(err) {}
+                  try {
+                    for (let i = 0; i < song.difficultyLevels.length; i++) {
+                      to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
+                    }
+                    let hash = md5(to_hash)
+                    song.hash = hash
+                    fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+                    songs.push({ hash, file })
+                  } catch(err) {
+                    dispatch({
+                      type: DISPLAY_WARNING,
+                      payload: {
+                        text: `Failed to generate hash: a file could not be accessed.`
+                      }
+                    })
                   }
-                  let hash = md5(to_hash)
-                  song.hash = hash
-                  fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-                  songs.push({ hash, file })
                   dispatch({
                     type: SET_PROCESSED_FILES,
                     payload: ++processedFiles

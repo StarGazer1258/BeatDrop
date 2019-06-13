@@ -87,10 +87,25 @@ class SongList extends Component {
                 boolean: this.props.view.subView === 'compact-list',
                 tag: '.compact'
               }
-            ]
+            ];
             return (
               <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
-                <SongListItem key={ makeRenderKey(songTags) } title={ song.songName } ratings={ song.ratings } artist={ song.authorName } uploader={ song.uploader } difficulties={ song.difficulties || song.difficultyLevels } imageSource={ song.coverUrl } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.downloadCount } upvotes={ song.upVotes } downvotes={ song.downVotes } plays={ song.playedCount } />
+                <SongListItem
+                    key={ makeRenderKey(songTags) }
+                    title={ song.metadata ? song.metadata.songName : song.songName }
+                    ratings={ song.stats ? song.stats.rating : song.ratings }
+                    artist={ song.metadata ? song.metadata.songAuthorName : song.authorName }
+                    uploader={!!song.uploader ? song.uploader || song.uploader.username : ''}
+                    difficulties={ song.metadata ? song.metadata.difficulties : song.difficultyLevels || song.difficulties }
+                    imageSource={ song.coverURL || song.coverUrl }
+                    songKey={ song.key }
+                    hash={ song.hash || song.hashMd5 }
+                    file={ song.file }
+                    downloads={ song.stats ? song.stats.downloads : song.downloadCount }
+                    upvotes={ song.stats ? song.stats.upVotes : song.upVotes }
+                    downvotes={ song.stats ? song.stats.downVotes : song.downVotes }
+                    plays={ song.stats ? song.stats.plays : song.playedCount }
+                    uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' } />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}

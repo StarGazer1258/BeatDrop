@@ -20,10 +20,10 @@ export default function(state = initialState, action) {
         items: [
           {
             utc: action.payload.utc,
-            hash: action.payload.hashMd5,
-            image: action.payload.coverUrl,
-            title: action.payload.songName,
-            artist: action.payload.authorName,
+            hash: action.payload.hash,
+            image: `www.beatsaver.com${action.payload.coverURL}`,
+            title: action.payload.name,
+            artist: action.payload.uploader.username,
             progress: 0
           },
           ...items

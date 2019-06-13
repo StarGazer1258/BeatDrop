@@ -63,9 +63,6 @@ export const submitSearch = keywords => dispatch => {
     if (err) alert('Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
     Walker(path.join(store.getState().settings.installationDirectory, 'CustomSongs'))
       .on('file', file => {
-        let dirs = file.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
         if (file.substr(file.length - 9) === 'info.json') {
           localSongCount++
           fs.readFile(file, 'UTF-8', (err, data) => {
@@ -77,7 +74,7 @@ export const submitSearch = keywords => dispatch => {
               decrementCounter()
               return
             }
-            song.coverUrl = path.join(dir, song.coverImagePath)
+            song.coverUrl = path.join(path.dirname(file), song.coverImagePath)
             song.file = file
             localSongs.push(song)
             decrementCounter()
@@ -110,9 +107,10 @@ export const submitSearch = keywords => dispatch => {
   })
 
   //BeatSaver Search
-  fetch('https://beatsaver.com/api/songs/search/all/' + encodeURIComponent(keywords.replace('/', '\\')))
+  fetch('https://beatsaver.com/api/search/text/all?q=' + encodeURIComponent(keywords.replace('/', '\\')))
     .then(res => res.json())
     .then(data => {
+      console.log(data)
       beatSaverSongs = data.songs
       if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({
@@ -130,7 +128,7 @@ export const submitSearch = keywords => dispatch => {
   
   //BeatSaver ID Search
   if(isId) {
-    fetch('https://beatsaver.com/api/songs/detail/' + keywords)
+    fetch('https://beatsaver.com/api/maps/detail/' + keywords)
     .then(res => res.json())
     .then(data => {
       idSong = data.song
