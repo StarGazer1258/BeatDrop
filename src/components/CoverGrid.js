@@ -73,7 +73,7 @@ class CoverGrid extends Component {
               ]
               return (
                 <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
-                <CoverGridItem key={ makeRenderKey(songTags) } title={ song.songName } artist={ song.authorName } uploader={ song.uploader } difficulties={ song.difficulties || song.difficultyLevels } coverImage={ song.coverUrl } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.downloadCount } upvotes={ song.upVotes } downvotes={ song.downVotes } plays={ song.playedCount } />
+                <CoverGridItem key={ makeRenderKey(songTags) } title={ song.songName || song.metadata.songName } artist={ song.authorName || song.metadata.songAuthorName } difficulties={ song.difficulties || song.difficultyLevels || song.metadata.difficulties } imageSource={ song.coverURL || song.coverUrl } songKey={ song.key } hash={ song.hash || song.hashMd5 } file={ song.file } downloads={ song.downloadCount } upvotes={ song.upVotes } downvotes={ song.downVotes } plays={ song.playedCount } />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}

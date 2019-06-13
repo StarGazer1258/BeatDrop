@@ -67,7 +67,7 @@ class CoverGridItem extends Component {
   }
 
 componentWillReceiveProps(props) {
-  getColors(props.coverImage)
+  getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
@@ -78,7 +78,8 @@ componentWillReceiveProps(props) {
 }
 
   componentDidMount() {
-    getColors(this.props.coverImage)
+    if(!this.props.imageSource) return
+    getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
@@ -98,7 +99,7 @@ componentWillReceiveProps(props) {
     } else {
       return (
         <div key={ this.props.key } className='cover-grid-item' onClick={ () => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); if(this.props.file) { this.props.loadDetailsFromFile(this.props.file) } else { this.props.loadDetailsFromKey(this.props.songKey) } } }>
-          <img className="cover-image" src={ this.props.coverImage } alt=""/>
+          <img className="cover-image" src={ this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }` } alt=""/>
           {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <LibraryIndicator /> : null}
           <div style={ { backgroundColor: this.state.bgc, color: this.state.textColor } } className="cover-grid-info-tab">
             <div className="cover-grid-title">{this.props.title}</div>
