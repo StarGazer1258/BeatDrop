@@ -24,7 +24,8 @@ export const loadDetails = (identity) => (dispatch, getState) => {
     payload: true
   })
   if(identity) {
-    fetch('https://beatsaver.com/api/maps/detail/' + identity)
+    let detailsLink = identity.startsWith("C:") ? identity : 'https://beatsaver.com/api/maps/detail/' + identity;
+    fetch(detailsLink)
       .then(res => {
         if(res.status === 404){
           dispatch({
@@ -66,7 +67,8 @@ export const loadDetails = (identity) => (dispatch, getState) => {
       type: SET_VIEW,
       payload: SONG_DETAILS
     })
-    fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${identity}/ratings`)
+    let ratingsLink = identity.startsWith("C:") ? identity : `https://bsaber.com/wp-json/bsaber-api/songs/${identity}/ratings`;
+    fetch(ratingsLink)
       .then(res => res.json())
       .then(bsaberData => {
         dispatch({

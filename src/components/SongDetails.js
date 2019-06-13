@@ -148,14 +148,15 @@ class SongDetails extends Component {
         </div>
       )
     } else {
+      console.log(this.props)
       return (
         <div id="song-details">
           <div className="close-icon" title="Close" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
           <img className="cover-image" src={ `https://beatsaver.com${this.props.details.coverURL}` } alt='' />
           <div className="details-info">
-            <span className="details-title" title={ this.props.details.metadata.songName }>{this.props.details.metadata.songName}</span>
-            <div className="details-subtitle" title={ this.props.details.metadata.songSubName }>{this.props.details.metadata.songSubName}</div>
-            <div className="details-artist" title={ this.props.details.metadata.songAuthorName }>{this.props.details.metadata.songAuthorName}</div>
+            <span className="details-title" title={ this.props.details.metadata ? this.props.details.metadata.songName : this.props.songName }>{this.props.details.metadata ? this.props.details.metadata.songName : this.props.songName}</span>
+            <div className="details-subtitle" title={ this.props.details.metadata ? this.props.details.metadata.songSubName : this.props.details.songSubName }>{this.props.details.metadata ? this.props.details.metadata.songSubName : this.props.details.songSubName}</div>
+            <div className="details-artist" title={ this.props.details.metadata ? this.props.details.metadata.songAuthorName : this.props.details.authorName }>{this.props.details.metadata ? this.props.details.metadata.songAuthorName : this.props.details.authorName}</div>
             {this.props.downloadedSongs.some(song => song.hash === this.props.details.hash) ? <div className="song-in-library">This song is in your library.</div> : null}
             <div className="action-buttons">
               {(!!this.props.details.file || this.props.downloadedSongs.some(song => song.hash === this.props.details.hash)) ?

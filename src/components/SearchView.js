@@ -18,6 +18,7 @@ class SearchView extends Component {
         <h2>Results for: <span style={ { fontWeight: 400 } }>"{this.props.results.keywords}"</span></h2>
         <h2 style={ { display: 'inline-block', marginRight: '5px' } }>Library</h2><span>{this.props.results.library.length} result{(this.props.results.library.length !== 1 ? 's' : '')}</span>
         <div>{this.props.results.library.map((song, i) => {
+            console.log(song)
           return (
             <div className="search-result" onClick={ () => { this.props.loadDetails(song.file) } } key={ i }>
               <img src={ song.coverUrl } alt=""/>
@@ -28,7 +29,8 @@ class SearchView extends Component {
             </div>
           )
         })}</div>
-        <h2 style={ { display: 'inline-block', marginRight: '5px' } }>BeatSaver</h2><span>{this.props.results.beatSaver.length} result{(this.props.results.beatSaver.length !== 1 ? 's' : '')}</span>
+          {console.log(this.props.results)}
+        {/*<h2 style={ { display: 'inline-block', marginRight: '5px' } }>BeatSaver</h2><span>{this.props.results.beatSaver.length} result{(this.props.results.beatSaver.length !== 1 ? 's' : '')}</span>*/}
         <div>{this.props.results.beatSaver.map((song, i) => {
           return (
             <div className="search-result" onClick={ () => { this.props.loadDetails(song.key) } } key={ i }>

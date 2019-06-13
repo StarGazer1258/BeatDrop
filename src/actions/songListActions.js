@@ -1,7 +1,7 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
-import { installEssentialMods } from './modActions'
+import {installEssentialMods, isModInstalled} from './modActions'
 
 const { remote } = window.require('electron')
 const Walker = remote.require('walker')
@@ -224,6 +224,7 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
         dirs.pop()
         let dir = dirs.join('\\')
         if(file.substr(file.length - 9) === 'info.json') {
+          if(!isModInstalled('SongCore')(dispatch, getState)) installEssentialMods()(dispatch, getState)
           count++
           fs.readFile(file, 'UTF-8', (err, data) => {
             if(err) { decrementCounter(); return }

@@ -110,9 +110,10 @@ export const submitSearch = keywords => dispatch => {
   })
 
   //BeatSaver Search
-  fetch('https://beatsaver.com/api/maps/search/all/' + encodeURIComponent(keywords.replace('/', '\\')))
+  fetch('https://beatsaver.com/api/search/text/all?q=' + encodeURIComponent(keywords.replace('/', '\\')))
     .then(res => res.json())
     .then(data => {
+      console.log(data)
       beatSaverSongs = data.songs
       if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({

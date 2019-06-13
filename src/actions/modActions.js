@@ -406,6 +406,7 @@ export const installEssentialMods = () => (dispatch, getState) => {
   installMod('SongLoader', '')(dispatch, getState)
   installMod('BeatSaverDownloader', '')(dispatch, getState)
   installMod('ScoreSaber', '')(dispatch, getState)
+  installMod('SongCore', '')(dispatch, getState)
 }
 
 export const uninstallMod = modName => (dispatch, getState) => {
