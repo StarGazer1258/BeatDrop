@@ -59,9 +59,9 @@ export const submitSearch = keywords => dispatch => {
       localResultsReady = true
     }
   }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), err => {
-    if (err) alert('Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
-    Walker(path.join(store.getState().settings.installationDirectory, 'CustomSongs'))
+  fs.access(path.join(state.settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), err => {
+    if (err) alert('Could not find CustomLevels directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
+    Walker(path.join(state.settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'))
       .on('file', file => {
         if (file.substr(file.length - 9) === 'info.json') {
           localSongCount++

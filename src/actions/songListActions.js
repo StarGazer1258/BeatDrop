@@ -175,6 +175,39 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: LIBRARY.SONGS
   })
+
+  let downloadedSongs = getState().songs.downloadedSongs
+  let songs = []
+  for(let i = 0; i < downloadedSongs.length; i++) {
+    fs.readFile(downloadedSongs[i].file, 'UTF-8', (err, data) => {
+      if(err) {
+        return
+      }
+      let song
+      try {
+        song = JSON.parse(data)
+      } catch(err) {
+        return
+      }
+      song.coverUrl = `file://${ path.join(path.dirname(downloadedSongs[i].file), (song.coverImagePath || song._coverImageFilename)) }`
+      song.file = downloadedSongs[i].file
+      songs.push(song)
+      console.log(song)
+      if(i >= downloadedSongs.length - 1) {
+        console.log('Bam!')
+        dispatch({
+          type: FETCH_LOCAL_SONGS,
+          payload: songs
+        })
+        dispatch({
+          type: SET_LOADING,
+          payload: false
+        })
+      }
+    })
+  }
+  
+  /*
   let songs = []
   let count = 0
   let ended = false
@@ -192,12 +225,12 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
       return
     }
   }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
+  fs.access(path.join(state.settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), (err) => {
     if(err) {
       installEssentialMods()(dispatch, getState)
-      fs.mkdirSync(path.join(state.settings.installationDirectory, 'CustomSongs'))
+      fs.mkdirSync(path.join(state.settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'))
     }
-    fs.readdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err, files) => {
+    fs.readdir(path.join(state.settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), (err, files) => {
       if (err) return
       if (!files.length) {
         dispatch({
@@ -218,10 +251,11 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
         })
       }
     })
-    Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
+    Walker(path.join(state.settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'))
       .on('file', (file) => {
+        console.log(file)
         let dir = path.dirname(file)
-        if(file.substr(file.length - 9) === 'info.json') {
+        if(file.substr(file.length - 8) === 'info.dat' || file.substr(file.length - 9) === 'info.json') {
           if(!isModInstalled('SongCore')(dispatch, getState)) installEssentialMods()(dispatch, getState)
           count++
           fs.readFile(file, 'UTF-8', (err, data) => {
@@ -234,13 +268,14 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
               return
             }
             song.coverUrl = `file://${ path.join(dir, (song.coverImagePath || song._coverImageFilename)) }`
-            song.file = path.join(dir, 'info.json')
+            song.file = path.join(file)
             songs.push(song)
             decrementCounter()
           })
         }
       })
       .on('end', () => {
+        console.log('end')
         if(count === 0) {
           dispatch({
             type: FETCH_LOCAL_SONGS,
@@ -255,6 +290,7 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
         ended = true
       })
   })
+  */
 }
 
 export const loadMore = () => (dispatch, getState) => {

@@ -9,7 +9,7 @@ const initialState = {
   offlineMode: false,
   theme: 'light',
   themeImagePath: '',
-  folderStructure: 'idKey',
+  folderStructure: 'keySongNameArtistName',
   updateChannel: 'latest',
   latestReleaseNotes: '0.0.0'
 }

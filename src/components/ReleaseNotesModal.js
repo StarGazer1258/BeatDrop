@@ -25,7 +25,7 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>All fixes for now!</li>
+              <li>New option for song folder naming: <b>Key (Song Name - Song Artist)</b></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
@@ -34,6 +34,7 @@ class ReleaseNotesModal extends Component {
               <li>UI now has <b>better compatibility with macOS.</b></li>
               <li>Implemented a bunch of <b>stability enhancements for playlists.</b></li>
               <li>Fixed a bug where <b>app would crash when moving to next song in queue after error.</b></li>
+              <li>2.5.1: Fixed <b>bugs in new local song code.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

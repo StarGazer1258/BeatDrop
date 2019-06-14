@@ -36,40 +36,80 @@ function Details(props) {
 function Difficulties(props) {
   let difficulties = props.difficulties
   let badges = []
-  if(difficulties.easy) {
-    badges.push({
-      text: 'Easy',
-      backgroundColor: 'teal',
-      color: 'white'
-    })
-  }
-  if(difficulties.normal) {
-    badges.push({
-      text: 'Normal',
-      backgroundColor: 'green',
-      color: 'white'
-    })
-  }
-  if(difficulties.hard) {
-    badges.push({
-      text: 'Hard',
-      backgroundColor: 'orange',
-      color: 'white'
-    })
-  }
-  if(difficulties.expert) {
-    badges.push({
-      text: 'Expert',
-      backgroundColor: 'darkred',
-      color: 'white'
-    })
-  }
-  if(difficulties.expertPlus) {
-    badges.push({
-      text: 'Expert+',
-      backgroundColor: 'purple',
-      color: 'white'
-    })
+  if(Array.isArray(difficulties)) {
+    for(let i = 0; i < difficulties[0]._difficultyBeatmaps.length; i++) {
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Easy') {
+        badges.push({
+          text: 'Easy',
+          backgroundColor: 'teal',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Normal') {
+        badges.push({
+          text: 'Normal',
+          backgroundColor: 'green',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Hard') {
+        badges.push({
+          text: 'Hard',
+          backgroundColor: 'orange',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Expert') {
+        badges.push({
+          text: 'Expert',
+          backgroundColor: 'darkred',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'ExpertPlus') {
+        badges.push({
+          text: 'Expert+',
+          backgroundColor: 'purple',
+          color: 'white'
+        })
+      }
+    }
+  } else {
+    if(difficulties.easy) {
+      badges.push({
+        text: 'Easy',
+        backgroundColor: 'teal',
+        color: 'white'
+      })
+    }
+    if(difficulties.normal) {
+      badges.push({
+        text: 'Normal',
+        backgroundColor: 'green',
+        color: 'white'
+      })
+    }
+    if(difficulties.hard) {
+      badges.push({
+        text: 'Hard',
+        backgroundColor: 'orange',
+        color: 'white'
+      })
+    }
+    if(difficulties.expert) {
+      badges.push({
+        text: 'Expert',
+        backgroundColor: 'darkred',
+        color: 'white'
+      })
+    }
+    if(difficulties.expertPlus) {
+      badges.push({
+        text: 'Expert+',
+        backgroundColor: 'purple',
+        color: 'white'
+      })
+    }
   }
   return badges.map((badge, i) => {
     return <Badge key={ i } backgroundColor={ badge.backgroundColor } color={ badge.color }>{badge.text}</Badge>
