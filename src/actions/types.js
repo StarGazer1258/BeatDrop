@@ -112,3 +112,6 @@ export const STOP_ADB_SERVICE           = 'STOP_ADB_SERVICE'
 export const PULL                       = 'PULL'
 export const PUSH                       = 'PUSH'
 export const INSTALL                    = 'INSTALL'
+
+// SONGE-CONVERTER
+export const DOWNLOAD_CONVERTER         = "DOWNLOAD_CONVERTER"

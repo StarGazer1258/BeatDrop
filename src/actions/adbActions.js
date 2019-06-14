@@ -75,8 +75,9 @@ function downloadADBTools(dispatch) {
 
 function getAdbBinary() {
   switch (os.platform()) {
-    case 'win32':
-      return 'adb.exe';
+    case 'darwin':
+    case 'linux':
+      return 'adb';
     default:
       return 'adb.exe';
   }
@@ -84,7 +85,7 @@ function getAdbBinary() {
 
 function execute(command){
   const exec = require('child_process').exec;
-  let adbP = path.join(store.getState().settings.adbToolsPath, getAdbBinary())
+  let adbP = path.join(store.getState().adb.toolsPath, getAdbBinary())
   exec('"' + adbP + '" ' + command)
     .then((err, stdout, stderr) => {
       if (err || stderr) console.log(err || stderr)

@@ -4,7 +4,8 @@ const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
 
-export const downloadConverter = () => {
+export const downloadConverter = () => getState => {
+  if (getState.converter.path) return
   let url = "https://github.com/lolPants/songe-converter/releases/download/v0.4.3/songe-converter";
   let name = ".exe";
   switch (os.platform()) {
