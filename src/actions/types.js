@@ -103,3 +103,11 @@ export const SET_DOWNLOADED_SONGS       = 'SET_DOWNLOADED_SONGS'
 // Devices
 export const SCAN_DEVICES               = 'SCAN_DEVICES'
 export const SELECT_DEVICE              = 'SELECT_DEVICE'
+export const ADD_DEVICE                 = 'ADD_DEVICE'
+
+// ADB
+export const START_ADB_SERVICE          = 'START_ADB_SERVICE'
+export const STOP_ADB_SERVICE           = 'STOP_ADB_SERVICE'
+export const PULL                       = 'PULL'
+export const PUSH                       = 'PUSH'
+export const INSTALL                    = 'INSTALL'

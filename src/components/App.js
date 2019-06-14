@@ -17,9 +17,10 @@ import { connect } from 'react-redux'
 import { setHasError } from '../actions/windowActions'
 import { downloadSong } from '../actions/queueActions'
 import { loadModDetails, installMod } from '../actions/modActions'
-import { loadDetails } from '../actions/detailsActions'
+import { loadDetailsFromKey } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
 import { downloadConverter } from '../actions/converterAction'
+import { startAdb } from '../actions/deviceActions'
 
 import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
 
@@ -41,7 +42,7 @@ class App extends Component {
             } else {
               setView(SONG_LIST)(store.dispatch, store.getState)
             }
-            loadDetails(message.songs.details[i])(store.dispatch, store.getState)
+            loadDetailsFromKey(message.songs.details[i])(store.dispatch, store.getState)
           }
           for(let i = 0; i < message.mods.details.length; i++) {
             if(store.getState().view.view === MOD_DETAILS && store.getState().view.previousView !== MOD_DETAILS) {
@@ -69,6 +70,7 @@ class App extends Component {
   }
 
   render() {
+    startAdb()
     return (
       <div className='app'>
         <TitleBar />
@@ -93,4 +95,4 @@ const mapStateToProps = state =>  ({
   hasError: state.window.hasError
 })
 
-export default connect(mapStateToProps, { setHasError })(App)
+export default connect(mapStateToProps, { setHasError, startAdb })(App)

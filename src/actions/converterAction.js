@@ -45,7 +45,7 @@ export const downloadConverter = () => {
   });
 }
 
-async function storeFile(data, path){
+export async function storeFile(data, path){
   return new Promise(async (resolve, reject) => {
     if (data == null) throw Error('no data to store');
 
