@@ -106,6 +106,7 @@ export const SELECT_DEVICE              = 'SELECT_DEVICE'
 export const ADD_DEVICE                 = 'ADD_DEVICE'
 
 // ADB
+export const DOWNLOAD_TOOLS             = 'DOWNLOAD_TOOLS'
 export const START_ADB_SERVICE          = 'START_ADB_SERVICE'
 export const STOP_ADB_SERVICE           = 'STOP_ADB_SERVICE'
 export const PULL                       = 'PULL'

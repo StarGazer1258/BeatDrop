@@ -4,45 +4,13 @@ import '../css/DevicesView.scss'
 import { connect } from 'react-redux'
 
 import { selectDevice } from '../actions/deviceActions'
-import { getDevices } from '../actions/deviceActions'
+import { getDevices } from '../actions/adbActions'
 import { setView } from '../actions/viewActions'
 
 import { DEVICE_DETAILS } from '../views'
 
-import * as DEVICE from '../constants/devices'
-import * as STATUS from '../constants/device_statuses'
-
 const { remote } = window.require('electron')
 const path = remote.require('path')
-
-let devices = [
-  {
-    type: DEVICE.OCULUS.QUEST,
-    status: STATUS.CONNECTED,
-    storageUsed: 15400,
-    capacity: 32000
-  },
-  {
-    type:  DEVICE.HTC.VIVE,
-    status: STATUS.CONNECTED,
-  },
-  {
-    type: DEVICE.HTC.VIVE_PRO,
-    status: STATUS.OFFLINE
-  },
-  {
-    type: DEVICE.OCULUS.RIFT,
-    status: STATUS.OFFLINE
-  },
-  {
-    type: DEVICE.OCULUS.RIFT_S,
-    status: STATUS.OFFLINE
-  },
-  {
-    type: DEVICE.PIMAX.EIGHT_K,
-    status: STATUS.OFFLINE
-  }
-]
 
 class DevicesView extends Component {
     render() {
@@ -56,7 +24,7 @@ class DevicesView extends Component {
               </thead>
               <tbody>
                 {
-                  devices.map((device, i) => {
+                  this.props.devices.map((device, i) => {
                     return (
                       <tr onClick={ () => { this.props.selectDevice(i); this.props.setView(DEVICE_DETAILS) } }>
                         <td><img src= { `file://${path.resolve(device.type.image)}` } alt={ device.type.deviceName }/></td>
@@ -75,7 +43,7 @@ class DevicesView extends Component {
 }
 
 const mapStateToProps = state => ({
-
+  devices: state.devices.list
 })
 
 export default connect(mapStateToProps, { selectDevice, setView, getDevices })(DevicesView)
