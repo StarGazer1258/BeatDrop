@@ -480,8 +480,23 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
     type: SET_SCANNING_FOR_SONGS,
     payload: true
   })
-
   walk(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), (err, songs) => {
+    if (err) {
+      dispatch({
+          type: DISPLAY_WARNING,
+          payload: {
+              text: `Could not find Custom Levels directory. Please make sure you have your installation directory and type are set correctly.`
+          }
+      })
+      fs.mkdir(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), () => {
+          dispatch({
+              type: DISPLAY_WARNING,
+              payload: {
+                  text: `Attempted to create Custom levels folder and failed, likely due to permissions.`
+              }
+          })
+      })
+    }
     dispatch({
       type: SET_DOWNLOADED_SONGS,
       payload: songs
