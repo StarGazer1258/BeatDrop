@@ -35,6 +35,7 @@ class ReleaseNotesModal extends Component {
               <li>Implemented a bunch of <b>stability enhancements for playlists.</b></li>
               <li>Fixed a bug where <b>app would crash when moving to next song in queue after error.</b></li>
               <li>2.5.1: Fixed <b>bugs in new local song code.</b></li>
+              <li>2.5.2: Fixed <b>crash when searching for songs.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

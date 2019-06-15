@@ -23,21 +23,20 @@ class SearchView extends Component {
             <div className="search-result" onClick={ () => { this.props.loadDetailsFromFile(song.file) } } key={ i }>
               <img src={ song.coverUrl } alt=""/>
               <div className="search-result-info">
-                <b>{song.songName}</b><br/>
-                {song.authorName}
+                <b>{song._songName}</b><br/>
+                {song._songAuthorName}
               </div>
             </div>
           )
         })}</div>
-          {console.log(this.props.results)}
-        {/*<h2 style={ { display: 'inline-block', marginRight: '5px' } }>BeatSaver</h2><span>{this.props.results.beatSaver.length} result{(this.props.results.beatSaver.length !== 1 ? 's' : '')}</span>*/}
+        <h2 style={ { display: 'inline-block', marginRight: '5px' } }>BeatSaver</h2><span>{this.props.results.beatSaver.length} result{(this.props.results.beatSaver.length !== 1 ? 's' : '')}</span>
         <div>{this.props.results.beatSaver.map((song, i) => {
           return (
             <div className="search-result" onClick={ () => { this.props.loadDetailsFromKey(song.key) } } key={ i }>
-              <img src={ song.coverUrl } alt="" />
+              <img src={ `https://beatsaver.com/${ song.coverURL }` } alt="" />
               <div className="search-result-info">
-                <b>{song.songName}</b><br/>
-                {song.authorName}
+                <b>{song.metadata.songName}</b><br/>
+                {song.metadata.songAuthorName}
               </div>
             </div>
           )
