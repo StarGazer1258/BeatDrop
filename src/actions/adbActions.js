@@ -178,7 +178,10 @@ const listDevices = () => (getState) => {
 
 const buildDevice = (serial) => (getState) => {
   return new Promise(async (resolve, reject) => {
-    let info = {};
+    let info = {
+      used: 0,
+      avail: 0
+    };
     await getProperty(serial, 'ro.product.manufacturer')(getState)
       .catch((error) => {
         console.log(error)
@@ -205,18 +208,53 @@ const buildDevice = (serial) => (getState) => {
         info.device = `${info.manufacturer} ${info.model}`
       })
 
+    await getStorage(serial)(getState).then(async (storage) => {
+      let storageArr = parseStorage(storage)
+      storageArr.forEach((filesystem) => {
+        if (isNaN(filesystem.used) || isNaN(filesystem.avail)) return
+        let used = Number(filesystem.used)
+        let avail = Number(filesystem.avail)
+        info.used += Math.round(( used / 1000))
+        info.avail += Math.round((avail / 1000))
+      })
+    })
+
+    console.log(info)
     if (info.manufacturer.includes(DEVICE_TYPES.MANUFACTURER.OCULUS)) {
       if( info.model.includes(DEVICE_TYPES.MODEL.QUEST)){
         return resolve([{
           type: DEVICE.OCULUS.QUEST,
           status: STATUS.CONNECTED,
-          storageUsed: 15400,
-          capacity: 32000,
+          storageUsed: info.used,
+          capacity: info.avail + info.used,
           deviceId: serial
         }])
       }
     }
   })
+}
+
+const parseStorage = (str) => {
+    let strArr = str.split('\n')
+    let newArr = [];
+    strArr.forEach((item)=>{
+      newArr.push([item.split(' ').filter((e)=>{return e})])
+    })
+    let arrObj = []
+    newArr.forEach((innerArr)=>{
+      innerArr.forEach((nextArr)=>{
+        if (nextArr[3] === undefined) return
+        arrObj.push({
+          filesystem: nextArr[0],
+          kblocks: nextArr[1],
+          used: nextArr[2],
+          avail: nextArr[3],
+          usePer: nextArr[4],
+          mountLoc: nextArr[5],
+        })
+      })
+    })
+  return arrObj
 }
 
 const startAdb = () => async (dispatch, getState) => {
