@@ -1,4 +1,4 @@
-import { ADD_DEVICE, SELECT_DEVICE } from "../actions/types";
+import { ADD_DEVICE, SELECT_DEVICE, UPDATE_DEVICE } from "../actions/types";
 
 const initialState = {
   list: [],
@@ -15,7 +15,14 @@ export default function(state = initialState, action) {
     case ADD_DEVICE:
       return {
         ...state,
-        list: [action.payload]
+        list: [...state.list, ...action.payload]
+      }
+    case UPDATE_DEVICE:
+      let deviceId = action.payload.deviceId;
+      let status = action.payload.status;
+      return {
+        ...state,
+        list: state.list.map(device => device.deviceId === deviceId ? { ...device, status: status } : device)
       }
     default:
       return state

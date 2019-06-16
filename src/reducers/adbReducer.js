@@ -11,13 +11,13 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case START_ADB_SERVICE:
       return {
-        state: state,
+        ...state,
         instance: action.payload.instance,
         started: action.payload.started
       }
     case DOWNLOAD_TOOLS:
       return {
-        state: state,
+        ...state,
         toolsPath: action.payload.path,
         toolsDownloaded: action.payload.toolsDownloaded
       }

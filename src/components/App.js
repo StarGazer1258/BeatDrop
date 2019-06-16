@@ -19,7 +19,6 @@ import { downloadSong } from '../actions/queueActions'
 import { loadModDetails, installMod } from '../actions/modActions'
 import { loadDetailsFromKey } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
-import { startAdb } from '../actions/adbActions'
 
 import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
 
@@ -68,7 +67,6 @@ class App extends Component {
   }
 
   render() {
-    startAdb()
     return (
       <div className='app'>
         <TitleBar />
@@ -93,4 +91,4 @@ const mapStateToProps = state =>  ({
   hasError: state.window.hasError
 })
 
-export default connect(mapStateToProps, { setHasError, startAdb })(App)
+export default connect(mapStateToProps, { setHasError })(App)

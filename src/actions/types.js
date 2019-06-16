@@ -104,6 +104,7 @@ export const SET_DOWNLOADED_SONGS       = 'SET_DOWNLOADED_SONGS'
 export const SCAN_DEVICES               = 'SCAN_DEVICES'
 export const SELECT_DEVICE              = 'SELECT_DEVICE'
 export const ADD_DEVICE                 = 'ADD_DEVICE'
+export const UPDATE_DEVICE              = 'UPDATE_DEVICE'
 
 // ADB
 export const DOWNLOAD_TOOLS             = 'DOWNLOAD_TOOLS'

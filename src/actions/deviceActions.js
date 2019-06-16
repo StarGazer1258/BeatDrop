@@ -1,7 +1,4 @@
-import { DISPLAY_WARNING, SELECT_DEVICE } from "../actions/types";
-const { remote } = window.require('electron')
-const fs = remote.require('fs')
-const path = remote.require('path')
+import { SELECT_DEVICE } from "../actions/types";
 
 export const selectDevice = device => dispatch => {
   dispatch({
