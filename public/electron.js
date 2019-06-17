@@ -148,7 +148,17 @@ if (!gotTheLock) {
 }
 
 function handleArgs(argv, sendImmediately) {
-  if(argv.length < 2 || !argv[1].startsWith('beatdrop')) return
+  // check if args were passed
+  if (!argv || argv.length < 2) return undefined
+  // handle beatdrop://
+  if (argv[1].startsWith('beatdrop://')) return handleBeatdrop(argv, sendImmediately)
+  // handle files
+  const args = argv.filter((_, i) => !(i < (isDev ? 2 : 1)))
+  const { ext } = path.parse(args[0])
+  return handleFiles(args[0], ext);
+}
+
+function handleBeatdrop(argv, sendImmediately){
   let args = argv[1].split(/beatdrop:\/\/|beatdrop:%5C%5C|beatdrop:\/|beatdrop:%5C|beatdrop:/i)[1].split(/\/|%5C/)
   switch(args[0].toLowerCase()) {
     case 'songs':
@@ -168,7 +178,7 @@ function handleArgs(argv, sendImmediately) {
       }
       break
     case 'playlists':
-      // Planned for future...
+    // Planned for future...
     case 'mods':
       if(args.length < 3) return
       let mods = args[2].split(',')
@@ -184,10 +194,10 @@ function handleArgs(argv, sendImmediately) {
         default:
           return
       }
-      return
     default:
       break
   }
+
   if(sendImmediately) {
     mainWindow.webContents.send('launch-events', 'launch-events', launchEvents)
     launchEvents = {
@@ -208,6 +218,10 @@ function handleArgs(argv, sendImmediately) {
       }
     }
   }
+}
+
+function handleFiles(path, ext){
+ mainWindow.webContents.send('file-open', path, ext);
 }
 
 function createWindow() {

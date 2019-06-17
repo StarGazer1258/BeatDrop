@@ -25,18 +25,17 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Added <b>custom theme image</b> setting. You can now download songs while watching anime or looking at cute cats!</li>
-              <li>Added <b>game version support.</b> This means you can set your game version and get only the correct mods for the version. (May require mod reinstallation to update.)</li>
-              <li>We have a new Wave tier Patron! Welcome to the credits <b>Marc Smith!</b></li>
-              <li>2.3.2: Add <b>game version tag</b> to all mods. Now you can see for what version of the game a mod was made for.</li>
+              <li>New option for song folder naming: <b>Key (Song Name - Song Artist)</b></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li><b>Song scanning</b> has been completely rewritten to be <b>much more stable!</b></li>
-              <li>The <b>song scanning modal</b> now <b>provides more information</b> and <b>persists until exited.</b></li>
-              <li>2.3.1: Fixed bug where <b>app would crash on startup.</b> (Thanks <b>Rocker</b>!)</li>
-              <li>2.3.3: Fixed bug where <b>playlists would not save properly.</b></li>
+              <li>BeatDrop is now <b>compatible with the new BeatSaver API.</b></li>
+              <li>UI now has <b>better compatibility with macOS.</b></li>
+              <li>Implemented a bunch of <b>stability enhancements for playlists.</b></li>
+              <li>Fixed a bug where <b>app would crash when moving to next song in queue after error.</b></li>
+              <li>2.5.1: Fixed <b>bugs in new local song code.</b></li>
+              <li>2.5.2: Fixed <b>crash when searching for songs.</b></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

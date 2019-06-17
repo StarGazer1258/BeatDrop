@@ -2,7 +2,7 @@
   "name": "beatdrop",
   "description": "A desktop app for downloading Beat Saber songs.",
   "author": "Nathaniel Johns (StarGazer1258)",
-  "version": "2.3.3",
+  "version": "2.5.2",
   "private": false,
   "license": "CC-BY-NC-SA-4.0",
   "repository": {
@@ -72,7 +72,15 @@
           "beatdrop"
         ]
       }
-    }
+    },
+    "fileAssociations": [
+      {
+        "ext": "bplist",
+        "name": "Playlist",
+        "description": "Beat Saber Playlist",
+        "icon": "resources/bplist.ico"
+      }
+    ]
   },
   "browserslist": [
     "electron >= 3.0.10"

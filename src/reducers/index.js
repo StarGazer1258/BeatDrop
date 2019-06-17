@@ -12,7 +12,7 @@ import queueReducer from './queueReducer'
 import warningsReducer from './warningsReducer'
 import playlistsReducer from './playlistsReducer'
 import searchReducer from './searchReducer'
-import modReducer from './modReducer';
+import modReducer from './modReducer'
 
 export default combineReducers({
   songs: songListReducer,

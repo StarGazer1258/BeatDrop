@@ -190,27 +190,23 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                 return
               }
               let song = JSON.parse(data)
-              let dirs = file.split('\\')
-              dirs.pop()
-              let dir = dirs.join('\\')
-              song.coverUrl = path.join(dir, song.coverImagePath)
+              song.coverURL = `file://${path.join(path.dirname(file), song.coverImagePath || song._coverImageFilename)}`
               dispatch({
                 type: LOAD_PLAYLIST_SONGS,
                 payload: { ...song, file, order: i }
               })
             })
           } else {
-            fetch(`https://beatsaver.com/api/songs/search/hash/${playlist.songs[i].hash}`)
+            fetch(`https://beatsaver.com/api/maps/by-hash/${playlist.songs[i].hash}`)
             .then(res => res.json())
-            .then(results => {
-              if(results.songs.length === 1) {
-                dispatch({
-                  type: LOAD_PLAYLIST_SONGS,
-                  payload: { ...results.songs[0], order: i }
-                })
-              }
+            .then(song => {
+              song.coverURL = `https://beatsaver.com/${song.coverURL}`
+              dispatch({
+                type: LOAD_PLAYLIST_SONGS,
+                payload: { ...song, order: i }
+              })
             })
-            .catch(_ => {
+            .catch(err => {
               dispatch({
                 type: LOAD_PLAYLIST_SONGS,
                 payload: { ...playlist.songs[i], order: i }
@@ -218,11 +214,12 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
             })
           }
         } else {
-          fetch(`https://beatsaver.com/api/songs/detail/${playlist.songs[i].key}`)
+          fetch(`https://beatsaver.com/api/maps/detail/${playlist.songs[i].key}`)
             .then(res => res.json())
             .then(details => {
-              if(state.songs.downloadedSongs.some(song => song.hash === details.song.hashMd5)) {
-                let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.song.hashMd5)].file
+              details.coverURL = `https://beatsaver.com/${details.coverURL}`
+              if(state.songs.downloadedSongs.some(song => song.hash === details.hash)) {
+                let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.hash)].file
                 fs.readFile(file, 'UTF8', (err, data) => {
                   if(err) {
                     dispatch({
@@ -232,10 +229,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                     return
                   }
                   let song = JSON.parse(data)
-                  let dirs = file.split('\\')
-                  dirs.pop()
-                  let dir = dirs.join('\\')
-                  song.coverUrl = path.join(dir, song.coverImagePath)
+                  song.coverURL = `file://${path.join(path.dirname(file), song.coverImagePath || song._coverImageFilename)}`
                   dispatch({
                     type: LOAD_PLAYLIST_SONGS,
                     payload: { ...song, file, order: i }
@@ -244,7 +238,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
               } else {
                 dispatch({
                   type: LOAD_PLAYLIST_SONGS,
-                  payload: { ...details.song, order: i }
+                  payload: { ...details, order: i }
                 })
               }
             })
@@ -336,13 +330,10 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
       if(song.file) {
         let file = song.file
         delete song.file
-        let dirs = file.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
         let to_hash = ''
         for(let i = 0; i < song.difficultyLevels.length; i++) {
           try {
-            to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
+            to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
           } catch(err) {
             dispatch({
               type: DISPLAY_WARNING,

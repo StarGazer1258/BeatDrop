@@ -1,8 +1,6 @@
 import { SET_SEARCH_SOURCES, SUBMIT_SEARCH, SET_LOADING } from './types'
-import { store } from '../store'
 
 const { remote } = window.require('electron')
-const Walker = remote.require('walker')
 const fs = remote.require('fs')
 const path = remote.require('path')
 
@@ -13,10 +11,8 @@ export const setSearchSources = sources => dispatch => {
   })
 }
 
-export const submitSearch = keywords => dispatch => {
+export const submitSearch = keywords => (dispatch, getState) => {
   if(!keywords) return
-
-  let state = store.getState()
 
   dispatch({
     type: SET_LOADING,
@@ -34,86 +30,28 @@ export const submitSearch = keywords => dispatch => {
   let isId = parseInt(keywords.replace('-', ''), 10)
 
   //Library Search
-  let localSongCount = 0
-  let walkerEnded = false
-  let decrementCounter = () => {
-    localSongCount--
-    if (walkerEnded && localSongCount === 0) {
-      localSongs = localSongs.filter((song, i) => {
-        for (let k = 0; k < keywords.split(' ').length; k++) {
-          if(song.songName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.songSubName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.authorName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase())) return true
-        }
-        return false
-      })
-      if(beatSaverResultsReady && beatSaverIdResultsReady) {
-        dispatch({
-          type: SUBMIT_SEARCH,
-          payload: isId ? { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] } : { keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong }
-        })
-        dispatch({
-          type: SET_LOADING,
-          payload: false
-        })
-        return
+
+  let downloadedSongs = getState().songs.downloadedSongs
+
+
+  for(let i = 0; i < downloadedSongs.length; i++) {
+    let data = fs.readFileSync(downloadedSongs[i].file, 'UTF-8')
+    let song = JSON.parse(data)
+    for (let k = 0; k < keywords.split(' ').length; k++) {
+      if(song._songName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song._songSubName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song._songAuthorName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase())) {
+        song.coverUrl = `file://${ path.join(path.dirname(downloadedSongs[i].file), song._coverImageFilename) }`
+        localSongs.push(song)
+        break
       }
-      localResultsReady = true
     }
   }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), err => {
-    if (err) alert('Could not find CustomSongs directory. Please make sure you have your installation directory set correctly and have the proper plugins installed.')
-    Walker(path.join(store.getState().settings.installationDirectory, 'CustomSongs'))
-      .on('file', file => {
-        let dirs = file.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
-        if (file.substr(file.length - 9) === 'info.json') {
-          localSongCount++
-          fs.readFile(file, 'UTF-8', (err, data) => {
-            if(err) { decrementCounter(); return }
-            let song
-            try {
-              song = JSON.parse(data)
-            } catch(err) {
-              decrementCounter()
-              return
-            }
-            song.coverUrl = path.join(dir, song.coverImagePath)
-            song.file = file
-            localSongs.push(song)
-            decrementCounter()
-          })
-        }
-      })
-      .on('end', () => {
-        if (localSongCount === 0) {
-          localSongs = localSongs.filter((song, i) => {
-            for (let k = 0; k < keywords.split(' ').length; k++) {
-              if(song.songName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.songSubName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase()) || song.authorName.toLowerCase().includes(keywords.split(' ')[k].toLowerCase())) return true
-            }
-            return false
-          })
-          if(beatSaverResultsReady && beatSaverIdResultsReady) {
-            dispatch({
-              type: SUBMIT_SEARCH,
-              payload: isId ? { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] } : { keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong }
-            })
-            dispatch({
-              type: SET_LOADING,
-              payload: false
-            })
-            return
-          }
-          localResultsReady = true
-        }
-        walkerEnded = true
-      })
-  })
+  localResultsReady = true
 
   //BeatSaver Search
-  fetch('https://beatsaver.com/api/songs/search/all/' + encodeURIComponent(keywords.replace('/', '\\')))
+  fetch('https://beatsaver.com/api/search/text/all?q=' + encodeURIComponent(keywords.replace('/', '\\')))
     .then(res => res.json())
     .then(data => {
-      beatSaverSongs = data.songs
+      beatSaverSongs = data.docs
       if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
@@ -130,7 +68,7 @@ export const submitSearch = keywords => dispatch => {
   
   //BeatSaver ID Search
   if(isId) {
-    fetch('https://beatsaver.com/api/songs/detail/' + keywords)
+    fetch('https://beatsaver.com/api/maps/detail/' + keywords)
     .then(res => res.json())
     .then(data => {
       idSong = data.song
