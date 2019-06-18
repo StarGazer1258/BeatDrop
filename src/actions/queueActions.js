@@ -24,11 +24,11 @@ export const setQueueOpen = open => dispatch => {
 export const downloadSong = (identity) => (dispatch, getState) => {
   if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
   let hash = identity
-  if(!(/^[a-f0-9]{32}$/).test(identity)) {
-    fetch(`https://beatsaver.com/api/songs/detail/${identity}`)
+  if(identity) {
+    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
       .then(res => res.json())
       .then(song => {
-        hash = song.song.hashMd5
+        hash = song.hash
         let state = { ...getState() }
         if(state.songs.downloadingCount >= 3) {
           dispatch({
@@ -45,17 +45,17 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         setTimeout(() => {
           document.getElementById('queue-button').classList.remove('notify')
         }, 1000)
-        fetch(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+        fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
           .then(res =>  res.json())
-          .then(results => {
+          .then(song => {
             let utc = Date.now()
-            if(results.songs.length === 1) {
+            if(song) {
               dispatch({
                 type: ADD_TO_QUEUE,
-                payload: { ...results.songs[0], utc }
+                payload: { ...song, utc }
               })
               let req = request.get({
-                url: results.songs[0].downloadUrl,
+                url: `http://www.beatsaver.com${song.downloadURL}`,
                 encoding: null
               }, (err, r, data) => {
                 try {
@@ -73,7 +73,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                         type: SET_WAIT_LIST,
                         payload: state.songs.waitingToDownload
                       })
-                      downloadSong(toDownload)(dispatch)
+                      downloadSong(toDownload)(dispatch, getState)
                     }
                     dispatch({
                       type: DISPLAY_WARNING,
@@ -87,7 +87,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 let zipEntries = zip.getEntries()
                 let infoEntry, infoObject
                 for(let i = 0; i < zipEntries.length; i++) {
-                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json') {
+                  if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json' || zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 8, 8) === 'info.dat') {
                     infoEntry  = zipEntries[i]
                   }
                 }
@@ -97,19 +97,33 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   dispatch({
                     type: DISPLAY_WARNING,
                     payload: {
-                      text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                      text: `There was an error unpacking the song "${song.name}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${song.uploader.username}, if problem persists.`
                     }
                   })
                   return
                 }
-                infoObject.key = results.songs[0].key
+                infoObject.key = song.key
                 infoObject.hash = hash
                 zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
-                let extractTo = (getState().settings.folderStructure === 'idKey' ? results.songs[0].key : results.songs[0].name.replace(/[\\/:*?"<>|.]/g, ''))
-                zip.extractAllTo(path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo))
+                let extractTo
+                switch(getState().settings.folderStructure) {
+                  case 'keySongNameArtistName':
+                    extractTo = `${ song.key } (${ song.metadata.songName.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.metadata.songAuthorName })`
+                    break
+                  case 'key':
+                    extractTo = song.key
+                    break
+                  case 'songName':
+                    extractTo = song.name.replace(/[\\/:*?"<>|.]/g, '')
+                    break
+                  default:
+                    extractTo = `${ song.key } (${ song.name.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.songAuthorName })`
+                    break
+                }
+                zip.extractAllTo(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels', extractTo))
                 dispatch({
                   type: SET_DOWNLOADED_SONGS,
-                  payload: [...getState().songs.downloadedSongs, { hash, file: path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo, infoEntry.entryName) }]
+                  payload: [...getState().songs.downloadedSongs, { hash, file: path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels', extractTo, infoEntry.entryName) }]
                 })
                 state = { ...getState() }
                 dispatch({
@@ -139,7 +153,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   type: UPDATE_PROGRESS,
                   payload: {
                     utc,
-                    hash: results.songs[0].hashMd5,
+                    hash: song.hash,
                     progress: Math.trunc((chunks / len) * 100)
                   }
                 })
@@ -148,7 +162,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer available for download.`
                 }
               })
             }
@@ -201,113 +215,118 @@ export const downloadSong = (identity) => (dispatch, getState) => {
     setTimeout(() => {
       document.getElementById('queue-button').classList.remove('notify')
     }, 1000)
-    fetch(`https://beatsaver.com/api/songs/search/hash/${hash}`)
+    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
       .then(res =>  res.json())
-      .then(results => {
+      .then(song => {
         let utc = Date.now()
-        if(results.songs.length === 1) {
-          dispatch({
-            type: ADD_TO_QUEUE,
-            payload: { ...results.songs[0], utc }
-          })
-          let req = request.get({
-            url: results.songs[0].downloadUrl,
-            encoding: null
-          }, (err, r, data) => {
-            try {
-              // eslint-disable-next-line
-              if(err || r ? r.statusCode !== 200 : false) throw 'Error downloading!'
-            } catch(err) {
-              state = { ...getState() }
+        dispatch({
+          type: ADD_TO_QUEUE,
+          payload: { ...song, utc }
+        })
+        let req = request.get({
+          url: `https://beatsaver.com/${ song.downloadURL }`,
+          encoding: null
+        }, (err, r, data) => {
+          try {
+            // eslint-disable-next-line
+            if(err || r ? r.statusCode !== 200 : false) throw 'Error downloading!'
+          } catch(err) {
+            state = { ...getState() }
+              dispatch({
+                type: SET_DOWNLOADING_COUNT,
+                payload: --state.songs.downloadingCount
+              })
+              if(state.songs.waitingToDownload.length > 0) {
+                let toDownload = state.songs.waitingToDownload.pop()
                 dispatch({
-                  type: SET_DOWNLOADING_COUNT,
-                  payload: --state.songs.downloadingCount
+                  type: SET_WAIT_LIST,
+                  payload: state.songs.waitingToDownload
                 })
-                if(state.songs.waitingToDownload.length > 0) {
-                  let toDownload = state.songs.waitingToDownload.pop()
-                  dispatch({
-                    type: SET_WAIT_LIST,
-                    payload: state.songs.waitingToDownload
-                  })
-                  downloadSong(toDownload)(dispatch, getState)
-                }
-                dispatch({
-                  type: DISPLAY_WARNING,
-                  payload: {
-                    text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
-                  }
-                })
-                return
-            }
-            let zip = new AdmZip(data)
-            let zipEntries = zip.getEntries()
-            let infoEntry, infoObject
-            for(let i = 0; i < zipEntries.length; i++) {
-              if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json') {
-                infoEntry = zipEntries[i]
+                downloadSong(toDownload)(dispatch, getState)
               }
-            }
-            try {
-              infoObject = JSON.parse(infoEntry.getData().toString('UTF8'))
-            } catch(err) {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: {
-                  text: `There was an error unpacking the song "${results.songs[0].songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${results.songs[0].uploader}, if problem persists.`
+                  text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
                 }
               })
               return
+          }
+          let zip = new AdmZip(data)
+          let zipEntries = zip.getEntries()
+          let infoEntry, infoObject
+          for(let i = 0; i < zipEntries.length; i++) {
+            if(zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 9, 9) === 'info.json' || zipEntries[i].entryName.substr(zipEntries[i].entryName.length - 8, 9) === 'info.dat') {
+              infoEntry = zipEntries[i]
             }
-            infoObject.key = results.songs[0].key
-            infoObject.hash = hash
-            zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
-            let extractTo = (getState().settings.folderStructure === 'idKey' ? results.songs[0].key : results.songs[0].name.replace(/[\\/:*?"<>|.]/g, ''))
-            zip.extractAllTo(path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo))
+          }
+          try {
+            infoObject = JSON.parse(infoEntry.getData().toString('UTF8'))
+          } catch(err) {
             dispatch({
-              type: SET_DOWNLOADED_SONGS,
-              payload: [...getState().songs.downloadedSongs, { hash, file: path.join(getState().settings.installationDirectory, 'CustomSongs', extractTo, infoEntry.entryName) }]
-            })
-            state = { ...getState() }
-            dispatch({
-              type: SET_DOWNLOADING_COUNT,
-              payload: --state.songs.downloadingCount
-            })
-            if(state.songs.waitingToDownload.length > 0) {
-              let toDownload = state.songs.waitingToDownload.pop()
-              dispatch({
-                type: SET_WAIT_LIST,
-                payload: state.songs.waitingToDownload
-              })
-              downloadSong(toDownload)(dispatch, getState)
-            }
-          })
-
-          let len = 0
-          let chunks = 0
-
-          req.on('response', (data) => {
-            len = data.headers['content-length']
-          })
-
-          req.on('data', (chunk) => {
-            chunks += chunk.length
-            dispatch({
-              type: UPDATE_PROGRESS,
+              type: DISPLAY_WARNING,
               payload: {
-                utc,
-                hash: results.songs[0].hashMd5,
-                progress: Math.trunc((chunks / len) * 100)
+                text: `There was an error unpacking the song "${song.songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${song.uploader.username}, if problem persists.`
               }
             })
-          })
-        } else {
+            return
+          }
+          infoObject.key = song.key
+          infoObject.hash = hash
+          zip.updateFile(infoEntry.entryName, JSON.stringify(infoObject))
+          let extractTo
+          switch(getState().settings.folderStructure) {
+            case 'keySongNameArtistName':
+              extractTo = `${ song.key } (${ song.metadata.songName.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.metadata.songAuthorName })`
+              break
+            case 'key':
+              extractTo = song.key
+              break
+            case 'songName':
+              extractTo = song.name.replace(/[\\/:*?"<>|.]/g, '')
+              break
+            default:
+              extractTo = `${ song.key } (${ song.name.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.songAuthorName })`
+              break
+          }
+          zip.extractAllTo(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels', extractTo))
           dispatch({
-            type: DISPLAY_WARNING,
+            type: SET_DOWNLOADED_SONGS,
+            payload: [...getState().songs.downloadedSongs, { hash, file: path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels', extractTo, infoEntry.entryName) }]
+          })
+          state = { ...getState() }
+          dispatch({
+            type: SET_DOWNLOADING_COUNT,
+            payload: --state.songs.downloadingCount
+          })
+          if(state.songs.waitingToDownload.length > 0) {
+            let toDownload = state.songs.waitingToDownload.pop()
+            dispatch({
+              type: SET_WAIT_LIST,
+              payload: state.songs.waitingToDownload
+            })
+            downloadSong(toDownload)(dispatch, getState)
+          }
+        })
+
+        let len = 0
+        let chunks = 0
+
+        req.on('response', (data) => {
+          len = data.headers['content-length']
+        })
+
+        req.on('data', (chunk) => {
+          chunks += chunk.length
+          dispatch({
+            type: UPDATE_PROGRESS,
             payload: {
-              text: `There was an error downloading the song with hash ${hash}. The song requested is no longer be available for download.`
+              utc,
+              hash: song.hash,
+              progress: Math.trunc((chunks / len) * 100)
             }
           })
-        }
+        })
       })
       .catch(err => {
         state = { ...getState() }
@@ -346,19 +365,19 @@ export const deleteSong = (identity) => (dispatch, getState) => {
     type: SET_VIEW,
     payload: getState().view.previousView
   })
-  let dirs = file.split('\\')
-  let csd = dirs.indexOf('CustomSongs')
-  for(let i = 2; i < file.split('\\').length - csd; i++) {
+  let dirs = file.split(path.sep)
+  let cld = dirs.indexOf('CustomLevels')
+  for(let i = 2; i < file.split(path.sep).length - cld; i++) {
     dirs.pop()
   }
   let downloadedSongs = [ ...getState().songs.downloadedSongs ]
   downloadedSongs.splice(downloadedSongs.findIndex(song => song.file === file), 1)
-  rimraf(dirs.join('\\'), (err) => {
+  rimraf(dirs.join(path.sep), (err) => {
     if(err) {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          text: `There was an error deleting the song located at ${dirs.join('\\')}. BeatDrop may have insufficient permissions or the file may be in use by another program. Please try closing any programs that may be using this song and try again.`
+          text: `There was an error deleting the song located at ${dirs.join(path.sep)}. BeatDrop may have insufficient permissions or the file may be in use by another program. Please try closing any programs that may be using this song and try again.`
         }
       })
       return
@@ -408,7 +427,7 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
               if(!--pending) cb(null, songs)
             })
           } else {
-            if(files[i].toLowerCase() === 'info.json') {
+            if(files[i].toLowerCase() === 'info.dat' || files[i].toLowerCase() === 'info.json') {
               fs.readFile(file, { encoding: 'UTF-8' }, (err, data) => {
                 if(err) return cb(err)
                 let song = JSON.parse(data)
@@ -421,17 +440,22 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
                   if(!--pending) cb(null, songs)
                 } else {
                   let to_hash = ''
-                  for(let i = 0; i < song.difficultyLevels.length; i++) {
-                    try {
-                      let dir = file.split(path.sep)
-                      dir.pop()
-                      to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
-                    } catch(err) {}
+                  try {
+                    for (let i = 0; i < song.difficultyLevels.length; i++) {
+                      to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
+                    }
+                    let hash = md5(to_hash)
+                    song.hash = hash
+                    fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
+                    songs.push({ hash, file })
+                  } catch(err) {
+                    dispatch({
+                      type: DISPLAY_WARNING,
+                      payload: {
+                        text: `Failed to generate hash: a file could not be accessed.`
+                      }
+                    })
                   }
-                  let hash = md5(to_hash)
-                  song.hash = hash
-                  fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-                  songs.push({ hash, file })
                   dispatch({
                     type: SET_PROCESSED_FILES,
                     payload: ++processedFiles
@@ -456,8 +480,23 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
     type: SET_SCANNING_FOR_SONGS,
     payload: true
   })
-
-  walk(path.join(getState().settings.installationDirectory, 'CustomSongs'), (err, songs) => {
+  walk(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), (err, songs) => {
+    if (err) {
+      dispatch({
+          type: DISPLAY_WARNING,
+          payload: {
+              text: `Could not find Custom Levels directory. Please make sure you have your installation directory and type are set correctly.`
+          }
+      })
+      fs.mkdir(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), () => {
+          dispatch({
+              type: DISPLAY_WARNING,
+              payload: {
+                  text: `Attempted to create Custom levels folder and failed, likely due to permissions.`
+              }
+          })
+      })
+    }
     dispatch({
       type: SET_DOWNLOADED_SONGS,
       payload: songs

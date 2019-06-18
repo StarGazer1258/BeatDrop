@@ -1,17 +1,15 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
-import { installEssentialMods } from './modActions'
 
 const { remote } = window.require('electron')
-const Walker = remote.require('walker')
 const fs = remote.require('fs')
 const path = remote.require('path')
 
 const resourceUrl = {
-    'BEATSAVER_NEW_SONGS': 'https://beatsaver.com/api/songs/new',
-    'BEATSAVER_TOP_DOWNLOADED_SONGS': 'https://beatsaver.com/api/songs/top',
-    'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/songs/plays'
+    'BEATSAVER_NEW_SONGS': 'https://beatsaver.com/api/maps/latest',
+    'BEATSAVER_TOP_DOWNLOADED_SONGS': 'https://beatsaver.com/api/maps/downloads',
+    'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/maps/plays'
 }
 
 export const fetchNew = () => dispatch => {
@@ -31,9 +29,10 @@ export const fetchNew = () => dispatch => {
     type: SET_RESOURCE,
     payload: BEATSAVER.NEW_SONGS
   })
-  fetch('https://beatsaver.com/api/songs/new')
+  fetch('https://beatsaver.com/api/maps/latest')
     .then(res => res.json())
     .then(data =>  {
+      console.log(data)
       dispatch({
         type: FETCH_NEW,
         payload:  data
@@ -42,8 +41,9 @@ export const fetchNew = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+      console.log(data);
+      for(let i = 0; i < data.docs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -78,7 +78,7 @@ export const fetchTopDownloads = () => dispatch => {
     type: SET_RESOURCE,
     payload: BEATSAVER.TOP_DOWNLOADED_SONGS
   })
-  fetch('https://beatsaver.com/api/songs/top')
+  fetch('https://beatsaver.com/api/maps/downloads')
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -90,7 +90,7 @@ export const fetchTopDownloads = () => dispatch => {
         payload: false
       })
       for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -125,7 +125,7 @@ export const fetchTopFinished = () => dispatch => {
     type: SET_RESOURCE,
     payload: BEATSAVER.TOP_FINISHED_SONGS
   })
-  fetch('https://beatsaver.com/api/songs/plays')
+  fetch('https://beatsaver.com/api/maps/plays')
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -136,8 +136,8 @@ export const fetchTopFinished = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i].key.split('-')[0]}/ratings`)
+      for(let i = 0; i < data.docs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -164,7 +164,6 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     type: SET_SCROLLTOP,
     payload: 0
   })
-  let state = getState()
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -173,87 +172,37 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: LIBRARY.SONGS
   })
+
+  let downloadedSongs = getState().songs.downloadedSongs
   let songs = []
-  let count = 0
-  let ended = false
-  let decrementCounter = () => {
-    count--
-    if(ended && count === 0) {
-      dispatch({
-        type: FETCH_LOCAL_SONGS,
-        payload: songs
-      })
-      dispatch({
-        type: SET_LOADING,
-        payload: false
-      })
-      return
-    }
-  }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
-    if(err) {
-      installEssentialMods()(dispatch, getState)
-      fs.mkdirSync(path.join(state.settings.installationDirectory, 'CustomSongs'))
-    }
-    fs.readdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err, files) => {
-      if (err) return
-      if (!files.length) {
+  for(let i = 0; i < downloadedSongs.length; i++) {
+    fs.readFile(downloadedSongs[i].file, 'UTF-8', (err, data) => {
+      if(err) {
+        return
+      }
+      let song
+      try {
+        song = JSON.parse(data)
+      } catch(err) {
+        return
+      }
+      song.coverUrl = `file://${ path.join(path.dirname(downloadedSongs[i].file), (song.coverImagePath || song._coverImageFilename)) }`
+      song.file = downloadedSongs[i].file
+      songs.push(song)
+      console.log(song)
+      if(i >= downloadedSongs.length - 1) {
+        console.log('Bam!')
         dispatch({
           type: FETCH_LOCAL_SONGS,
-          payload: []
+          payload: songs
         })
         dispatch({
           type: SET_LOADING,
           payload: false
         })
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            timeout: 5000,
-            color: 'gold',
-            text: 'No songs found!'
-          }
-        })
       }
     })
-    Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
-      .on('file', (file) => {
-        let dirs = file.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
-        if(file.substr(file.length - 9) === 'info.json') {
-          count++
-          fs.readFile(file, 'UTF-8', (err, data) => {
-            if(err) { decrementCounter(); return }
-            let song
-            try {
-              song = JSON.parse(data)
-            } catch(err) {
-              decrementCounter()
-              return
-            }
-            song.coverUrl = path.join(dir, song.coverImagePath)
-            song.file = path.join(dir, 'info.json')
-            songs.push(song)
-            decrementCounter()
-          })
-        }
-      })
-      .on('end', () => {
-        if(count === 0) {
-          dispatch({
-            type: FETCH_LOCAL_SONGS,
-            payload: songs
-          })
-          dispatch({
-            type: SET_LOADING,
-            payload: false
-          })
-          return
-        }
-        ended = true
-      })
-  })
+  }
 }
 
 export const loadMore = () => (dispatch, getState) => {
@@ -275,8 +224,9 @@ export const loadMore = () => (dispatch, getState) => {
         type: SET_LOADING_MORE,
         payload: false
       })
-      for(let i = state.songs.songs.length; i < state.songs.songs.length + data.songs.length; i++) {
-        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.songs[i - state.songs.songs.length].key.split('-')[0]}/ratings`)
+      console.log(data)
+      for(let i = state.songs.songs.length; i < state.songs.songs.length + data.docs.length; i++) {
+        fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({

@@ -10,21 +10,22 @@ import DownloadQueue from './DownloadQueue';
 import UpdateDialog from './UpdateDialog';
 import SongScanningDialog from './SongScanningDialog';
 import ReleaseNotesModal  from './ReleaseNotesModal'
+import CrashMessage from './CrashMessage'
 
 import { connect } from 'react-redux'
-
 
 import { setHasError } from '../actions/windowActions'
 import { downloadSong } from '../actions/queueActions'
 import { loadModDetails, installMod } from '../actions/modActions'
-import { loadDetails } from '../actions/detailsActions'
+import { loadDetailsFromKey } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
+import { fetchLocalPlaylists } from '../actions/playlistsActions'
 
 import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
 
-import CrashMessage from './CrashMessage';
-
 const { ipcRenderer } = window.require('electron')
+const fs = window.require('fs')
+const path = window.require('path')
 
 class App extends Component {
   
@@ -39,7 +40,8 @@ class App extends Component {
             } else {
               setView(SONG_LIST)(store.dispatch, store.getState)
             }
-            loadDetails(message.songs.details[i])(store.dispatch, store.getState)
+            loadDetailsFromKey()(store.dispatch, store.getState)
+            
           }
           for(let i = 0; i < message.mods.details.length; i++) {
             if(store.getState().view.view === MOD_DETAILS && store.getState().view.previousView !== MOD_DETAILS) {
@@ -59,6 +61,17 @@ class App extends Component {
         default:
           return
       }
+    })
+
+    // handle beatsaber playlist file opens
+    ipcRenderer.on('file-open', (_, file, ext) => {
+      let dir = file.split(path.sep)
+      let filename = dir[dir.length - 1] + ext
+      let newPath = path.join(store.getState().settings.installationDirectory, "Playlists", filename);
+      fs.rename(file, newPath, (err) => {
+        if (err) throw err;
+        fetchLocalPlaylists(true)(store.dispatch, store.getState)
+      })
     })
   }
 

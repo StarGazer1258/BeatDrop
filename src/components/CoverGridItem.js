@@ -7,49 +7,44 @@ import Loader from '../assets/loading-dots2.png'
 
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { loadDetails } from '../actions/detailsActions'
+import { loadDetailsFromFile, loadDetailsFromKey } from '../actions/detailsActions'
 import { setScrollTop } from '../actions/songListActions'
 
 const getColors = window.require('get-image-colors')
 
 function Difficulties(props) {
   let difficulties = props.difficulties
-  if(typeof props.difficulties[0] === 'object') {
-    difficulties = {}
-    for(let i = 0; i < props.difficulties.length; i++) {
-      difficulties[props.difficulties[i].difficulty] = props.difficulties[i]
-    }
-  }
+  if (!difficulties) return null
   let badges = []
-  if(Object.keys(difficulties).includes('Easy')) {
+  if(difficulties.easy) {
     badges.push({
       text: 'Easy',
       backgroundColor: 'teal',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Normal')) {
+  if(difficulties.normal) {
     badges.push({
       text: 'Normal',
       backgroundColor: 'green',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Hard')) {
+  if(difficulties.hard) {
     badges.push({
       text: 'Hard',
       backgroundColor: 'orange',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('Expert')) {
+  if(difficulties.expert) {
     badges.push({
       text: 'Expert',
       backgroundColor: 'darkred',
       color: 'white'
     })
   }
-  if(Object.keys(difficulties).includes('ExpertPlus')) {
+  if(difficulties.expertPlus) {
     badges.push({
       text: 'Expert+',
       backgroundColor: 'purple',
@@ -72,7 +67,7 @@ class CoverGridItem extends Component {
   }
 
 componentWillReceiveProps(props) {
-  getColors(props.coverImage)
+  getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
@@ -83,7 +78,8 @@ componentWillReceiveProps(props) {
 }
 
   componentDidMount() {
-    getColors(this.props.coverImage)
+    if(!this.props.imageSource) return
+    getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
@@ -102,8 +98,8 @@ componentWillReceiveProps(props) {
       )
     } else {
       return (
-        <div key={ this.props.key } className='cover-grid-item' onClick={ () => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); this.props.loadDetails(this.props.file || this.props.songKey) } }>
-          <img className="cover-image" src={ this.props.coverImage } alt=""/>
+        <div key={ this.props.key } className='cover-grid-item' onClick={ () => { this.props.setScrollTop(document.getElementById('cover-grid-container').scrollTop); if(this.props.file) { this.props.loadDetailsFromFile(this.props.file) } else { this.props.loadDetailsFromKey(this.props.songKey) } } }>
+          <img className="cover-image" src={ this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }` } alt=""/>
           {(!!this.props.file || this.props.downloadedSongs.some(dsong => dsong.hash === this.props.hash)) ? <LibraryIndicator /> : null}
           <div style={ { backgroundColor: this.state.bgc, color: this.state.textColor } } className="cover-grid-info-tab">
             <div className="cover-grid-title">{this.props.title}</div>
@@ -119,11 +115,12 @@ componentWillReceiveProps(props) {
 }
 
 CoverGridItem.propTypes = ({
-  loadDetails: PropTypes.func.isRequired
+  loadDetailsFromFile: PropTypes.func.isRequired,
+  loadDetailsFromKey: PropTypes.func.isRequired
 })
 
 let mapStateToProps = state => ({
   downloadedSongs: state.songs.downloadedSongs
 })
 
-export default connect(mapStateToProps, { loadDetails, setScrollTop })(CoverGridItem)
+export default connect(mapStateToProps, { loadDetailsFromFile, loadDetailsFromKey, setScrollTop })(CoverGridItem)
