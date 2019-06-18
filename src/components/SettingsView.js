@@ -88,7 +88,8 @@ class SettingsView extends Component {
         <Button onClick={ this.props.checkDownloadedSongs }>Scan for Songs</Button><Button onClick={ this.props.checkInstalledMods }>{ this.props.scanningForMods ? 'Scanning...' : 'Scan for Mods' }</Button><br /><br />
         <label htmlFor="folder-structure-select">Folder Structure</label><br /><br />
         <select id="folder-structure-select" name="folder-structure-select" value={ this.props.settings.folderStructure } onChange={ (e) => { this.props.setFolderStructure(e.target.value) } }>
-          <option value="idKey">ID/Key</option>
+          <option value="keySongNameArtistName">Key ( Song Name - Song Artist )</option>
+          <option value="idKey">Key</option>
           <option value="songName">Song Name</option>
         </select>
         <hr />

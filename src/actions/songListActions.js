@@ -1,10 +1,8 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
-import {installEssentialMods, isModInstalled} from './modActions'
 
 const { remote } = window.require('electron')
-const Walker = remote.require('walker')
 const fs = remote.require('fs')
 const path = remote.require('path')
 
@@ -166,7 +164,6 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     type: SET_SCROLLTOP,
     payload: 0
   })
-  let state = getState()
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -175,86 +172,37 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: LIBRARY.SONGS
   })
+
+  let downloadedSongs = getState().songs.downloadedSongs
   let songs = []
-  let count = 0
-  let ended = false
-  let decrementCounter = () => {
-    count--
-    if(ended && count === 0) {
-      dispatch({
-        type: FETCH_LOCAL_SONGS,
-        payload: songs
-      })
-      dispatch({
-        type: SET_LOADING,
-        payload: false
-      })
-      return
-    }
-  }
-  fs.access(path.join(state.settings.installationDirectory, 'CustomSongs'), (err) => {
-    if(err) {
-      installEssentialMods()(dispatch, getState)
-      fs.mkdirSync(path.join(state.settings.installationDirectory, 'CustomSongs'))
-    }
-    fs.readdir(path.join(state.settings.installationDirectory, 'CustomSongs'), (err, files) => {
-      if (err) return
-      if (!files.length) {
+  for(let i = 0; i < downloadedSongs.length; i++) {
+    fs.readFile(downloadedSongs[i].file, 'UTF-8', (err, data) => {
+      if(err) {
+        return
+      }
+      let song
+      try {
+        song = JSON.parse(data)
+      } catch(err) {
+        return
+      }
+      song.coverUrl = `file://${ path.join(path.dirname(downloadedSongs[i].file), (song.coverImagePath || song._coverImageFilename)) }`
+      song.file = downloadedSongs[i].file
+      songs.push(song)
+      console.log(song)
+      if(i >= downloadedSongs.length - 1) {
+        console.log('Bam!')
         dispatch({
           type: FETCH_LOCAL_SONGS,
-          payload: []
+          payload: songs
         })
         dispatch({
           type: SET_LOADING,
           payload: false
         })
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            timeout: 5000,
-            color: 'gold',
-            text: 'No songs found!'
-          }
-        })
       }
     })
-    Walker(path.join(getState().settings.installationDirectory, 'CustomSongs'))
-      .on('file', (file) => {
-        let dir = path.dirname(file)
-        if(file.substr(file.length - 9) === 'info.json') {
-          if(!isModInstalled('SongCore')(dispatch, getState)) installEssentialMods()(dispatch, getState)
-          count++
-          fs.readFile(file, 'UTF-8', (err, data) => {
-            if(err) { decrementCounter(); return }
-            let song
-            try {
-              song = JSON.parse(data)
-            } catch(err) {
-              decrementCounter()
-              return
-            }
-            song.coverUrl = `file://${ path.join(dir, (song.coverImagePath || song._coverImageFilename)) }`
-            song.file = path.join(dir, 'info.json')
-            songs.push(song)
-            decrementCounter()
-          })
-        }
-      })
-      .on('end', () => {
-        if(count === 0) {
-          dispatch({
-            type: FETCH_LOCAL_SONGS,
-            payload: songs
-          })
-          dispatch({
-            type: SET_LOADING,
-            payload: false
-          })
-          return
-        }
-        ended = true
-      })
-  })
+  }
 }
 
 export const loadMore = () => (dispatch, getState) => {

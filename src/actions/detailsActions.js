@@ -26,7 +26,7 @@ export const loadDetailsFromFile = file => dispatch => {
     if(err) return
     let details = JSON.parse(data)
     let dir = path.dirname(file)
-    details.coverURL = `file://${ path.join(dir, details.coverImagePath) }`
+    details.coverURL = `file://${ path.join(dir, (details.coverImagePath || details._coverImageFilename)) }`
     details.file = path.join(dir, 'info.json' || 'info.dat')
     dispatch({
       type: LOAD_DETAILS,
@@ -34,7 +34,7 @@ export const loadDetailsFromFile = file => dispatch => {
     })
     dispatch({
       type: LOAD_DETAILS,
-      payload: { audioSource: `file://${ path.join(dir, details.difficultyLevels[0].audioPath) }` }
+      payload: { audioSource: `file://${ path.join(dir, details._songFilename) }` }
     })
     dispatch({
       type: SET_DETAILS_LOADING,

@@ -25,51 +25,84 @@ const exitDetailsShortcut = function (e) { if(e.keyCode === 27) { this.props.set
 function Difficulties(props) {
   let difficulties = props.difficulties
   let badges = []
-  if(difficulties.easy) {
-    badges.push({
-      text: 'Easy',
-      backgroundColor: 'teal',
-      color: 'white'
-    })
-  }
-  if(difficulties.normal) {
-    badges.push({
-      text: 'Normal',
-      backgroundColor: 'green',
-      color: 'white'
-    })
-  }
-  if(difficulties.hard) {
-    badges.push({
-      text: 'Hard',
-      backgroundColor: 'orange',
-      color: 'white'
-    })
-  }
-  if(difficulties.expert) {
-    badges.push({
-      text: 'Expert',
-      backgroundColor: 'darkred',
-      color: 'white'
-    })
-  }
-  if(difficulties.expertPlus) {
-    badges.push({
-      text: 'Expert+',
-      backgroundColor: 'purple',
-      color: 'white'
-    })
-  }
-  return (
-    <div className="details-difficulties">
-      <div><b>Available Difficulties:</b></div>
-      {
-        badges.map((badge, i) => {
-          return <Badge key={ i } backgroundColor={ badge.backgroundColor } color={ badge.color }>{badge.text}</Badge>
+  if(Array.isArray(difficulties)) {
+    for(let i = 0; i < difficulties[0]._difficultyBeatmaps.length; i++) {
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Easy') {
+        badges.push({
+          text: 'Easy',
+          backgroundColor: 'teal',
+          color: 'white'
         })
       }
-    </div>
-  )
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Normal') {
+        badges.push({
+          text: 'Normal',
+          backgroundColor: 'green',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Hard') {
+        badges.push({
+          text: 'Hard',
+          backgroundColor: 'orange',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'Expert') {
+        badges.push({
+          text: 'Expert',
+          backgroundColor: 'darkred',
+          color: 'white'
+        })
+      }
+      if(difficulties[0]._difficultyBeatmaps[i]._difficulty === 'ExpertPlus') {
+        badges.push({
+          text: 'Expert+',
+          backgroundColor: 'purple',
+          color: 'white'
+        })
+      }
+    }
+  } else {
+    if(difficulties.easy) {
+      badges.push({
+        text: 'Easy',
+        backgroundColor: 'teal',
+        color: 'white'
+      })
+    }
+    if(difficulties.normal) {
+      badges.push({
+        text: 'Normal',
+        backgroundColor: 'green',
+        color: 'white'
+      })
+    }
+    if(difficulties.hard) {
+      badges.push({
+        text: 'Hard',
+        backgroundColor: 'orange',
+        color: 'white'
+      })
+    }
+    if(difficulties.expert) {
+      badges.push({
+        text: 'Expert',
+        backgroundColor: 'darkred',
+        color: 'white'
+      })
+    }
+    if(difficulties.expertPlus) {
+      badges.push({
+        text: 'Expert+',
+        backgroundColor: 'purple',
+        color: 'white'
+      })
+    }
+  }
+  return badges.map((badge, i) => {
+    return <Badge key={ i } backgroundColor={ badge.backgroundColor } color={ badge.color }>{badge.text}</Badge>
+  })
 }
 
 function Description(props) {
@@ -148,15 +181,14 @@ class SongDetails extends Component {
         </div>
       )
     } else {
-      console.log(this.props)
       return (
         <div id="song-details">
           <div className="close-icon" title="Close" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
           <img className="cover-image" src={ this.props.details.coverURL.startsWith('file://') ? this.props.details.coverURL : `https://beatsaver.com${this.props.details.coverURL}` } alt='' />
           <div className="details-info">
-            <span className="details-title" title={ this.props.details.metadata ? this.props.details.metadata.songName : this.props.songName }>{this.props.details.metadata ? this.props.details.metadata.songName : this.props.songName}</span>
-            <div className="details-subtitle" title={ this.props.details.metadata ? this.props.details.metadata.songSubName : this.props.details.songSubName }>{this.props.details.metadata ? this.props.details.metadata.songSubName : this.props.details.songSubName}</div>
-            <div className="details-artist" title={ this.props.details.metadata ? this.props.details.metadata.songAuthorName : this.props.details.authorName }>{this.props.details.metadata ? this.props.details.metadata.songAuthorName : this.props.details.authorName}</div>
+            <span className="details-title" title={ this.props.details.songName || this.props.details._songName || this.props.details.metadata.songName }>{ this.props.details.songName || this.props.details._songName || this.props.details.metadata.songName }</span>
+            <div className="details-subtitle" title={ this.props.details.songSubName || this.props.details._songSubName || this.props.details.metadata ? this.props.details.metadata.songSubName : '' }>{ this.props.details.songSubName || this.props.details._songSubName || this.props.details.metadata ? this.props.details.metadata.songSubName : '' }</div>
+            <div className="details-artist" title={ this.props.details.authorName || this.props.details.songAuthorName || this.props.details._songAuthorName || this.props.details.metadata.songAuthorName }>{ this.props.details.authorName || this.props.details.songAuthorName || this.props.details._songAuthorName || this.props.details.metadata.songAuthorName }</div>
             {this.props.downloadedSongs.some(song => song.hash === this.props.details.hash) ? <div className="song-in-library">This song is in your library.</div> : null}
             <div className="action-buttons">
               {(!!this.props.details.file || this.props.downloadedSongs.some(song => song.hash === this.props.details.hash)) ?
@@ -173,7 +205,7 @@ class SongDetails extends Component {
             </div>
             <Description details={ this.props.details } />
             <Uploader details={ this.props.details } />
-            <Difficulties difficulties={ this.props.details.difficultyLevels || this.props.details.metadata.difficulties } />
+            <Difficulties difficulties={ this.props.details.difficultyLevels || this.props.details._difficultyBeatmapSets || this.props.details.metadata.difficulties } />
             <div className="preview"><b>Preview:</b><br /><audio id="preview" src={ this.props.details.audioSource } controls controlsList="nodownload" /></div>
           </div>
           <BeatSaver details={ this.props.details } />

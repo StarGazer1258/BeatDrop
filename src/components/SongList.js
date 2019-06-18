@@ -92,11 +92,11 @@ class SongList extends Component {
               <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
                 <SongListItem
                     key={ makeRenderKey(songTags) }
-                    title={ song.metadata ? song.metadata.songName : song.songName }
+                    title={ song.metadata ? song.metadata.songName : song.songName || song._songName }
                     ratings={ song.stats ? song.stats.rating : song.ratings }
-                    artist={ song.metadata ? song.metadata.songAuthorName : song.authorName }
-                    uploader={!!song.uploader ? song.uploader || song.uploader.username : ''}
-                    difficulties={ song.metadata ? song.metadata.difficulties : song.difficultyLevels || song.difficulties }
+                    artist={ song.metadata ? song.metadata.songAuthorName : song.authorName || song._songAuthorName }
+                    uploader={ !!song.uploader ? song.uploader || song.uploader.username : '' }
+                    difficulties={ song.difficultyLevels || song.difficulties || song._difficultyBeatmapSets || ((song.metadata !== undefined) ? song.metadata.difficulties : null) }
                     imageSource={ song.coverURL || song.coverUrl }
                     songKey={ song.key }
                     hash={ song.hash || song.hashMd5 }
@@ -108,7 +108,7 @@ class SongList extends Component {
                     uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' } />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
-                    {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}
+                    {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName || song._songName || song.metadata.songName}`}
                   </MenuItem>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); this.setState({ song }); this.props.setPlaylistPickerOpen(true)} }>
                     Add to Playlist
