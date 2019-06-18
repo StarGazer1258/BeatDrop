@@ -34,7 +34,7 @@ export const getDevices = () => (dispatch, getState) => {
   let adb = getState().adb.instance;
   adb.listDevices().then(devices => {
     if (devices.length < 1){
-      dispatch({ type: DISPLAY_WARNING, payload:{text: "No devices found", timeout: 2500 } })
+      dispatch({ type: DISPLAY_WARNING, payload:{ text: "No devices found", timeout: 2500 } })
       return;
     }
     devices.forEach(async (device) => {
@@ -109,7 +109,7 @@ const downloadADBTools = () => (dispatch, getState) => {
   if (fs.existsSync(toolsPath)){
     dispatch({
       type: DOWNLOAD_TOOLS,
-      payload: { path: toolsPath, toolsDownloaded: true}
+      payload: { path: toolsPath, toolsDownloaded: true }
     })
     return
   }

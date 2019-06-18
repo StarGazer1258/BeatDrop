@@ -1,4 +1,4 @@
-import { SELECT_DEVICE } from "../actions/types";
+import { SELECT_DEVICE } from '../actions/types';
 
 export const selectDevice = device => dispatch => {
   dispatch({
@@ -6,4 +6,3 @@ export const selectDevice = device => dispatch => {
     payload: device
   })
 }
-
