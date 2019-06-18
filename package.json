@@ -75,7 +75,12 @@
       }
     }
   },
-  "browserslist": [
-    "electron >= 3.0.10"
+  "fileAssociations": [
+    {
+      "ext": "bplist",
+      "name": "Playlist",
+      "description": "Beat Saber Playlist",
+      "icon": "resources/bplist.ico"
+    }
   ]
 }
