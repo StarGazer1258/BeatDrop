@@ -1,4 +1,4 @@
-import { ADD_DEVICE, SELECT_DEVICE, UPDATE_DEVICE } from "../actions/types";
+import { ADD_DEVICE, SELECT_DEVICE, SYNC_DEVICE, UPDATE_DEVICE } from "../actions/types";
 
 const initialState = {
   list: [],
@@ -23,6 +23,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         list: state.list.map(device => device.deviceId === deviceId ? { ...device, status: status } : device)
+      }
+    case SYNC_DEVICE:
+      let time = action.payload.time;
+      let date = `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}`
+      let timeInHours = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
+      let dateTime = `${date} ${timeInHours}`
+      console.log(dateTime)
+      return {
+        ...state,
+        list: state.list.map(device => device.deviceId === action.payload.deviceId ? { ...device, lastSync: dateTime } : device)
       }
     default:
       return state

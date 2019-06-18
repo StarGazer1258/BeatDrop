@@ -15,7 +15,6 @@ import searchReducer from './searchReducer'
 import modReducer from './modReducer'
 import deviceReducer from './deviceReducer'
 import adbReducer from "./adbReducer";
-import converterReducer from "./converterReducer";
 
 export default combineReducers({
   songs: songListReducer,
@@ -34,5 +33,4 @@ export default combineReducers({
   search: searchReducer,
   devices: deviceReducer,
   adb: adbReducer,
-  converter: converterReducer
 })

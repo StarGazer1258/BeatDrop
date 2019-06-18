@@ -1,5 +1,5 @@
 import AdmZip from "adm-zip";
-import { ADD_DEVICE, DISPLAY_WARNING, DOWNLOAD_TOOLS, START_ADB_SERVICE, UPDATE_DEVICE } from "./types";
+import { ADD_DEVICE, DISPLAY_WARNING, DOWNLOAD_TOOLS, START_ADB_SERVICE, SYNC_DEVICE, UPDATE_DEVICE } from "./types";
 import * as DEVICE from '../constants/devices'
 import * as STATUS from "../constants/device_statuses";
 import os from 'os'
@@ -9,6 +9,20 @@ import { exec } from 'child_process'
 import { DEVICE_TYPES } from "../constants/device_types";
 const adb = require('adbkit');
 const Promise = require('bluebird')
+
+export const syncDevice = (serial) => (dispatch, getState) => {
+  let localSongFolder = path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels')
+  let questSongFolder = ''
+  let command = `-s ${serial} push ${localSongFolder}/. ${questSongFolder} `
+  // execute(command)
+  dispatch({
+    type: SYNC_DEVICE,
+    payload: {
+      deviceId: serial,
+      time: new Date()
+    }
+  })
+}
 
 export const getDevices = () => (dispatch, getState) => {
   if (!isADBStarted()(getState)){
@@ -227,7 +241,8 @@ const buildDevice = (serial) => (getState) => {
           status: STATUS.CONNECTED,
           storageUsed: info.used,
           capacity: info.avail + info.used,
-          deviceId: serial
+          deviceId: serial,
+          lastSync: 'N/A'
         }])
       }
     }

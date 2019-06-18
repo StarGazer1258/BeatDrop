@@ -105,6 +105,7 @@ export const SCAN_DEVICES               = 'SCAN_DEVICES'
 export const SELECT_DEVICE              = 'SELECT_DEVICE'
 export const ADD_DEVICE                 = 'ADD_DEVICE'
 export const UPDATE_DEVICE              = 'UPDATE_DEVICE'
+export const SYNC_DEVICE                = 'SYNC_DEVICE'
 
 // ADB
 export const DOWNLOAD_TOOLS             = 'DOWNLOAD_TOOLS'
@@ -113,6 +114,3 @@ export const STOP_ADB_SERVICE           = 'STOP_ADB_SERVICE'
 export const PULL                       = 'PULL'
 export const PUSH                       = 'PUSH'
 export const INSTALL                    = 'INSTALL'
-
-// SONGE-CONVERTER
-export const DOWNLOAD_CONVERTER         = "DOWNLOAD_CONVERTER"

@@ -14,7 +14,6 @@ const path = remote.require('path')
 
 class DevicesView extends Component {
     componentWillMount(){
-      console.log(this.props)
       this.props.getDevices()
     }
 
@@ -48,7 +47,6 @@ class DevicesView extends Component {
               <tbody>
                 {
                    this.props.devices.map((device, i) => {
-                     // device = null
                     return (
                       <tr onClick={ () => { this.props.selectDevice(i); this.props.setView(DEVICE_DETAILS) } }>
                         <td><img src= { `file://${path.resolve(device.type.image)}` } alt={ device.type.deviceName }/></td>
