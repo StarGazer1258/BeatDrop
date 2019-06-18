@@ -57,7 +57,6 @@ export const getDevices = () => (dispatch, getState) => {
                 })
             })
             tracker.on('remove', function(device) {
-
               console.log('Device %s was unplugged', device.id)
                 dispatch({
                   type: UPDATE_DEVICE,
@@ -233,7 +232,6 @@ const buildDevice = (serial) => (getState) => {
       })
     })
 
-    console.log(info)
     if (info.manufacturer.includes(DEVICE_TYPES.MANUFACTURER.OCULUS)) {
       if( info.model.includes(DEVICE_TYPES.MODEL.QUEST)){
         return resolve([{
@@ -273,7 +271,6 @@ const parseStorage = (str) => {
 }
 
 const startAdb = () => async (dispatch, getState) => {
-
   if (!areToolsDownloaded()(getState)) await downloadADBTools()(dispatch, getState)
   if (getState().adb.instance && getState().adb.instance.constructor.name === "Client") return
   dispatch({

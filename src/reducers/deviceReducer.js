@@ -29,7 +29,6 @@ export default function(state = initialState, action) {
       let date = `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}`
       let timeInHours = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
       let dateTime = `${date} ${timeInHours}`
-      console.log(dateTime)
       return {
         ...state,
         list: state.list.map(device => device.deviceId === action.payload.deviceId ? { ...device, lastSync: dateTime } : device)

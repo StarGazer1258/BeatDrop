@@ -10,7 +10,7 @@ import DownloadQueue from './DownloadQueue';
 import UpdateDialog from './UpdateDialog';
 import SongScanningDialog from './SongScanningDialog';
 import ReleaseNotesModal  from './ReleaseNotesModal'
-import CrashMessage from './CrashMessage';
+import CrashMessage from './CrashMessage'
 import { connect } from 'react-redux'
 
 import { setHasError } from '../actions/windowActions'
