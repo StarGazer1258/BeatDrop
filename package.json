@@ -73,14 +73,17 @@
           "beatdrop"
         ]
       }
-    }
+    },
+    "fileAssociations": [
+      {
+        "ext": "bplist",
+        "name": "Playlist",
+        "description": "Beat Saber Playlist",
+        "icon": "resources/bplist.ico"
+      }
+    ]
   },
-  "fileAssociations": [
-    {
-      "ext": "bplist",
-      "name": "Playlist",
-      "description": "Beat Saber Playlist",
-      "icon": "resources/bplist.ico"
-    }
+  "browserslist": [
+    "electron >= 3.0.10"
   ]
 }

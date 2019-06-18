@@ -40,7 +40,6 @@ class App extends Component {
               setView(SONG_LIST)(store.dispatch, store.getState)
             }
             loadDetailsFromKey()(store.dispatch, store.getState)
-
           }
           for(let i = 0; i < message.mods.details.length; i++) {
             if(store.getState().view.view === MOD_DETAILS && store.getState().view.previousView !== MOD_DETAILS) {
