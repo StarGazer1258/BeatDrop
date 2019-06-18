@@ -14,6 +14,7 @@ import playlistsReducer from './playlistsReducer'
 import searchReducer from './searchReducer'
 import modReducer from './modReducer'
 import deviceReducer from './deviceReducer'
+import adbReducer from "./adbReducer";
 
 export default combineReducers({
   songs: songListReducer,
@@ -30,5 +31,6 @@ export default combineReducers({
   queue: queueReducer,
   warnings: warningsReducer,
   search: searchReducer,
-  devices: deviceReducer
+  devices: deviceReducer,
+  adb: adbReducer,
 })

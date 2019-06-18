@@ -1,37 +1,7 @@
-import { SELECT_DEVICE } from '../actions/types'
-
-import * as DEVICE from '../constants/devices'
-import * as STATUS from '../constants/device_statuses'
+import { ADD_DEVICE, SELECT_DEVICE, SYNC_DEVICE, UPDATE_DEVICE } from "../actions/types";
 
 const initialState = {
-  list: [
-    {
-      type: DEVICE.OCULUS.QUEST,
-      status: STATUS.CONNECTED,
-      storageUsed: 15400,
-      capacity: 32000
-    },
-    {
-      type:  DEVICE.HTC.VIVE,
-      status: STATUS.CONNECTED,
-    },
-    {
-      type: DEVICE.HTC.VIVE_PRO,
-      status: STATUS.OFFLINE
-    },
-    {
-      type: DEVICE.OCULUS.RIFT,
-      status: STATUS.OFFLINE
-    },
-    {
-      type: DEVICE.OCULUS.RIFT_S,
-      status: STATUS.OFFLINE
-    },
-    {
-      type: DEVICE.PIMAX.EIGHT_K,
-      status: STATUS.OFFLINE
-    }
-  ],
+  list: [],
   selectedDevice: 0
 }
 
@@ -41,6 +11,27 @@ export default function(state = initialState, action) {
       return {
         ...state,
         selectedDevice: action.payload
+      }
+    case ADD_DEVICE:
+      return {
+        ...state,
+        list: [...state.list, ...action.payload]
+      }
+    case UPDATE_DEVICE:
+      let deviceId = action.payload.deviceId;
+      let status = action.payload.status;
+      return {
+        ...state,
+        list: state.list.map(device => device.deviceId === deviceId ? { ...device, status: status } : device)
+      }
+    case SYNC_DEVICE:
+      let time = action.payload.time;
+      let date = `${time.getFullYear()}-${time.getMonth() + 1}-${time.getDate()}`
+      let timeInHours = `${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
+      let dateTime = `${date} ${timeInHours}`
+      return {
+        ...state,
+        list: state.list.map(device => device.deviceId === action.payload.deviceId ? { ...device, lastSync: dateTime } : device)
       }
     default:
       return state

@@ -10,6 +10,7 @@
     "url": "https://github.com/StarGazer1258/BeatDrop.git"
   },
   "dependencies": {
+    "adbkit": "^2.11.1",
     "adm-zip": "^0.4.13",
     "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.17",

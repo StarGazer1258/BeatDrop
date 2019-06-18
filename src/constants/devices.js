@@ -12,16 +12,14 @@ export const OCULUS = {
     vendorName: 'Oculus',
     deviceName: 'Rift S',
     identifier: 'OCULUS_RIFT_S',
-    vendorId: 0x2833,
-    deviceId: null
+    vendorId: 0x2833
   },
   QUEST: {
     image: 'src/assets/quest.png',
     vendorName: 'Oculus',
     deviceName: 'Quest',
     identifier: 'OCULUS_QUEST',
-    vendorId: 0x2833,
-    deviceId: null
+    vendorId: 0x2833
   }
 }
 
@@ -31,16 +29,14 @@ export const HTC = {
     vendorName: 'HTC',
     deviceName: 'Vive',
     identifier: 'HTC_VIVE',
-    vendorId: null,
-    deviceId: null
+    vendorId: null
   },
   VIVE_PRO: {
     image: 'src/assets/vive-pro.png',
     vendorName: 'HTC',
     deviceName: 'Vive Pro',
     identifier: 'HTC_VIVE_PRO',
-    vendorId: null,
-    deviceId: null
+    vendorId: null
   }
 }
 
@@ -50,8 +46,7 @@ export const VALVE = {
     vendorName: 'Valve',
     deviceName: 'Index',
     identifier: 'INDEX',
-    vendorId: 0x28de,
-    deviceId: null
+    vendorId: 0x28de
   }
 }
 
@@ -61,7 +56,6 @@ export const PIMAX = {
     vendorName: 'Pimax',
     deviceName: '8K',
     identifier: 'PIMAX_EIGHT_K',
-    vendorId: null,
-    deviceId: null
+    vendorId: null
   }
 }
