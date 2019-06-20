@@ -436,9 +436,11 @@ export const hashAndWriteToMetadata = (infoFile) => dispatch => {
         if(readMetadataErr || !JSON.parse(metadataData).hasOwnProperty('hash')) {
           try {
             dataToHash += infoData
-            for (let i = 0; i < song._difficultyBeatmapSets[0]._difficultyBeatmaps.length; i++) {
-              fileToHash = path.join(path.dirname(infoFile), song._difficultyBeatmapSets[0]._difficultyBeatmaps[i]._beatmapFilename)
-              dataToHash += fs.readFileSync(fileToHash, 'UTF8')
+            for(let set = 0; set < song._difficultyBeatmapSets.length; set++) {
+              for (let map = 0; map < song._difficultyBeatmapSets[0]._difficultyBeatmaps.length; map++) {
+                fileToHash = path.join(path.dirname(infoFile), song._difficultyBeatmapSets[set]._difficultyBeatmaps[map]._beatmapFilename)
+                dataToHash += fs.readFileSync(fileToHash, 'UTF8')
+              }
             }
             hash = crypto.createHash('sha1')                                                  // Calculate song hash
               .update(dataToHash)
