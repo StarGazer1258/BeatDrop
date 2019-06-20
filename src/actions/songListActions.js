@@ -1,6 +1,7 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
+import { hashAndWriteToMetadata } from './queueActions';
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -178,29 +179,43 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
   for(let i = 0; i < downloadedSongs.length; i++) {
     fs.readFile(downloadedSongs[i].file, 'UTF-8', (err, data) => {
       if(err) {
+        dispatch({
+          type: DISPLAY_WARNING,
+          payload: {
+            text: `Failed to read ${ downloadedSongs[i].file }: ${ err }`
+          }
+        })
         return
       }
       let song
       try {
         song = JSON.parse(data)
       } catch(err) {
+        dispatch({
+          type: DISPLAY_WARNING,
+          payload: {
+            text: `Failed to parse song: ${ err }`
+          }
+        })
         return
       }
       song.coverUrl = `file://${ path.join(path.dirname(downloadedSongs[i].file), (song.coverImagePath || song._coverImageFilename)) }`
       song.file = downloadedSongs[i].file
-      songs.push(song)
-      console.log(song)
-      if(i >= downloadedSongs.length - 1) {
-        console.log('Bam!')
-        dispatch({
-          type: FETCH_LOCAL_SONGS,
-          payload: songs
+      hashAndWriteToMetadata(downloadedSongs[i].file)(dispatch, getState)
+        .then(hash => {
+          song.hash = hash
+          songs.push(song)
+          if(i >= downloadedSongs.length - 1) {
+            dispatch({
+              type: FETCH_LOCAL_SONGS,
+              payload: songs
+            })
+            dispatch({
+              type: SET_LOADING,
+              payload: false
+            })
+          }
         })
-        dispatch({
-          type: SET_LOADING,
-          payload: false
-        })
-      }
     })
   }
 }

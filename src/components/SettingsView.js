@@ -72,7 +72,7 @@ class SettingsView extends Component {
             </td>
             <td>
               <select id="game-version-select" name="game-version-select" value={ this.props.settings.gameVersion } onChange={ (e) => { this.props.setGameVersion(e.target.value) } }>
-                { this.state.gameVersions.map(version => <option value={ version }>{ version }</option>) }
+                { this.state.gameVersions.map(version => <option key={ version } value={ version }>{ version }</option>) }
               </select>
             </td>
           </tr>
@@ -113,7 +113,7 @@ class SettingsView extends Component {
           <option value="beta">Beta</option>
         </select><br /><br />
         {this.props.settings.updateChannel === 'beta' ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: Beta builds are unstable, untested and may result in unexpected crashes, loss of files and other adverse effects! By updating to a beta build, you understand and accept these risks.</span><br /><br /></> : null}
-        <Button type={ this.state.updateStatus === 'error' ? 'destructive' : null } onClick={ () => { ipcRenderer.send('electron-updater', 'check-for-updates') } }>{this.updateValue()}</Button>
+        <Button type={ this.state.updateStatus === 'error' ? 'destructive' : null } onClick={ () => { ipcRenderer.send('electron-updater', 'check-for-updates') } }>{ this.updateValue() }</Button>
         <br /><br />
         <hr />
         <h2>Credits</h2>

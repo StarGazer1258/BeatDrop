@@ -36,6 +36,7 @@ class ReleaseNotesModal extends Component {
               <li>Fixed a bug where <b>app would crash when moving to next song in queue after error.</b></li>
               <li>2.5.1: Fixed <b>bugs in new local song code.</b></li>
               <li>2.5.2: Fixed <b>crash when searching for songs.</b></li>
+              <li>2.5.3: Fix <a href="https://github.com/StarGazer1258/BeatDrop/issues/45" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#45.</a> This is basically implemeting the new hashing calculation, so it should fix numerous issues, such as song not appearing as downloaded, songs showing the wrong leaderboards in-game, playlists not wokring properly, etc.</li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

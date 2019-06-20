@@ -1,11 +1,11 @@
 import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
 import { defaultPlaylistIcon } from '../b64Assets'
+import { hashAndWriteToMetadata } from './queueActions';
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
-const md5 = remote.require('md5')
 
 export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let state = getState()
@@ -313,51 +313,19 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
       return
     }
     let playlist = JSON.parse(data)
-    if(song.hash || song.hashMd5) {
-      if(song.key) {
-        playlist.songs.push({
-          hash: song.hash || song.hashMd5,
-          key: song.key,
-          songName: song.name || song.songName
-        })
-      } else {
-        playlist.songs.push({
-          hash: song.hash || song.hashMd5,
-          songName: song.name || song.songName
-        })
-      }
+    if(song.hash) {
+      playlist.songs.push({
+        hash: song.hash,
+        songName: song.name || song._songName
+      })
     } else {
-      if(song.file) {
-        let file = song.file
-        delete song.file
-        let to_hash = ''
-        for(let i = 0; i < song.difficultyLevels.length; i++) {
-          try {
-            to_hash += fs.readFileSync(path.join(path.dirname(file), song.difficultyLevels[i].jsonPath), 'UTF8')
-          } catch(err) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.' }
-            })
-            return
-          }
-        }
-        let hash = md5(to_hash)
-        song.hash = hash
-        fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-        if(song.key) {
+      hashAndWriteToMetadata(song.file)(dispatch, getState)
+        .then(hash => {
           playlist.songs.push({
-            hash: hash,
-            key: song.key,
-            songName: song.name || song.songName
+            hash,
+            songName: song.name || song._songName
           })
-        } else {
-          playlist.songs.push({
-            hash: hash,
-            songName: song.name || song.songName
-          })
-        }
-      }
+        })
     }
     
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
