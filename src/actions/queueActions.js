@@ -437,7 +437,7 @@ export const hashAndWriteToMetadata = (infoFile) => dispatch => {
           try {
             dataToHash += infoData
             for(let set = 0; set < song._difficultyBeatmapSets.length; set++) {
-              for (let map = 0; map < song._difficultyBeatmapSets[0]._difficultyBeatmaps.length; map++) {
+              for (let map = 0; map < song._difficultyBeatmapSets[set]._difficultyBeatmaps.length; map++) {
                 fileToHash = path.join(path.dirname(infoFile), song._difficultyBeatmapSets[set]._difficultyBeatmaps[map]._beatmapFilename)
                 dataToHash += fs.readFileSync(fileToHash, 'UTF8')
               }
