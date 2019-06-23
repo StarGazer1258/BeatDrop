@@ -3,21 +3,20 @@ import '../css/SongDetails.scss'
 
 import { connect } from 'react-redux'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
-import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, loadPlaylistCoverImage } from '../actions/playlistsActions'
+import { setPlaylistPickerOpen } from '../actions/playlistsActions'
 import { setView } from '../actions/viewActions'
 import { displayWarning } from '../actions/warningActions'
 
 import Badge from './Badge'
-import Button from './Button'
 import downloadIcon from '../assets/download-filled.png'
 import deleteIcon from '../assets/delete-filled.png'
 import addIcon from '../assets/add-filled.png'
 import moreIcon from '../assets/more-filled.png'
-import { defaultPlaylistIcon } from '../b64Assets'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
 import Linkify from 'react-linkify'
+import PlaylistPicker from './PlaylistPicker';
 const { shell, clipboard } = window.require('electron')
 
 const exitDetailsShortcut = function (e) { if(e.keyCode === 27) { this.props.setView(this.props.previousView) } }
@@ -209,37 +208,7 @@ class SongDetails extends Component {
             <div className="preview"><b>Preview:</b><br /><audio id="preview" src={ this.props.details.audioSource } controls controlsList="nodownload" /></div>
           </div>
           <BeatSaver details={ this.props.details } />
-          <div id="playlist-picker" className={ this.props.playlistPickerOpen ? '' : 'hidden' }>
-            <div id="playlist-picker-inner">
-              <h1>Add to playlist:</h1><Button onClick={ () => { this.props.setPlaylistPickerOpen(false) } }>Cancel</Button>
-              <div id="playlist-picker-table">
-                {this.props.playlists.map((playlist, i) => {
-                  return <div className="playlist-picker-item" key={ i } onClick={ () => { this.props.addSongToPlaylist(this.props.details, playlist.file); this.props.setPlaylistPickerOpen(false) } }><img src={ playlist.image } alt=""/><div><div className="playlist-picker-item-title">{playlist.playlistTitle}</div><div className="flex-br"></div><div className="playlist-picker-item-author">{playlist.playlistAuthor}</div><div className="flex-br"></div>{playlist.songs.length} Songs</div></div>
-                })}
-                <div className="playlist-picker-item" onClick={ () => { this.props.setNewPlaylistDialogOpen(true); this.props.setPlaylistPickerOpen(false) } }><img src={ addIcon } alt=""/><div><div className="playlist-picker-item-title">Create New</div></div></div>
-              </div>
-            </div>
-          </div>
-          <div id="new-playlist-dialog-under" className={ this.props.newPlaylistDialogOpen ? '' : 'hidden' }>
-            <div id="new-playlist-dialog">
-              <div>
-                <h2>New Playlist</h2>
-                <label htmlFor="new-playlist-cover-image" id="new-playlist-add-cover-image"><img src={ this.props.newCoverImageSource || defaultPlaylistIcon } alt="" /></label>
-                <label htmlFor="new-playlist-cover-image" id="image-text">Cover Image (Click to Change)</label>
-                <input type="file" name="new-playlist-cover-image" id="new-playlist-cover-image" accept=".jpg,.jpeg,.png,.gif" onChange={ (e) => {this.props.loadPlaylistCoverImage(e.target.files[0].path || this.props.settings.newCoverImageSource)} } /><br />
-              </div>
-              <div id="new-playlist-info">
-                <label htmlFor="new-playlist-title">Playlist Title</label>
-                <input className="text-box" type='text' name="new-playlist-title" id="new-playlist-title" placeholder="Untitled Playlist" /><br /><br />
-                <label htmlFor="new-playlist-author">Playlist Author</label>
-                <input className="text-box" type="text" name="new-playlist-author" id="new-playlist-author" placeholder="Anonymous" /><br /><br />
-                <label htmlFor="new-playlist-description">Playlist Description</label>
-                <textarea className="text-area" name="new-playlist-description" id="new-playlist-description" cols="40" rows="7" placeholder="This playlist has no description." /><br /><br />
-                <Button type="primary" onClick={ () => { this.props.createNewPlaylist({ playlistTitle: document.getElementById('new-playlist-title').value || 'Untitled Playlist', playlistAuthor: document.getElementById('new-playlist-author').value || 'Anonymous', playlistDescription: document.getElementById('new-playlist-description').value || 'This playlist has no description.' }); this.props.setNewPlaylistDialogOpen(false); this.props.setPlaylistPickerOpen(true); this.props.clearPlaylistDialog() } }>Create Playlist</Button>
-                <Button onClick={ () => { this.props.setNewPlaylistDialogOpen(false); this.props.setPlaylistPickerOpen(true); this.props.clearPlaylistDialog() } }>Cancel</Button>
-              </div>
-            </div>
-          </div>
+          <PlaylistPicker song={ this.props.details } />
         </div>
       )
     }
@@ -250,11 +219,8 @@ const mapStateToProps = (state) => ({
   queueItems: state.queue.items,
   details: state.details,
   previousView: state.view.previousView,
-  playlistPickerOpen: state.playlists.pickerOpen,
-  playlists: state.playlists.playlists,
   downloadedSongs: state.songs.downloadedSongs,
-  newPlaylistDialogOpen: state.playlists.newPlaylistDialogOpen,
   newCoverImageSource: state.playlists.newCoverImageSource
 })
 
-export default connect(mapStateToProps, { downloadSong, deleteSong, setView, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, loadPlaylistCoverImage, displayWarning, checkDownloadedSongs })(SongDetails)
+export default connect(mapStateToProps, { downloadSong, deleteSong, setView, displayWarning, checkDownloadedSongs, setPlaylistPickerOpen })(SongDetails)

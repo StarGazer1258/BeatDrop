@@ -2,6 +2,7 @@ import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, SET_VIEW, DISPLAY_WAR
 import { SONG_DETAILS } from '../views'
 
 import AdmZip from 'adm-zip'
+import { hashAndWriteToMetadata } from './queueActions'
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
@@ -10,7 +11,7 @@ const path = remote.require('path')
  * Loads and presents the details page for a song from a file.
  * @param {string} file The path to the song
  */
-export const loadDetailsFromFile = file => dispatch => {
+export const loadDetailsFromFile = file => (dispatch, getState) => {
   dispatch({
     type: CLEAR_DETAILS
   })
@@ -27,19 +28,23 @@ export const loadDetailsFromFile = file => dispatch => {
     let details = JSON.parse(data)
     let dir = path.dirname(file)
     details.coverURL = `file://${ path.join(dir, (details.coverImagePath || details._coverImageFilename)) }`
-    details.file = path.join(dir, 'info.json' || 'info.dat')
-    dispatch({
-      type: LOAD_DETAILS,
-      payload: details
-    })
-    dispatch({
-      type: LOAD_DETAILS,
-      payload: { audioSource: `file://${ path.join(dir, details._songFilename) }` }
-    })
-    dispatch({
-      type: SET_DETAILS_LOADING,
-      payload: false
-    })
+    details.file = path.join(dir, 'info.dat')
+    hashAndWriteToMetadata(path.join(dir, 'info.dat'))(dispatch, getState)
+      .then(hash => {
+        details.hash = hash
+        dispatch({
+          type: LOAD_DETAILS,
+          payload: details
+        })
+        dispatch({
+          type: LOAD_DETAILS,
+          payload: { audioSource: `file://${ path.join(dir, details._songFilename) }` }
+        })
+        dispatch({
+          type: SET_DETAILS_LOADING,
+          payload: false
+        })
+      })
   })
 }
 
