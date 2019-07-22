@@ -94,7 +94,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 let extractTo
                 switch(getState().settings.folderStructure) {
                   case 'keySongNameArtistName':
-                    extractTo = `${ song.key } (${ song.metadata.songName.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.metadata.songAuthorName })`
+                    extractTo = `${ song.key } (${ song.metadata.songName.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.metadata.songAuthorName.replace(/[\\/:*?"<>|.]/g, '') })`
                     break
                   case 'key':
                     extractTo = song.key
@@ -103,7 +103,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                     extractTo = song.name.replace(/[\\/:*?"<>|.]/g, '')
                     break
                   default:
-                    extractTo = `${ song.key } (${ song.name.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.songAuthorName })`
+                    extractTo = `${ song.key } (${ song.name.replace(/[\\/:*?"<>|.]/g, '') } - ${ song.songAuthorName.replace(/[\\/:*?"<>|.]/g, '') })`
                     break
                 }
                 zip.extractAllTo(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels', extractTo))
