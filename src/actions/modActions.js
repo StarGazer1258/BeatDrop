@@ -1,9 +1,10 @@
-import { SET_MOD_LIST, SET_VIEW, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
+import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
 
 import modIcon from '../assets/dark/mod.png'
+import { setView } from './viewActions'
 
 const { remote } = window.require('electron')
 const request = remote.require('request')
@@ -16,10 +17,7 @@ const execFile = remote.require('child_process').execFile
 const { ipcRenderer } = window.require('electron')
 
 export const fetchApprovedMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.NEW_MODS
@@ -43,10 +41,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
 }
 
 export const fetchRecommendedMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.RECOMMENDED_MODS
@@ -78,10 +73,7 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
 }
 
 export const fetchModCategories = () => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORY_SELECT
@@ -97,10 +89,7 @@ export const fetchModCategories = () => dispatch => {
 }
 
 export const fetchModCategory = category => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORIES
@@ -124,10 +113,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
 }
 
 export const fetchLocalMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ALL
@@ -166,10 +152,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
 }
 
 export const fetchActivatedMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ACTIVATED
@@ -208,10 +191,7 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
 }
 
 export const loadModDetails = modId => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MOD_DETAILS
-  })
+  setView(MOD_DETAILS)(dispatch)
   dispatch({
     type: SET_LOADING,
     payload: true

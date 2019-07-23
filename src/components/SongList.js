@@ -88,21 +88,22 @@ class SongList extends Component {
             return (
               <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
                 <SongListItem
-                    key={ makeRenderKey(songTags) }
-                    title={ song.metadata ? song.metadata.songName : song.songName || song._songName }
-                    ratings={ song.stats ? song.stats.rating : song.ratings }
-                    artist={ song.metadata ? song.metadata.songAuthorName : song.authorName || song._songAuthorName }
-                    uploader={ !!song.uploader ? song.uploader || song.uploader.username : '' }
-                    difficulties={ song.difficultyLevels || song.difficulties || song._difficultyBeatmapSets || ((song.metadata !== undefined) ? song.metadata.difficulties : null) }
-                    imageSource={ song.coverURL || song.coverUrl }
-                    songKey={ song.key }
-                    hash={ song.hash || song.hashMd5 }
-                    file={ song.file }
-                    downloads={ song.stats ? song.stats.downloads : song.downloadCount }
-                    upvotes={ song.stats ? song.stats.upVotes : song.upVotes }
-                    downvotes={ song.stats ? song.stats.downVotes : song.downVotes }
-                    plays={ song.stats ? song.stats.plays : song.playedCount }
-                    uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' } />
+                  key={ makeRenderKey(songTags) }
+                  title={  song.songName || song._songName || song.metadata.songName }
+                  ratings={ song.ratings || song.stats ? song.stats.rating : '' }
+                  artist={ song.authorName || song._songAuthorName || song.metadata.songAuthorName }
+                  uploader={ song.uploader? song.uploader.username : '' }
+                  difficulties={ song.difficultyLevels || song.difficulties || song._difficultyBeatmapSets || ((song.metadata !== undefined) ? song.metadata.difficulties : null) }
+                  imageSource={ song.coverURL || song.coverUrl }
+                  songKey={ song.key }
+                  hash={ song.hash || song.hashMd5 }
+                  file={ song.file }
+                  downloads={ song.stats ? song.stats.downloads : song.downloadCount }
+                  upvotes={ song.stats ? song.stats.upVotes : song.upVotes }
+                  downvotes={ song.stats ? song.stats.downVotes : song.downVotes }
+                  plays={ song.stats ? song.stats.plays : song.playedCount }
+                  uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' }
+                />
                 <ContextMenu id={ song.hash || song.hashMd5 }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
                     {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName || song._songName || song.metadata.songName}`}

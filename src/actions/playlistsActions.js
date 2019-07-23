@@ -1,7 +1,8 @@
-import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
+import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
 import { defaultPlaylistIcon } from '../b64Assets'
-import { hashAndWriteToMetadata } from './queueActions';
+import { hashAndWriteToMetadata } from './queueActions'
+import { setView } from './viewActions'
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -11,10 +12,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let state = getState()
   if(typeof doSetView === 'object' || doSetView === undefined) { doSetView = true } else { doSetView = false }
   if(doSetView === true) {
-    dispatch({
-      type: SET_VIEW,
-      payload: PLAYLIST_LIST
-    })
+    setView(PLAYLIST_LIST)(dispatch)
     dispatch({
       type: SET_LOADING,
       payload: true
@@ -142,10 +140,7 @@ export const clearPlaylistDialog = () => dispatch => {
 }
 
 export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: PLAYLIST_DETAILS
-  })
+  setView(PLAYLIST_DETAILS)(dispatch)
   fs.access(playlistFile, (err) => {
     if(err) {
       dispatch({
@@ -191,10 +186,14 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
               }
               let song = JSON.parse(data)
               song.coverURL = `file://${path.join(path.dirname(file), song.coverImagePath || song._coverImageFilename)}`
-              dispatch({
-                type: LOAD_PLAYLIST_SONGS,
-                payload: { ...song, file, order: i }
-              })
+              hashAndWriteToMetadata(file)(dispatch, getState)
+                .then(hash => {
+                  song.hash = hash
+                  dispatch({
+                    type: LOAD_PLAYLIST_SONGS,
+                    payload: { ...song, file, order: i }
+                  })
+                })
             })
           } else {
             fetch(`https://beatsaver.com/api/maps/by-hash/${playlist.songs[i].hash}`)
@@ -230,10 +229,14 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                   }
                   let song = JSON.parse(data)
                   song.coverURL = `file://${path.join(path.dirname(file), song.coverImagePath || song._coverImageFilename)}`
-                  dispatch({
-                    type: LOAD_PLAYLIST_SONGS,
-                    payload: { ...song, file, order: i }
-                  })
+                  hashAndWriteToMetadata(file)(dispatch, getState)
+                    .then(hash => {
+                      song.hash = hash
+                      dispatch({
+                        type: LOAD_PLAYLIST_SONGS,
+                        payload: { ...song, file, order: i }
+                      })
+                    })
                 })
               } else {
                 dispatch({
@@ -294,6 +297,7 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
 }
 
 export const setPlaylistEditing = isEditing => dispatch => {
+  console.log(`Editing: ${ isEditing }`)
   dispatch({
     type: SET_PLAYLIST_EDITING,
     payload: isEditing

@@ -1,8 +1,9 @@
-import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, SET_VIEW, DISPLAY_WARNING } from './types'
+import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, DISPLAY_WARNING } from './types'
 import { SONG_DETAILS } from '../views'
 
 import AdmZip from 'adm-zip'
 import { hashAndWriteToMetadata } from './queueActions'
+import { setView } from './viewActions'
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
@@ -19,17 +20,14 @@ export const loadDetailsFromFile = file => (dispatch, getState) => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  dispatch({
-    type: SET_VIEW,
-    payload: SONG_DETAILS
-  })
+  setView(SONG_DETAILS)(dispatch)
   fs.readFile(file, 'UTF-8', (err, data) => {
     if(err) return
     let details = JSON.parse(data)
     let dir = path.dirname(file)
     details.coverURL = `file://${ path.join(dir, (details.coverImagePath || details._coverImageFilename)) }`
     details.file = path.join(dir, 'info.dat')
-    hashAndWriteToMetadata(path.join(dir, 'info.dat'))(dispatch, getState)
+    hashAndWriteToMetadata(path.join(dir, 'info.dat'))(dispatch)
       .then(hash => {
         details.hash = hash
         dispatch({
@@ -60,10 +58,7 @@ export const loadDetailsFromKey = key => dispatch => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  dispatch({
-    type: SET_VIEW,
-    payload: SONG_DETAILS
-  })
+  setView(SONG_DETAILS)(dispatch)
   if((/^[a-f0-9]+$/).test(key)) {
     fetch(`https://beatsaver.com/api/maps/detail/${key}`)
       .then(res => {
