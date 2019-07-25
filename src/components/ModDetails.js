@@ -52,7 +52,7 @@ class ModDetails extends Component {
         </div>
         )
     } else {
-      if(this.props.details.notFound) return null
+      if(!this.props.details || this.props.details.notFound) return null
       return (
         <div id="mod-details" style={ { whiteSpace: 'pre-wrap' } }>
           <div className="close-icon" title="Close" onClick={ () => { this.props.setView(this.props.previousView) } }></div>
