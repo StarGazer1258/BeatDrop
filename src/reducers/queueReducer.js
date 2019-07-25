@@ -23,7 +23,7 @@ export default function(state = initialState, action) {
             hash: action.payload.hash,
             image: `www.beatsaver.com${action.payload.coverURL}`,
             title: action.payload.name,
-            artist: action.payload.uploader.username,
+            artist: action.payload.authorName,
             progress: 0
           },
           ...items
