@@ -1,7 +1,8 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, SET_VIEW, DISPLAY_WARNING } from './types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, DISPLAY_WARNING } from './types'
 import { SONG_LIST } from '../views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
-import { hashAndWriteToMetadata } from './queueActions';
+import { hashAndWriteToMetadata } from './queueActions'
+import { setView } from './viewActions'
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -14,10 +15,7 @@ const resourceUrl = {
 }
 
 export const fetchNew = () => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: SONG_LIST
-  })
+  setView(SONG_LIST)(dispatch)
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -63,10 +61,7 @@ export const fetchNew = () => dispatch => {
 }
 
 export const fetchTopDownloads = () => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: SONG_LIST
-  })
+  setView(SONG_LIST)(dispatch)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -110,10 +105,7 @@ export const fetchTopDownloads = () => dispatch => {
 }
 
 export const fetchTopFinished = () => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: SONG_LIST
-  })
+  setView(SONG_LIST)(dispatch)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -157,10 +149,7 @@ export const fetchTopFinished = () => dispatch => {
 }
 
 export const fetchLocalSongs = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: SONG_LIST
-  })
+  setView(SONG_LIST)(dispatch)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0

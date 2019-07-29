@@ -25,11 +25,11 @@ export const submitSearch = keywords => (dispatch, getState) => {
 
   let localSongs = []
   let beatSaverSongs = []
-  let idSong = {}
+  let idSong
 
   let isId = parseInt(keywords.replace('-', ''), 10)
 
-  //Library Search
+  // Library Search
 
   let downloadedSongs = getState().songs.downloadedSongs
 
@@ -47,7 +47,7 @@ export const submitSearch = keywords => (dispatch, getState) => {
   }
   localResultsReady = true
 
-  //BeatSaver Search
+  // BeatSaver Search
   fetch('https://beatsaver.com/api/search/text/all?q=' + encodeURIComponent(keywords.replace('/', '\\')))
     .then(res => res.json())
     .then(data => {
@@ -55,7 +55,7 @@ export const submitSearch = keywords => (dispatch, getState) => {
       if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: isId ? { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] } : { keywords, library: localSongs, beatSaver: beatSaverSongs, beatSaverId: idSong }
+          payload: idSong ? { keywords, library: localSongs, beatSaver: [idSong, ...beatSaverSongs] } : { keywords, library: localSongs, beatSaver: beatSaverSongs }
         })
         dispatch({
           type: SET_LOADING,
@@ -66,16 +66,17 @@ export const submitSearch = keywords => (dispatch, getState) => {
       beatSaverResultsReady = true
     })
   
-  //BeatSaver ID Search
+  // BeatSaver ID Search
   if(isId) {
     fetch('https://beatsaver.com/api/maps/detail/' + keywords)
-    .then(res => res.json())
+    .then(res => { if(res.status !== 200) { beatSaverIdResultsReady = true; return } return res.json() })
     .then(data => {
-      idSong = data.song
+      if(!data) { beatSaverIdResultsReady = true; return }
+      idSong = data
       if(localResultsReady & beatSaverResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: { keywords, library: localSongs, beatSaver: [...beatSaverSongs, idSong] }
+          payload: idSong ? { keywords, library: localSongs, beatSaver: [idSong, ...beatSaverSongs] } : { keywords, library: localSongs, beatSaver: beatSaverSongs }
         })
         dispatch({
           type: SET_LOADING,

@@ -1,6 +1,7 @@
-import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_VIEW, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
+import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../views'
-import { isModInstalled, installEssentialMods } from './modActions';
+import { isModInstalled, installEssentialMods } from './modActions'
+import { setView } from './viewActions'
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -383,10 +384,7 @@ export const deleteSong = (identity) => (dispatch, getState) => {
   if(getState().songs.downloadedSongs.some(song => song.hash === identity)) {
     file = getState().songs.downloadedSongs[getState().songs.downloadedSongs.findIndex(song => song.hash === identity)].file
   }
-  dispatch({
-    type: SET_VIEW,
-    payload: getState().view.previousView
-  })
+  setView(getState().view.previousView)(dispatch)
   let dirs = file.split(path.sep)
   let cld = dirs.indexOf('CustomLevels')
   for(let i = 2; i < file.split(path.sep).length - cld; i++) {
@@ -404,10 +402,7 @@ export const deleteSong = (identity) => (dispatch, getState) => {
       })
       return
     }
-    dispatch({
-      type: SET_VIEW,
-      payload: SONG_LIST
-    })
+    setView(SONG_LIST)(dispatch)
     dispatch({
       type: SET_DOWNLOADED_SONGS,
       payload: downloadedSongs

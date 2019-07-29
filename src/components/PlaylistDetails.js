@@ -62,7 +62,7 @@ class PlaylistDetails extends Component {
     } else {
       return (
         <div id="playlist-details">
-          <div className="close-icon" title="Close" onClick={ () => { this.props.setPlaylistEditing(false); this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) } }></div>
+          <div className="close-icon" title="Close" onClick={ () => { this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) } }></div>
           <div id="details-split">
             <div id="details-info">
               {this.props.editing ? 
