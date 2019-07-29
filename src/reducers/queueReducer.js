@@ -21,9 +21,9 @@ export default function(state = initialState, action) {
           {
             utc: action.payload.utc,
             hash: action.payload.hash,
-            image: `www.beatsaver.com${action.payload.coverURL}`,
-            title: action.payload.name,
-            artist: action.payload.uploader.username,
+            image: action.payload.image,
+            title: action.payload.title,
+            author: action.payload.author,
             progress: 0
           },
           ...items

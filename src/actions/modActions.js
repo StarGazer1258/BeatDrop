@@ -1,5 +1,5 @@
 import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
-import { MODS_VIEW, MOD_DETAILS } from '../views'
+import { MODS_VIEW, MOD_DETAILS } from '../constants/views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
 
@@ -13,6 +13,7 @@ const path = remote.require('path')
 const crypto = remote.require('crypto')
 const AdmZip = remote.require('adm-zip')
 const execFile = remote.require('child_process').execFile
+const semver = remote.require('semver')
 
 const { ipcRenderer } = window.require('electron')
 
@@ -196,7 +197,7 @@ export const loadModDetails = modId => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive`)
+  fetch(`https://beatmods.com/api/v1/mod`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -211,13 +212,13 @@ export const loadModDetails = modId => dispatch => {
 }
 
 export const installMod = (modName, version, dependencyOf = '') => (dispatch, getState) => {
-  console.log(`Asked to install ${modName}@${version}`)
+  console.log(`Asked to install ${modName}`)
   if(isModPendingInstall(modName)(dispatch, getState)) {
-    console.log(`${modName}@${version} is already pending install!`)
+    console.log(`${modName} is already pending install!`)
     return
   } else {
     if(!isModInstalled(modName)(dispatch, getState)) {
-      console.log(`${modName}@${version} isn't installed, adding it to pending installs...`)
+      console.log(`${modName} isn't installed, adding it to pending installs...`)
       dispatch({
         type: ADD_PENDING_MOD,
         payload: modName
@@ -226,7 +227,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
   }
   if(gamePatchedWith()(dispatch, getState) === 'NONE' && !isModPendingInstall('BSIPA')(dispatch, getState)) patchGame()(dispatch, getState)
   if(isModInstalled(modName)(dispatch, getState)) {
-    console.log(`${modName}@${version} is already installed!`)
+    console.log(`${modName} is already installed!`)
     if(!getState().mods.installedMods.filter(mod => mod.name === modName)[0].dependencyOf.includes(dependencyOf)) {
       dispatch({
         type: ADD_DEPENDENT,
@@ -238,26 +239,35 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     }
     return
   }
-  console.log(`Fetching ${modName}@${version} from BeatMods...`)
-  fetch(`https://beatmods.com/api/v1/mod?status=approved${!!version ? `&status=inactive&version=${version}` : ''}&name=${encodeURIComponent(modName)}&gameVersion=${getState().settings.gameVersion}`)
+  console.log(`Fetching ${modName} from BeatMods...`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`)
     .then(res => res.json())
     .then(beatModsResponse => {
-      console.log(`Got the BeatMods response for ${modName}@${version}`)
+      console.log(`Got the BeatMods response for ${ modName }`)
       console.log(JSON.stringify(beatModsResponse))
       if(beatModsResponse.length === 0) return
+      let latestVersion = beatModsResponse[0].version
+      let latestIndex = 0
+      for(let i = 0; i < beatModsResponse; i++) {
+        if(semver.satisfies(beatModsResponse[i].version, `^${ latestVersion }`)) {
+          latestVersion = beatModsResponse[i].version
+          latestIndex = i
+        }
+      }
       let utc = Date.now()
-      let mod = beatModsResponse[beatModsResponse.length - 1]
+      let mod = beatModsResponse[latestIndex]
       let req
       let len = 0
       let chunks = 0
+      console.log(mod)
       dispatch({
         type: ADD_TO_QUEUE,
         payload: {
           utc,
-          hashMd5: mod._id,
-          coverUrl: modIcon,
-          songName: mod.name,
-          authorName: mod.author.username
+          hash: mod._id,
+          image: modIcon,
+          title: mod.name,
+          author: mod.author.username
         }
       })
 
@@ -265,11 +275,11 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       // Install Dependencies
       console.log(`Installing dependencies for ${ modName }...`)
       for(let i = 0; i < mod.dependencies.length; i++) {
-        console.log(`You gonna install ${mod.dependencies[i].name}@${mod.dependencies[i].version}?`)
+        console.log(`You gonna install ${ mod.dependencies[i].name }?`)
         installMod(mod.dependencies[i].name, mod.dependencies[i].version, modName)(dispatch, getState)
         dependsOn.push(mod.dependencies[i].name)
       }
-      console.log(`Dependencies found: ${dependsOn.join(', ')}`)
+      console.log(`Dependencies found: ${ dependsOn.join(', ') }`)
 
       // Install Mod
       console.log(`Installing ${ modName }...`)
@@ -309,7 +319,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
             payload: {
               id: mod._id,
               name: mod.name,
-              version: beatModsResponse.version,
+              version: mod.version,
               files,
               dependencyOf: [ dependencyOf ],
               dependsOn,

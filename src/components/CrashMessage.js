@@ -5,7 +5,7 @@ import Button from './Button'
 
 import { setHasError } from '../actions/windowActions'
 import { setView } from '../actions/viewActions'
-import { WELCOME } from '../views'
+import { WELCOME } from '../constants/views'
 
 import { store } from '../store'
 import { RESET_APP } from '../actions/types'
