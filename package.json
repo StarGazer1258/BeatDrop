@@ -2,7 +2,7 @@
   "name": "beatdrop",
   "description": "A desktop app for downloading Beat Saber songs.",
   "author": "Nathaniel Johns (StarGazer1258)",
-  "version": "2.5.6-beta",
+  "version": "2.5.6",
   "private": false,
   "license": "CC-BY-NC-SA-4.0",
   "repository": {
