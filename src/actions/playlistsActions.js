@@ -1,20 +1,18 @@
-import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_VIEW, SET_LOADING, DISPLAY_WARNING } from './types'
+import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
 import { defaultPlaylistIcon } from '../b64Assets'
+import { hashAndWriteToMetadata } from './queueActions'
+import { setView } from './viewActions'
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
-const md5 = remote.require('md5')
 
 export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let state = getState()
   if(typeof doSetView === 'object' || doSetView === undefined) { doSetView = true } else { doSetView = false }
   if(doSetView === true) {
-    dispatch({
-      type: SET_VIEW,
-      payload: PLAYLIST_LIST
-    })
+    setView(PLAYLIST_LIST)(dispatch)
     dispatch({
       type: SET_LOADING,
       payload: true
@@ -142,10 +140,7 @@ export const clearPlaylistDialog = () => dispatch => {
 }
 
 export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: PLAYLIST_DETAILS
-  })
+  setView(PLAYLIST_DETAILS)(dispatch)
   fs.access(playlistFile, (err) => {
     if(err) {
       dispatch({
@@ -190,27 +185,27 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                 return
               }
               let song = JSON.parse(data)
-              let dirs = file.split('\\')
-              dirs.pop()
-              let dir = dirs.join('\\')
-              song.coverUrl = path.join(dir, song.coverImagePath)
-              dispatch({
-                type: LOAD_PLAYLIST_SONGS,
-                payload: { ...song, file, order: i }
-              })
+              song.coverURL = `file://${path.join(path.dirname(file), song.coverImagePath || song._coverImageFilename)}`
+              hashAndWriteToMetadata(file)(dispatch, getState)
+                .then(hash => {
+                  song.hash = hash
+                  dispatch({
+                    type: LOAD_PLAYLIST_SONGS,
+                    payload: { ...song, file, order: i }
+                  })
+                })
             })
           } else {
-            fetch(`https://beatsaver.com/api/songs/search/hash/${playlist.songs[i].hash}`)
+            fetch(`https://beatsaver.com/api/maps/by-hash/${playlist.songs[i].hash}`)
             .then(res => res.json())
-            .then(results => {
-              if(results.songs.length === 1) {
-                dispatch({
-                  type: LOAD_PLAYLIST_SONGS,
-                  payload: { ...results.songs[0], order: i }
-                })
-              }
+            .then(song => {
+              song.coverURL = `https://beatsaver.com/${song.coverURL}`
+              dispatch({
+                type: LOAD_PLAYLIST_SONGS,
+                payload: { ...song, order: i }
+              })
             })
-            .catch(_ => {
+            .catch(err => {
               dispatch({
                 type: LOAD_PLAYLIST_SONGS,
                 payload: { ...playlist.songs[i], order: i }
@@ -218,11 +213,12 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
             })
           }
         } else {
-          fetch(`https://beatsaver.com/api/songs/detail/${playlist.songs[i].key}`)
+          fetch(`https://beatsaver.com/api/maps/detail/${playlist.songs[i].key}`)
             .then(res => res.json())
             .then(details => {
-              if(state.songs.downloadedSongs.some(song => song.hash === details.song.hashMd5)) {
-                let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.song.hashMd5)].file
+              details.coverURL = `https://beatsaver.com/${details.coverURL}`
+              if(state.songs.downloadedSongs.some(song => song.hash === details.hash)) {
+                let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.hash)].file
                 fs.readFile(file, 'UTF8', (err, data) => {
                   if(err) {
                     dispatch({
@@ -232,19 +228,20 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                     return
                   }
                   let song = JSON.parse(data)
-                  let dirs = file.split('\\')
-                  dirs.pop()
-                  let dir = dirs.join('\\')
-                  song.coverUrl = path.join(dir, song.coverImagePath)
-                  dispatch({
-                    type: LOAD_PLAYLIST_SONGS,
-                    payload: { ...song, file, order: i }
-                  })
+                  song.coverURL = `file://${path.join(path.dirname(file), song.coverImagePath || song._coverImageFilename)}`
+                  hashAndWriteToMetadata(file)(dispatch, getState)
+                    .then(hash => {
+                      song.hash = hash
+                      dispatch({
+                        type: LOAD_PLAYLIST_SONGS,
+                        payload: { ...song, file, order: i }
+                      })
+                    })
                 })
               } else {
                 dispatch({
                   type: LOAD_PLAYLIST_SONGS,
-                  payload: { ...details.song, order: i }
+                  payload: { ...details, order: i }
                 })
               }
             })
@@ -300,6 +297,7 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
 }
 
 export const setPlaylistEditing = isEditing => dispatch => {
+  console.log(`Editing: ${ isEditing }`)
   dispatch({
     type: SET_PLAYLIST_EDITING,
     payload: isEditing
@@ -319,54 +317,19 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
       return
     }
     let playlist = JSON.parse(data)
-    if(song.hash || song.hashMd5) {
-      if(song.key) {
-        playlist.songs.push({
-          hash: song.hash || song.hashMd5,
-          key: song.key,
-          songName: song.name || song.songName
-        })
-      } else {
-        playlist.songs.push({
-          hash: song.hash || song.hashMd5,
-          songName: song.name || song.songName
-        })
-      }
+    if(song.hash) {
+      playlist.songs.push({
+        hash: song.hash,
+        songName: song.name || song._songName
+      })
     } else {
-      if(song.file) {
-        let file = song.file
-        delete song.file
-        let dirs = file.split('\\')
-        dirs.pop()
-        let dir = dirs.join('\\')
-        let to_hash = ''
-        for(let i = 0; i < song.difficultyLevels.length; i++) {
-          try {
-            to_hash += fs.readFileSync(path.join(dir, song.difficultyLevels[i].jsonPath), 'UTF8')
-          } catch(err) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              action: { text: 'Error reading difficulty level information, the song\'s files may be corrupt. Try redownloading the song and try again.' }
-            })
-            return
-          }
-        }
-        let hash = md5(to_hash)
-        song.hash = hash
-        fs.writeFile(file, JSON.stringify(song), 'UTF8', (err) => { if(err) return })
-        if(song.key) {
+      hashAndWriteToMetadata(song.file)(dispatch, getState)
+        .then(hash => {
           playlist.songs.push({
-            hash: hash,
-            key: song.key,
-            songName: song.name || song.songName
+            hash,
+            songName: song.name || song._songName
           })
-        } else {
-          playlist.songs.push({
-            hash: hash,
-            songName: song.name || song.songName
-          })
-        }
-      }
+        })
     }
     
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {

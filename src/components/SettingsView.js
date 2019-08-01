@@ -6,7 +6,7 @@ import { checkDownloadedSongs } from '../actions/queueActions'
 import { checkInstalledMods } from '../actions/modActions'
 import '../css/SettingsView.scss'
 import Button from './Button'
-import Toggle from './Toggle';
+import Toggle from './Toggle'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -72,7 +72,7 @@ class SettingsView extends Component {
             </td>
             <td>
               <select id="game-version-select" name="game-version-select" value={ this.props.settings.gameVersion } onChange={ (e) => { this.props.setGameVersion(e.target.value) } }>
-                { this.state.gameVersions.map(version => <option value={ version }>{ version }</option>) }
+                { this.state.gameVersions.map(version => <option key={ version } value={ version }>{ version }</option>) }
               </select>
             </td>
           </tr>
@@ -88,7 +88,8 @@ class SettingsView extends Component {
         <Button onClick={ this.props.checkDownloadedSongs }>Scan for Songs</Button><Button onClick={ this.props.checkInstalledMods }>{ this.props.scanningForMods ? 'Scanning...' : 'Scan for Mods' }</Button><br /><br />
         <label htmlFor="folder-structure-select">Folder Structure</label><br /><br />
         <select id="folder-structure-select" name="folder-structure-select" value={ this.props.settings.folderStructure } onChange={ (e) => { this.props.setFolderStructure(e.target.value) } }>
-          <option value="idKey">ID/Key</option>
+          <option value="keySongNameArtistName">Key ( Song Name - Song Artist )</option>
+          <option value="idKey">Key</option>
           <option value="songName">Song Name</option>
         </select>
         <hr />
@@ -112,13 +113,16 @@ class SettingsView extends Component {
           <option value="beta">Beta</option>
         </select><br /><br />
         {this.props.settings.updateChannel === 'beta' ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: Beta builds are unstable, untested and may result in unexpected crashes, loss of files and other adverse effects! By updating to a beta build, you understand and accept these risks.</span><br /><br /></> : null}
-        <Button type={ this.state.updateStatus === 'error' ? 'destructive' : null } onClick={ () => { ipcRenderer.send('electron-updater', 'check-for-updates') } }>{this.updateValue()}</Button>
+        <Button type={ this.state.updateStatus === 'error' ? 'destructive' : null } onClick={ () => { ipcRenderer.send('electron-updater', 'check-for-updates') } }>{ this.updateValue() }</Button>
         <br /><br />
         <hr />
         <h2>Credits</h2>
-        <b>BeatDrop Developer</b><br />
+        <b>BeatDrop Developers</b><br />
         <ul>
           <li>StarGazer1258</li>
+          <li>Yuuki</li>
+          <li><a href="https://github.com/StarGazer1258/BeatDrop/graphs/contributors" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>The GitHub Community</a></li>
+
         </ul>
         <br />
         <b>Icon and Animation Designer, BeastSaber Developer</b><br />
@@ -126,9 +130,10 @@ class SettingsView extends Component {
           <li>Elliotttate</li>
         </ul>
         <br />
-        <b>BeatMods Developer</b><br />
+        <b>BeatMods Developers</b><br />
         <ul>
           <li>vanZeben</li>
+          <li>raftario</li>
         </ul>
         <br />
         <b>Additional Icons Provided by</b><br />
@@ -136,14 +141,16 @@ class SettingsView extends Component {
           <li><a href="https://icons8.com/" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>Icons8</a></li>
         </ul>
         <br />
-        <h3>Patreon Supporters</h3>
+        <h3>Patreon Supporter (Lifetime Pledge)</h3>
         <ul>
           <li>
           <b>Wave Tier</b>
           <ul>
-            <li>Shane R. Monroe</li>
-            <li>Carize</li>
-            <li>Marc Smith</li>
+            <li>Shane R. Monroe ($30)</li>
+            <li>Carize ($10)</li>
+            <li>Marc Smith ($10)</li>
+            <li>Myles Hecht ($10)</li>
+            <li></li>
           </ul>
           </li>
           <li>

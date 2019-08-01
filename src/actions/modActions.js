@@ -1,9 +1,10 @@
-import { SET_MOD_LIST, SET_VIEW, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
+import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
 
 import modIcon from '../assets/dark/mod.png'
+import { setView } from './viewActions'
 
 const { remote } = window.require('electron')
 const request = remote.require('request')
@@ -18,10 +19,7 @@ const { ipcRenderer } = window.require('electron')
 const os = remote.require('os')
 
 export const fetchApprovedMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.NEW_MODS
@@ -45,10 +43,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
 }
 
 export const fetchRecommendedMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.RECOMMENDED_MODS
@@ -80,10 +75,7 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
 }
 
 export const fetchModCategories = () => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORY_SELECT
@@ -99,10 +91,7 @@ export const fetchModCategories = () => dispatch => {
 }
 
 export const fetchModCategory = category => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORIES
@@ -126,10 +115,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
 }
 
 export const fetchLocalMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ALL
@@ -168,10 +154,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
 }
 
 export const fetchActivatedMods = () => (dispatch, getState) => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MODS_VIEW
-  })
+  setView(MODS_VIEW)(dispatch)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ACTIVATED
@@ -210,10 +193,7 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
 }
 
 export const loadModDetails = modId => dispatch => {
-  dispatch({
-    type: SET_VIEW,
-    payload: MOD_DETAILS
-  })
+  setView(MOD_DETAILS)(dispatch)
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -297,7 +277,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       console.log(`Installing ${ modName }...`)
       if(mod.downloads.some(version => version.type === 'universal')) {
         req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
-          if(r) if(err || r.statusCode !== 200) {
+          if(r) if(err || (r.hasOwnProperty('statusCode') && r.statusCode !== 200)) {
             dispatch({
               type: DISPLAY_WARNING,
               payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
@@ -453,6 +433,7 @@ export const installEssentialMods = () => (dispatch, getState) => {
   installMod('SongLoader', '')(dispatch, getState)
   installMod('BeatSaverDownloader', '')(dispatch, getState)
   installMod('ScoreSaber', '')(dispatch, getState)
+  installMod('SongCore', '')(dispatch, getState)
 }
 
 export const uninstallMod = modName => (dispatch, getState) => {
@@ -494,11 +475,7 @@ export const deactivateMod = modName => (dispatch, getState) => {
     for(let i = 0; i < mod.files.length; i++) {
       try {
         if(fs.lstatSync(path.join(getState().settings.installationDirectory, mod.files[i])).isDirectory()) continue
-        let dir = mod.files[i]
-        let dirs = dir.split('/')
-        dirs.pop()
-        dir = dirs.join('/')
-        zip.addLocalFile(path.join(getState().settings.installationDirectory, mod.files[i]), dir)
+        zip.addLocalFile(path.join(getState().settings.installationDirectory, mod.files[i]), path.dirname(mod.files[i]))
         fs.unlinkSync(path.join(getState().settings.installationDirectory, mod.files[i]))
       } catch {}
     }
