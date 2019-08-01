@@ -1,5 +1,5 @@
 import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, DISPLAY_WARNING } from './types'
-import { SONG_DETAILS } from '../views'
+import { SONG_DETAILS } from '../constants/views'
 
 import AdmZip from 'adm-zip'
 import { hashAndWriteToMetadata } from './queueActions'

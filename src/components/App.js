@@ -21,7 +21,7 @@ import { loadDetailsFromKey } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
 import { fetchLocalPlaylists } from '../actions/playlistsActions'
 
-import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
+import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../constants/views'
 
 const { ipcRenderer } = window.require('electron')
 const fs = window.require('fs')

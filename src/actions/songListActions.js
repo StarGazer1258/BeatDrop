@@ -1,5 +1,5 @@
 import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, DISPLAY_WARNING } from './types'
-import { SONG_LIST } from '../views'
+import { SONG_LIST } from '../constants/views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'

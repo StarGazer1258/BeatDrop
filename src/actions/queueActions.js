@@ -1,5 +1,5 @@
 import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
-import { SONG_LIST } from '../views'
+import { SONG_LIST } from '../constants/views'
 import { isModInstalled, installEssentialMods } from './modActions'
 import { setView } from './viewActions'
 
@@ -53,7 +53,13 @@ export const downloadSong = (identity) => (dispatch, getState) => {
             if(song) {
               dispatch({
                 type: ADD_TO_QUEUE,
-                payload: { ...song, utc }
+                payload: { 
+                  utc,
+                  hash: song.hash,
+                  image: `https://www.beatsaver.com${ song.coverURL }`,
+                  title: song.metadata.songName,
+                  author: song.metadata.songAuthorName
+                }
               })
               let req = request.get({
                 url: `http://www.beatsaver.com${song.downloadURL}`,
@@ -244,7 +250,13 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         let utc = Date.now()
         dispatch({
           type: ADD_TO_QUEUE,
-          payload: { ...song, utc }
+          payload: { 
+            utc,
+            hash: song.hash,
+            image: `https://www.beatsaver.com${ song.coverURL }`,
+            title: song.metadata.songName,
+            author: song.metadata.songAuthorName
+          }
         })
         let req = request.get({
           url: `https://beatsaver.com/${ song.downloadURL }`,

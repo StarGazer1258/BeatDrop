@@ -25,23 +25,13 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>New option for song folder naming: <b>Key (Song Name - Song Artist)</b></li>
+              <li>Let's all give a big <b>thank you</b> to our new Patreon Patron <b>Iryna Pavlova!</b></li>
+              <li>I'm a college student with bills to pay, can you spare some change?<br /><a href="https://www.patreon.com/bePatron?u=18487054" onClick={ (e) => { e.preventDefault(); window.require('electron').shell.openExternal('https://www.patreon.com/bePatron?u=18487054') } }>Become a Patreon Patron!</a></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li>BeatDrop is now <b>compatible with the new BeatSaver API.</b></li>
-              <li>UI now has <b>better compatibility with macOS.</b></li>
-              <li>Implemented a bunch of <b>stability enhancements for playlists.</b></li>
-              <li>Fixed a bug where <b>app would crash when moving to next song in queue after error.</b></li>
-              <li>2.5.1: Fixed <b>bugs in new local song code.</b></li>
-              <li>2.5.2: Fixed <b>crash when searching for songs.</b></li>
-              <li>2.5.3: Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/45" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#45.</a> This is basically implemeting the new hashing calculation, so it should fix numerous issues, such as song not appearing as downloaded, songs showing the wrong leaderboards in-game, playlists not wokring properly, etc.</li>
-              <li>2.5.4: Fixed <b>calculation of hashes</b> for songs with <b>multiple beatmap sets.</b></li>
-              <li>2.5.5: Fixed <b>minor bug</b> in <b>calculation of hashes</b> for songs with <b>multiple beatmap sets.</b></li>
-              <li>2.5.6: Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/30" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#30.</a></li>
-              <li>2.5.6: Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/48" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#48.</a></li>
-              <li>2.5.6: Fixed crash when <b>hash was not properly added to local songs in playlists.</b></li>
+              <li><b>Mod support</b> is back baby!! I appologize for not fixing this sooner, but life can be a mess sometimes. Thank you to everyone for waiting so patiently. Now I can get back to work and more features!</li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

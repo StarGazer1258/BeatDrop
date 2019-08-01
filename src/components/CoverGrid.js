@@ -76,7 +76,7 @@ class CoverGrid extends Component {
                 <CoverGridItem
                   key={ makeRenderKey(songTags) }
                   title={ song.songName || song._songName || song.metadata.songName }
-                  artist={ song.authorName || song._songAuthorName || song.metadata.songAuthorName }
+                  artist={ song.authorName || song._songAuthorName || (song.metadata === undefined ? null : song.metadata.songAuthorName) }
                   difficulties={ song.difficulties || song.difficultyLevels || song._difficultyBeatmapSets || song.metadata.difficulties }
                   imageSource={ song.coverURL || song.coverUrl }
                   songKey={ song.key } hash={ song.hash || song.hashMd5 }

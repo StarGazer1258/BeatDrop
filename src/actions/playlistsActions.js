@@ -1,5 +1,5 @@
 import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING, DISPLAY_WARNING } from './types'
-import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../views'
+import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../constants/views'
 import { defaultPlaylistIcon } from '../b64Assets'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'

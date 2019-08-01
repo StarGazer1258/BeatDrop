@@ -15,9 +15,16 @@
     text-decoration-color: $beatdrop-blue;
     opacity: 1;
   }
+  
+  &.disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    font-weight: 400;
+  }
 }
 
 .theme-hc .tab.active {
   color: $theme-hc-accent-color;
   text-decoration-color: $theme-hc-accent-color;
 }
+

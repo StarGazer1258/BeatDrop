@@ -1,5 +1,5 @@
 import  { SET_VIEW, SET_SUB_VIEW } from '../actions/types'
-import { WELCOME, SONG_LIST } from '../views'
+import { WELCOME, SONG_LIST } from '../constants/views'
 
 const initialState = {
   previousView: SONG_LIST,

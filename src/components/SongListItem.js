@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 import { loadDetailsFromFile, loadDetailsFromKey } from '../actions/detailsActions'
 import { setScrollTop } from '../actions/songListActions'
 
-import { COMPACT_LIST } from '../views'
+import { COMPACT_LIST } from '../constants/views'
 
 function Uploader(props) {
   if(!props.isDownloaded && !!props.uploader) return (
