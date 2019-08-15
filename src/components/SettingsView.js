@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes } from '../actions/settingsActions'
 import { checkDownloadedSongs } from '../actions/queueActions'
-import { checkInstalledMods } from '../actions/modActions'
+import { checkInstalledMods, checkModsForUpdates } from '../actions/modActions'
+import { resetApp } from '../actions/appActions'
 import '../css/SettingsView.scss'
 import Button from './Button'
 import Toggle from './Toggle'
@@ -86,6 +87,7 @@ class SettingsView extends Component {
         <hr />
         <h2>Downloads</h2>
         <Button onClick={ this.props.checkDownloadedSongs }>Scan for Songs</Button><Button onClick={ this.props.checkInstalledMods }>{ this.props.scanningForMods ? 'Scanning...' : 'Scan for Mods' }</Button><br /><br />
+        <Button onClick={ () => { this.props.checkModsForUpdates(true) } }>Check for Mod Updates</Button><br /><br />
         <label htmlFor="folder-structure-select">Folder Structure</label><br /><br />
         <select id="folder-structure-select" name="folder-structure-select" value={ this.props.settings.folderStructure } onChange={ (e) => { this.props.setFolderStructure(e.target.value) } }>
           <option value="keySongNameArtistName">Key ( Song Name - Song Artist )</option>
@@ -114,6 +116,11 @@ class SettingsView extends Component {
         </select><br /><br />
         {this.props.settings.updateChannel === 'beta' ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: Beta builds are unstable, untested and may result in unexpected crashes, loss of files and other adverse effects! By updating to a beta build, you understand and accept these risks.</span><br /><br /></> : null}
         <Button type={ this.state.updateStatus === 'error' ? 'destructive' : null } onClick={ () => { ipcRenderer.send('electron-updater', 'check-for-updates') } }>{ this.updateValue() }</Button>
+        <br /><br />
+        <hr />
+        <h2>DANGER ZONE</h2>
+        <i>Please don't touch these unless you know what you're doing.</i><br /><br />
+        <Button type="destructive" onClick={ () => { this.props.resetApp() } }>Reset App</Button>
         <br /><br />
         <hr />
         <h2>Credits</h2>
@@ -146,16 +153,17 @@ class SettingsView extends Component {
           <li>
           <b>Wave Tier</b>
           <ul>
-            <li>Shane R. Monroe ($40)</li>
+            <li>Shane R. Monroe ($50)</li>
             <li>Carize ($30)</li>
             <li>Myles Hecht ($30)</li>
+            <li>Iryna Pavlova ($20)</li>
             <li>Marc Smith ($10)</li>
-            <li>Iryna Pavlova ($10)</li>
+            <li>Kirk Miller ($10)</li>
             <li></li>
           </ul>
           </li>
           <li>
-            <b>Hurricane Tiere</b>
+            <b>Hurricane Tier</b>
             <ul>
               <li><i>Your name here...</i></li>
             </ul>
@@ -190,6 +198,6 @@ const mapStateToProps = state => ({
   scanningForMods: state.mods.scanning
 })
 
-export default connect(mapStateToProps, { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, checkDownloadedSongs, checkInstalledMods })(SettingsView)
+export default connect(mapStateToProps, { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, checkDownloadedSongs, checkInstalledMods, checkModsForUpdates, resetApp })(SettingsView)
 
 //<input type="checkbox" name="auto-refresh" id="auto-refresh" checked={this.props.settings.autoRefresh} onClick={() => this.props.setAutoLoadMore(!this.props.settings.autoLoadMore)} /><label htmlFor="auto-refresh">Refresh feed every </label><input type="number" name="auto-refresh-interval" id="auto-refresh-interval"/><label htmlFor="auto-refresh-interval"> seconds</label>

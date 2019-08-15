@@ -25,13 +25,17 @@ class ReleaseNotesModal extends Component {
             <h2 style={ { color: 'lightgreen' } }>What's new?</h2>
             <hr style={ { borderColor: 'lightgreen' } } />
             <ul>
-              <li>Let's all give a big <b>thank you</b> to our new Patreon Patron <b>Iryna Pavlova!</b></li>
-              <li>I'm a college student with bills to pay, can you spare some change?<br /><a href="https://www.patreon.com/bePatron?u=18487054" onClick={ (e) => { e.preventDefault(); window.require('electron').shell.openExternal('https://www.patreon.com/bePatron?u=18487054') } }>Become a Patreon Patron!</a></li>
+              <li>You can now <b>update mods</b> through the <b>revamped downloads page!</b></li>
+              <li>Did I mention we <b>remade the download queue?</b> It's now it's own page with an <b>updates section (when applicable.)</b></li>
+              <li>BeatDrop will also <b>search for mod updates periodically</b> and <b>notify you if updates are available.</b></li>
+              <li>As requested, you can now <b>reset the app from settings.</b></li>
             </ul>
             <h2 style={ { color: 'salmon' } }>What's fixed?</h2>
             <hr style={ { borderColor: 'salmon' } } />
             <ul>
-              <li><b>Mod support</b> is back baby!! I appologize for not fixing this sooner, but life can be a mess sometimes. Thank you to everyone for waiting so patiently. Now I can get back to work and more features!</li>
+              <li>Fixed bug where <b>app would crash randomly after downloading songs and mods.</b></li>
+              <li>Fixed bug where <b>songs would be scanned twice on inital setup.</b></li>
+              <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/65" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#65.</a></li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>

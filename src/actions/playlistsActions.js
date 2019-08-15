@@ -297,7 +297,6 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
 }
 
 export const setPlaylistEditing = isEditing => dispatch => {
-  console.log(`Editing: ${ isEditing }`)
   dispatch({
     type: SET_PLAYLIST_EDITING,
     payload: isEditing

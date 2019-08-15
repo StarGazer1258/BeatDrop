@@ -21,7 +21,7 @@ class CrashMessage extends Component {
             <h1>Oops! BeatDrop has crashed!</h1>
             <p>If you want to help with fixing this, provide a screenshot of this message and <a href="https://github.com/StarGazer1258/BeatDrop/issues/new?assignees=&amp;labels=&amp;template=bug_report.md&amp;title=" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>file a bug report in the GitHub repo</a>.<br /><b>Please search for your issue first before filing a duplicate issue.</b></p>
             <p className="errorMessage">{ this.props.errorMessage.name }{ this.props.errorInfo.componentStack }</p>
-            <p>In the meantime, you can try resetting the view back the the welcome screen. If that doesn't work, you may have to reset the application entirely. This will reset all of you preferences, but will not delete any files.</p>
+            <p>In the meantime, you can try resetting the view back the the welcome screen. If that doesn't work, you may have to reset the application entirely. This will reset all of your preferences, but will not delete any files.</p>
             <Button type="primary" onClick={ () => { this.props.setView(WELCOME); this.props.setHasError(false) } }>Reset View</Button>
             <Button type="destructive" onClick={ () => { store.dispatch({ type: RESET_APP }); this.props.setHasError(false) } }>Reset Everything</Button>
           </div>

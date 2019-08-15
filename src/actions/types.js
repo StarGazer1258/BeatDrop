@@ -1,4 +1,4 @@
-//Root
+// Root
 export const RESET_APP                  = 'RESET_APP'
 
 // SongList
@@ -19,7 +19,7 @@ export const SET_PROCESSED_FILES        = 'SET_PROCESSED_FILES'
 export const SET_LOADING                = 'SET_LOADING'
 export const SET_LOADING_MORE           = 'SET_LOADING_MORE'
 
-//Mods
+// Mods
 export const SET_MOD_LIST               = 'SET_MOD_LIST'
 export const APPEND_MOD_LIST            = 'APPEND_MOD_LIST'
 export const LOAD_MOD_DETAILS           = 'LOAD_MOD_DETAILS'
@@ -33,6 +33,9 @@ export const ADD_DEPENDENT              = 'ADD_DEPENDENT'
 export const REMOVE_DEPENDENT           = 'REMOVE_DEPENDENT'
 export const SET_MOD_ACTIVE             = 'SET_MOD_ACTIVE'
 export const SET_PATCHING               = 'SET_PATCHING'
+export const SET_MOD_UPDATE_AVAILABLE   = 'SET_MOD_UPDATE_AVAILABLE'
+export const CLEAR_MOD_UPDATES              = 'CLEAR_MOD_UPDATES'
+export const UPDATE_MOD                 = 'UPDATE_MOD'
 
 // Playlists
 export const LOAD_NEW_PLAYLIST_IMAGE    = 'LOAD_NEW_PLAYLIST_IMAGE'
@@ -70,7 +73,6 @@ export const RESIZE_SIDEBAR             = 'RESIZE_SIDEBAR'
 export const SET_SECTION                = 'SET_SECTION'
 
 // Settings
-export const SET_SETTINGS_OPEN          = 'SET_SETTINGS_OPEN'
 export const SET_INSTALLATION_DIRECTORY = 'SET_INSTALLATION_DIRECTORY'
 export const SET_INSTALLATION_TYPE      = 'SET_INSTALLATION_TYPE'
 export const SET_GAME_VERSION           = 'SET_GAME_VERSION'
@@ -92,7 +94,6 @@ export const SET_SEARCH_SOURCES         = 'SET_SEARCH_SOURCES'
 export const SUBMIT_SEARCH              = 'SUBMIT_SEARCH'
 
 // Queue
-export const SET_QUEUE_OPEN             = 'SET_QUEUE_OPEN'
 export const ADD_TO_QUEUE               = 'ADD_TO_QUEUE'
 export const REMOVE_FROM_QUEUE          = 'REMOVE_FROM_QUEUE'
 export const CLEAR_QUEUE                = 'CLEAR_QUEUE'

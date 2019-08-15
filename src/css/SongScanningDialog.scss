@@ -21,9 +21,14 @@ h5.scanning-text {
   margin: 10px 0;
 }
 
-#scanning-text.theme-dark, #scanning-text.theme-hc {
+.scanning-text.theme-dark, .scanning-text.theme-hc {
   &::before {
     background: url(../assets/dark/update.png);
     background-repeat: no-repeat;
   }
+}
+
+.song-scanning-progress {
+  margin: 0 10%;
+  margin-top: 40px;
 }

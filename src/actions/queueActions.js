@@ -1,4 +1,4 @@
-import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
+import { ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../constants/views'
 import { isModInstalled, installEssentialMods } from './modActions'
 import { setView } from './viewActions'
@@ -10,13 +10,6 @@ const crypto = remote.require('crypto')
 const AdmZip = remote.require('adm-zip')
 const request = remote.require('request')
 const rimraf = remote.require('rimraf')
-
-export const setQueueOpen = open => dispatch => {
-  dispatch({
-    type: SET_QUEUE_OPEN,
-    payload: open
-  })
-}
 
 /**
  * Downloads a song.
