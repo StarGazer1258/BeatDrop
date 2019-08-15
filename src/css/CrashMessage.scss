@@ -26,6 +26,23 @@
     background-position: center;
   }
 
+  .errorMessage {
+    text-align: left;
+    white-space: pre-wrap;
+    max-width: 60vw;
+    max-height: 25vh;
+    padding: 15px;
+    margin: 0 auto;
+    overflow-y: scroll;
+    border-radius: 10px;
+    border: 1px solid salmon;
+    border-left: 10px solid salmon;
+    background-color: pink;
+    color: red;
+    user-select: all;
+    cursor: text;
+  }
+
   &.theme-dark, &.theme-hc {
     .error-image {
       background-image: url(../assets/dark/error.png);

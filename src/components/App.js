@@ -14,7 +14,7 @@ import CrashMessage from './CrashMessage'
 
 import { connect } from 'react-redux'
 
-import { setHasError } from '../actions/windowActions'
+import { setHasError, setErrorMessage } from '../actions/windowActions'
 import { downloadSong } from '../actions/queueActions'
 import { loadModDetails, installMod } from '../actions/modActions'
 import { loadDetailsFromKey } from '../actions/detailsActions'
@@ -76,6 +76,7 @@ class App extends Component {
   }
 
   componentDidCatch(error, info) {
+    this.props.setErrorMessage(error, info)
     this.props.setHasError(true)
   }
 
@@ -104,4 +105,4 @@ const mapStateToProps = state =>  ({
   hasError: state.window.hasError
 })
 
-export default connect(mapStateToProps, { setHasError })(App)
+export default connect(mapStateToProps, { setHasError, setErrorMessage })(App)

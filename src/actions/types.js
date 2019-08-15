@@ -63,6 +63,7 @@ export const SET_SUB_VIEW              = 'SET_SONG_VIEW'
 // Window
 export const RESIZE_WINDOW              = 'RESIZE_WINDOW'
 export const SET_HAS_ERROR              = 'SET_HAS_ERROR'
+export const SET_ERROR_MESSAGE          = 'SET_ERROR_MESSAGE'
 
 // Sidebar
 export const RESIZE_SIDEBAR             = 'RESIZE_SIDEBAR'
