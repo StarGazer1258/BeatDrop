@@ -20,7 +20,13 @@ const initialState = {
   },
   search: {
     searchResults: {
-      beatSaver: [],
+      beatSaver: {
+        songs: [], 
+        nextPage: 0,
+        prevPage: 0,
+        lastPage: 0,
+        totalSongs: 0
+      },
       library: []
     }
   }

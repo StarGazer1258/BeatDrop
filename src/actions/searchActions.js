@@ -11,8 +11,9 @@ export const setSearchSources = sources => dispatch => {
   })
 }
 
-export const submitSearch = keywords => (dispatch, getState) => {
+export const submitSearch = (keywords, page) => (dispatch, getState) => {
   if(!keywords) return
+  if(!page) page = 0
 
   dispatch({
     type: SET_LOADING,
@@ -25,6 +26,11 @@ export const submitSearch = keywords => (dispatch, getState) => {
 
   let localSongs = []
   let beatSaverSongs = []
+  let beatSaverNextPage = 0
+  let beatSaverPrevPage = 0
+  let beatSaverLastPage = 0
+  let beatSaverTotalSongs = 0
+  
   let idSong
 
   let isId = parseInt(keywords.replace('-', ''), 10)
@@ -48,14 +54,18 @@ export const submitSearch = keywords => (dispatch, getState) => {
   localResultsReady = true
 
   // BeatSaver Search
-  fetch('https://beatsaver.com/api/search/text/all?q=' + encodeURIComponent(keywords.replace('/', '\\')))
+  fetch('https://beatsaver.com/api/search/text/' + page + '?q=' + encodeURIComponent(keywords.replace('/', '\\')))
     .then(res => res.json())
     .then(data => {
       beatSaverSongs = data.docs
+      beatSaverNextPage = data.nextPage
+      beatSaverPrevPage = data.prevPage
+      beatSaverLastPage = data.lastPage
+      beatSaverTotalSongs = data.totalDocs
       if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: idSong ? { keywords, library: localSongs, beatSaver: [idSong, ...beatSaverSongs] } : { keywords, library: localSongs, beatSaver: beatSaverSongs }
+          payload: idSong ? { keywords, library: localSongs, beatSaver: { songs: [idSong, ...beatSaverSongs], nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } } : { keywords, library: localSongs, beatSaver: { songs: beatSaverSongs, nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } }
         })
         dispatch({
           type: SET_LOADING,
@@ -76,7 +86,7 @@ export const submitSearch = keywords => (dispatch, getState) => {
       if(localResultsReady & beatSaverResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: idSong ? { keywords, library: localSongs, beatSaver: [idSong, ...beatSaverSongs] } : { keywords, library: localSongs, beatSaver: beatSaverSongs }
+          payload: idSong ? { keywords, library: localSongs, beatSaver: { songs: [idSong, ...beatSaverSongs], nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } } : { keywords, library: localSongs, beatSaver: { songs: beatSaverSongs, nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } }
         })
         dispatch({
           type: SET_LOADING,
