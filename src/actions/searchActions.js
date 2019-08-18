@@ -12,7 +12,13 @@ export const setSearchSources = sources => dispatch => {
 }
 
 export const submitSearch = (keywords, page) => (dispatch, getState) => {
-  if(!keywords) return
+  if(!keywords){
+    dispatch({
+      type: SUBMIT_SEARCH,
+      payload:  { keywords, library: [], beatSaver: { songs: [], nextPage: 0, prevPage: 0, lastPage: 0, totalSongs: 0, currentPage: 0 } }
+    })
+    return
+  }
   if(!page) page = 0
 
   dispatch({
@@ -65,7 +71,7 @@ export const submitSearch = (keywords, page) => (dispatch, getState) => {
       if(localResultsReady & beatSaverIdResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: idSong ? { keywords, library: localSongs, beatSaver: { songs: [idSong, ...beatSaverSongs], nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } } : { keywords, library: localSongs, beatSaver: { songs: beatSaverSongs, nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } }
+          payload: idSong ? { keywords, library: localSongs, beatSaver: { songs: [idSong, ...beatSaverSongs], nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs, currentPage: page } } : { keywords, library: localSongs, beatSaver: { songs: beatSaverSongs, nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs, currentPage: page } }
         })
         dispatch({
           type: SET_LOADING,
@@ -86,7 +92,7 @@ export const submitSearch = (keywords, page) => (dispatch, getState) => {
       if(localResultsReady & beatSaverResultsReady) {
         dispatch({
           type: SUBMIT_SEARCH,
-          payload: idSong ? { keywords, library: localSongs, beatSaver: { songs: [idSong, ...beatSaverSongs], nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } } : { keywords, library: localSongs, beatSaver: { songs: beatSaverSongs, nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs } }
+          payload: idSong ? { keywords, library: localSongs, beatSaver: { songs: [idSong, ...beatSaverSongs], nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs, currentPage: page } } : { keywords, library: localSongs, beatSaver: { songs: beatSaverSongs, nextPage: beatSaverNextPage, prevPage: beatSaverPrevPage, lastPage: beatSaverLastPage, totalSongs: beatSaverTotalSongs, currentPage: page } }
         })
         dispatch({
           type: SET_LOADING,

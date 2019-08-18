@@ -25,7 +25,8 @@ const initialState = {
         nextPage: 0,
         prevPage: 0,
         lastPage: 0,
-        totalSongs: 0
+        totalSongs: 0,
+        currentPage: 0
       },
       library: []
     }

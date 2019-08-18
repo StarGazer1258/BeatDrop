@@ -41,6 +41,12 @@ class SearchView extends Component {
             </div>
           )
         })}</div>
+        <div>{Array.apply(0, Array(this.props.results.beatSaver.lastPage)).map((val,i) => {
+            return (
+              <Button type={ i === this.props.results.beatSaver.currentPage ? 'primary' : 'default' } onClick={ () => { this.props.submitSearch(document.getElementById('search-box').value, i) } }>{ i + 1 }</Button>
+            )
+          })}
+        </div>
       </div>
     )
   }
