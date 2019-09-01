@@ -91,8 +91,8 @@ class SongList extends Component {
                   key={ makeRenderKey(songTags) }
                   title={  song.songName || song._songName || song.metadata.songName }
                   ratings={ song.ratings || song.stats ? song.stats.rating : '' }
-                  artist={ song.authorName || song._songAuthorName || song.metadata.songAuthorName }
-                  uploader={ song.uploader? song.uploader.username : '' }
+                  artist={ song.authorName || song._songAuthorName || (song.metadata === undefined ? null : song.metadata.songAuthorName) }
+                  uploader={ song.uploader ? song.uploader.username : '' }
                   difficulties={ song.difficultyLevels || song.difficulties || song._difficultyBeatmapSets || ((song.metadata !== undefined) ? song.metadata.difficulties : null) }
                   imageSource={ song.coverURL || song.coverUrl }
                   songKey={ song.key }

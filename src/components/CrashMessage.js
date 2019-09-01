@@ -5,7 +5,7 @@ import Button from './Button'
 
 import { setHasError } from '../actions/windowActions'
 import { setView } from '../actions/viewActions'
-import { WELCOME } from '../views'
+import { WELCOME } from '../constants/views'
 
 import { store } from '../store'
 import { RESET_APP } from '../actions/types'
@@ -19,7 +19,8 @@ class CrashMessage extends Component {
           <div>
             <div className="error-image"></div>
             <h1>Oops! BeatDrop has crashed!</h1>
-            <h2>The devs have already been notified. A fix is on the way soon.</h2>
+            <p>If you want to help with fixing this, provide a screenshot of this message and <a href="https://github.com/StarGazer1258/BeatDrop/issues/new?assignees=&amp;labels=&amp;template=bug_report.md&amp;title=" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>file a bug report in the GitHub repo</a>.<br /><b>Please search for your issue first before filing a duplicate issue.</b></p>
+            <p className="errorMessage">{ this.props.errorMessage.name }{ this.props.errorInfo.componentStack }</p>
             <p>In the meantime, you can try resetting the view back the the welcome screen. If that doesn't work, you may have to reset the application entirely. This will reset all of you preferences, but will not delete any files.</p>
             <Button type="primary" onClick={ () => { this.props.setView(WELCOME); this.props.setHasError(false) } }>Reset View</Button>
             <Button type="destructive" onClick={ () => { store.dispatch({ type: RESET_APP }); this.props.setHasError(false) } }>Reset Everything</Button>
@@ -30,7 +31,9 @@ class CrashMessage extends Component {
 }
 
 const mapStateToProps = state => ({
-  theme: state.settings.theme
+  theme: state.settings.theme,
+  errorMessage: state.window.errorMessage,
+  errorInfo: state.window.errorInfo
 })
 
 export default connect(mapStateToProps, { setHasError, setView })(CrashMessage)

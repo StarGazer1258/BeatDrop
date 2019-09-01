@@ -1,8 +1,10 @@
-import { RESIZE_WINDOW, SET_HAS_ERROR } from '../actions/types'
+import { RESIZE_WINDOW, SET_HAS_ERROR, SET_ERROR_MESSAGE } from '../actions/types'
 
 let initialState = {
   isMaximized: false,
-  hasError: false
+  hasError: false,
+  errorMessage: { name: '' },
+  errorInfo: { componentStack: '' }
 }
 
 export default function(state = initialState, action) {
@@ -16,6 +18,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         hasError: action.payload
+      }
+    case SET_ERROR_MESSAGE:
+      return {
+        ...state,
+        errorMessage: action.payload.error,
+        errorInfo: action.payload.info
       }
     default:
       return state

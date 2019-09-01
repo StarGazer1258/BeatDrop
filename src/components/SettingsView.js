@@ -146,10 +146,11 @@ class SettingsView extends Component {
           <li>
           <b>Wave Tier</b>
           <ul>
-            <li>Shane R. Monroe ($30)</li>
-            <li>Carize ($10)</li>
+            <li>Shane R. Monroe ($40)</li>
+            <li>Carize ($30)</li>
+            <li>Myles Hecht ($30)</li>
             <li>Marc Smith ($10)</li>
-            <li>Myles Hecht ($10)</li>
+            <li>Iryna Pavlova ($10)</li>
             <li></li>
           </ul>
           </li>

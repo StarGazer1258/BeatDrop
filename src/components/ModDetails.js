@@ -52,7 +52,14 @@ class ModDetails extends Component {
         </div>
         )
     } else {
-      if(this.props.details.notFound) return null
+      if(!this.props.details || this.props.details.notFound) {
+        return (
+          <div id="mod-details">
+            <div className="close-icon" title="Close" onClick={ () => { this.props.setView(this.props.previousView) } }></div>
+            <h2>Mod Details Not Found</h2>
+          </div>
+        )
+      }
       return (
         <div id="mod-details" style={ { whiteSpace: 'pre-wrap' } }>
           <div className="close-icon" title="Close" onClick={ () => { this.props.setView(this.props.previousView) } }></div>
@@ -94,7 +101,7 @@ class ModDetails extends Component {
           <p dangerouslySetInnerHTML={ { __html: md.render(this.props.details.description) } }></p>
         </div>
       )
-    } 
+    }
   }
 }
 

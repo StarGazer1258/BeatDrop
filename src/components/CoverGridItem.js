@@ -67,7 +67,7 @@ class CoverGridItem extends Component {
   }
 
 componentWillReceiveProps(props) {
-  getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }`)
+  getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource.substring(7, this.props.imageSource.length) : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
@@ -78,8 +78,9 @@ componentWillReceiveProps(props) {
 }
 
   componentDidMount() {
+    console.log( encodeURI(this.props.imageSource) )
     if(!this.props.imageSource) return
-    getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource : `https://beatsaver.com/${ this.props.imageSource }`)
+    getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource.substring(7, this.props.imageSource.length) : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
         this.setState({
           bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,

@@ -14,14 +14,14 @@ import CrashMessage from './CrashMessage'
 
 import { connect } from 'react-redux'
 
-import { setHasError } from '../actions/windowActions'
+import { setHasError, setErrorMessage } from '../actions/windowActions'
 import { downloadSong } from '../actions/queueActions'
 import { loadModDetails, installMod } from '../actions/modActions'
 import { loadDetailsFromKey } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
 import { fetchLocalPlaylists } from '../actions/playlistsActions'
 
-import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../views'
+import { SONG_DETAILS, SONG_LIST, MOD_DETAILS, MODS_VIEW } from '../constants/views'
 
 const { ipcRenderer } = window.require('electron')
 const fs = window.require('fs')
@@ -76,6 +76,7 @@ class App extends Component {
   }
 
   componentDidCatch(error, info) {
+    this.props.setErrorMessage(error, info)
     this.props.setHasError(true)
   }
 
@@ -104,4 +105,4 @@ const mapStateToProps = state =>  ({
   hasError: state.window.hasError
 })
 
-export default connect(mapStateToProps, { setHasError })(App)
+export default connect(mapStateToProps, { setHasError, setErrorMessage })(App)
