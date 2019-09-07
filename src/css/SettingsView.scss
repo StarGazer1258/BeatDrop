@@ -43,6 +43,36 @@
     width: 600px;
   }
 
+  #proton-directory-display .text-box {
+    margin-bottom: 15px;
+    width: 600px;
+  }
+
+  #proton-location, #theme-image-path {
+    display: none;
+    margin-bottom: 20px;
+  }
+
+  #proton-loc-box {
+    margin-bottom: 20px;
+    width: 350px;
+  }
+    
+  #wineprefix-directory-display .text-box {
+    margin-bottom: 15px;
+    width: 600px;
+  }
+
+  #wineprefix-location, #theme-image-path {
+    display: none;
+    margin-bottom: 20px;
+  }
+
+  #wineprefix-loc-box {
+    margin-bottom: 20px;
+    width: 350px;
+  }
+    
   #auto-refresh-interval {
     width: 50px;
     border-radius: 5px;

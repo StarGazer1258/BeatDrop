@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes } from '../actions/settingsActions'
+import { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, setProtonDirectory, setWinePrefixDirectory } from '../actions/settingsActions'
 import { checkDownloadedSongs } from '../actions/queueActions'
 import { checkInstalledMods } from '../actions/modActions'
 import '../css/SettingsView.scss'
@@ -57,6 +57,17 @@ class SettingsView extends Component {
         <span id="installation-directory-display"><input className="text-box" type="text" id="dl-loc-box" value={ this.props.settings.installationDirectory } disabled /></span>
         <input type="file" id="dl-location" webkitdirectory="" onChange={ (e) => {this.props.setInstallationDirectory(e.target.files[0].path || this.props.settings.installationDirectory)} } /><br />
         <label htmlFor="dl-location"><Button type="primary" onClick={ () => {} }>Choose Folder</Button></label><Button onClick={ () => {window.require('child_process').exec('start "" "' + this.props.settings.installationDirectory + '"')} }>Open Folder</Button><br /><br />
+            
+        <label htmlFor="proton-location">Proton Directory</label><br /><br />
+        <span id="proton-directory-display"><input className="text-box" type="text" id="proton-loc-box" value={ this.props.settings.protonDirectory } disabled /></span>
+        <input type="file" id="proton-location" webkitdirectory="" onChange={ (e) => {this.props.setProtonDirectory(e.target.files[0].path || this.props.settings.protonDirectory)} } /><br />
+        <label htmlFor="proton-location"><Button type="primary" onClick={ () => {} }>Choose Folder</Button></label><Button onClick={ () => {window.require('child_process').exec('start "" "' + this.props.settings.protonDirectory + '"')} }>Open Folder</Button><br /><br />
+            
+        <label htmlFor="wineprefix-location">Wine Prefix Directory</label><br /><br />
+        <span id="wineprefix-directory-display"><input className="text-box" type="text" id="wineprefix-loc-box" value={ this.props.settings.winePrefixDirectory } disabled /></span>
+        <input type="file" id="wineprefix-location" webkitdirectory="" onChange={ (e) => {this.props.setWinePrefixDirectory(e.target.files[0].path || this.props.settings.winePrefixDirectory)} } /><br />
+        <label htmlFor="wineprefix-location"><Button type="primary" onClick={ () => {} }>Choose Folder</Button></label><Button onClick={ () => {window.require('child_process').exec('start "" "' + this.props.settings.winePrefixDirectory + '"')} }>Open Folder</Button><br /><br />
+            
         <table>
           <tr>
             <th>Installation Type&emsp;</th>
@@ -182,7 +193,9 @@ SettingsView.propTypes = {
   setTheme: PropTypes.func.isRequired,
   setFolderStructure: PropTypes.func.isRequired,
   setUpdateChannel: PropTypes.func.isRequired,
-  checkDownloadedSongs: PropTypes.func.isRequired
+  checkDownloadedSongs: PropTypes.func.isRequired,
+  setProtonDirectory: PropTypes.func.isRequired,
+  setWinePrefixDirectory: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -190,6 +203,6 @@ const mapStateToProps = state => ({
   scanningForMods: state.mods.scanning
 })
 
-export default connect(mapStateToProps, { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, checkDownloadedSongs, checkInstalledMods })(SettingsView)
+export default connect(mapStateToProps, { setInstallationDirectory, setInstallationType, setGameVersion, setAutoLoadMore, setOfflineMode, setTheme, setThemeImage, setFolderStructure, setUpdateChannel, setLatestReleaseNotes, checkDownloadedSongs, checkInstalledMods, setProtonDirectory, setWinePrefixDirectory })(SettingsView)
 
 //<input type="checkbox" name="auto-refresh" id="auto-refresh" checked={this.props.settings.autoRefresh} onClick={() => this.props.setAutoLoadMore(!this.props.settings.autoLoadMore)} /><label htmlFor="auto-refresh">Refresh feed every </label><input type="number" name="auto-refresh-interval" id="auto-refresh-interval"/><label htmlFor="auto-refresh-interval"> seconds</label>

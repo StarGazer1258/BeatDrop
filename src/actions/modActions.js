@@ -13,6 +13,7 @@ const path = remote.require('path')
 const crypto = remote.require('crypto')
 const AdmZip = remote.require('adm-zip')
 const execFile = remote.require('child_process').execFile
+const exec = require('child_process').exec
 const semver = remote.require('semver')
 
 const { ipcRenderer } = window.require('electron')
@@ -318,12 +319,21 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
                 // Running on a non-windows platform, using wine/proton to play beat saber
                 // We need to do 2 things here
                 // 1: Run IPA.exe
-                // execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
-                dispatch({
-                  type: 'DISPLAY_WARNING',
-                  payload: { text: 'Unable to run IPA.exe on this platform, you\'ll ned to run it yourself with wine for now.', color: 'red' }
+                execFile(path.join(remote.getAppPath(), 'echo foo'), [getState().settings.installationDirectory, getState().settings.protonDirectory], { env: {'WINEPREFIX': getState().settings.winePrefixDirectory}, cwd: remote.getAppPath()},
+                    function(result, stdout, stderr) {
+                    if( result != 0 ) {
+                        dispatch({
+                          type: 'DISPLAY_WARNING',
+                          payload: { text: 'Failed to patch Beat Saber: ' + stdout, color: 'red' }
+                        })
+                    } else {
+                        dispatch({
+                          type: 'DISPLAY_WARNING',
+                          payload: { text: 'Game successfully patched with BSIPA.' + stdout, color: 'lightgreen' }
+                        })
+                    }
                 })
-
+                
                 /*
                  * 2: Patch the wine prefix registry to prefer IPA's winhttp.dll over the built-in wine version
                  *
