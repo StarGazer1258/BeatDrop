@@ -13,9 +13,12 @@ const path = remote.require('path')
 const crypto = remote.require('crypto')
 const AdmZip = remote.require('adm-zip')
 const execFile = remote.require('child_process').execFile
+const exec = require('child_process').exec
 const semver = remote.require('semver')
 
 const { ipcRenderer } = window.require('electron')
+
+const os = remote.require('os')
 
 export const fetchApprovedMods = () => (dispatch, getState) => {
   setView(MODS_VIEW)(dispatch)
@@ -303,11 +306,65 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
           }
           
           if(modName === 'BSIPA') {
-            execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
-            dispatch({
-              type: 'DISPLAY_WARNING',
-              payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
-            })
+            if( os.platform() === 'win32' )
+            {
+                execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
+                dispatch({
+                  type: 'DISPLAY_WARNING',
+                  payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
+                })
+            }
+            else
+            {
+                // Running on a non-windows platform, using wine/proton to play beat saber
+                // We need to do 2 things here
+                // 1: Run IPA.exe
+                execFile(path.join(remote.getAppPath(), 'echo foo'), [getState().settings.installationDirectory, getState().settings.protonDirectory], { env: {'WINEPREFIX': getState().settings.winePrefixDirectory}, cwd: remote.getAppPath()},
+                    function(result, stdout, stderr) {
+                    if( result != 0 ) {
+                        dispatch({
+                          type: 'DISPLAY_WARNING',
+                          payload: { text: 'Failed to patch Beat Saber: ' + stdout, color: 'red' }
+                        })
+                    } else {
+                        dispatch({
+                          type: 'DISPLAY_WARNING',
+                          payload: { text: 'Game successfully patched with BSIPA.' + stdout, color: 'lightgreen' }
+                        })
+                    }
+                })
+                
+                /*
+                 * 2: Patch the wine prefix registry to prefer IPA's winhttp.dll over the built-in wine version
+                 *
+                 * The wine prefix used for steam is under compatdata/<game id>, and should always be in the same steam
+                 * library as the game
+                 *
+                 * Wine is nice and tolerant in this situation, and if there's multiple entries in the file it's not a problem
+                 * After running bs once wine will reshuffle the file so all the DllOverrides entries are grouped as one entry.
+                 */
+                const regEntry = String.raw`
+[Software\\Wine\\DllOverrides]
+"winhttp"="native,builtin"
+`
+
+                var wineRegFile = path.join(getState().settings.installationDirectory, '../../compatdata/620980/pfx/user.reg')
+                fs.access(wineRegFile, fs.constants.W_OK, (err) => {
+                    if(err) {
+                        dispatch({
+                          type: 'DISPLAY_WARNING',
+                          payload: { text: 'Failed to patch Wine registry: ' + wineRegFile, color: 'red' }
+                        })
+                    } else {
+                        fs.appendFileSync(wineRegFile, regEntry)
+                        dispatch({
+                          type: 'DISPLAY_WARNING',
+                          payload: { text: 'Wine prefix/user.reg successfully patched', color: 'lightgreen' }
+                        })
+                    }
+                });
+            }
+
             dispatch({
               type: SET_PATCHING,
               payload: false

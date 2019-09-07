@@ -1,4 +1,4 @@
-import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_OFFLINE_MODE, SET_THEME, SET_THEME_IMAGE, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES, SET_INSTALLATION_TYPE, SET_GAME_VERSION } from './types'
+import { SET_SETTINGS_OPEN, SET_INSTALLATION_DIRECTORY, SET_AUTO_LOAD_MORE, SET_OFFLINE_MODE, SET_THEME, SET_THEME_IMAGE, SET_FOLDER_STRUCTURE, SET_UPDATE_CHANNEL, SET_LATEST_RELEASE_NOTES, SET_INSTALLATION_TYPE, SET_GAME_VERSION, SET_PROTON_DIRECTORY, SET_WINEPREFIX_DIRECTORY } from './types'
 
 import { checkDownloadedSongs } from './queueActions'
 
@@ -80,5 +80,19 @@ export const setLatestReleaseNotes = version => dispatch => {
   dispatch({
     type: SET_LATEST_RELEASE_NOTES,
     payload: version
+  })
+}
+
+export const setProtonDirectory = directory => (dispatch, getState) => {
+  dispatch({
+    type: SET_PROTON_DIRECTORY,
+    payload: directory
+  })
+}
+
+export const setWinePrefixDirectory = directory => (dispatch, getState) => {
+  dispatch({
+    type: SET_WINEPREFIX_DIRECTORY,
+    payload: directory
   })
 }

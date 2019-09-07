@@ -12,3 +12,25 @@ The ultimate content-manager for Beat Saber. The best way to download and manage
 
 ### For more instructions visit:
 https://bsaber.com/bdrop-tutorial/
+
+### Linux Installation (Early Alpha)
+- Clean install of beatsaber through steam
+- Run BS once
+- Run beatdrop, install mods as usual
+
+TODO: Update wine registry to load IPA winhttp.dll before built-in
+- Edit SteamLibrary/steamapps/compatdata/620980/pfx/user.reg and add at the end
+
+	[Software\\Wine\\DllOverrides]
+	"winhttp"="native,builtin"
+	
+TODO: Run IPA.exe to patch the game
+* This requires a wine installation with .net 4.6.2
+  * https://appdb.winehq.org/objectManager.php?sClass=version&iId=34702
+  * Recommend installation through winetricks, download the latest version (i.e don't use the outdated version from your package manager)
+  
+	wine IPA.exe
+	
+Assuming it worked you should have 'winhttp.dll' in the beatsaber directory.
+
+From then on just run beatdrop when needed to download new stuff and enjoy

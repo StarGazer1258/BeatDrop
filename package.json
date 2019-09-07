@@ -49,6 +49,8 @@
     "build": "react-scripts build && electron-builder --win",
     "publish": "react-scripts build && electron-builder --win -p always",
     "build-portable": "react-scripts build && electron-builder --win portable",
+    "build-linux": "react-scripts build && electron-builder --linux",
+    "publish-linux": "react-scripts build && electron-builder --linux -p always",
     "start": "concurrently \"cross-env BROWSER=none react-scripts start\" \"wait-on http://localhost:3000 && electron .\""
   },
   "build": {
@@ -73,6 +75,10 @@
           "beatdrop"
         ]
       }
+    },
+    "linux": {
+      "target": "tar.gz",
+      "icon": "resources/icon.ico"
     },
     "fileAssociations": [
       {
