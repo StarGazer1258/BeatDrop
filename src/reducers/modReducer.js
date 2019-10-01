@@ -1,4 +1,4 @@
-import { SET_MOD_LIST, APPEND_MOD_LIST, LOAD_MOD_DETAILS, INSTALL_MOD, UNINSTALL_MOD, CLEAR_MODS, SET_INSTALLED_MODS, SET_SCANNING_FOR_MODS, SET_MOD_ACTIVE, ADD_PENDING_MOD, ADD_DEPENDENT, SET_PATCHING, REMOVE_DEPENDENT, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES } from '../actions/types'
+import { SET_MOD_LIST, APPEND_MOD_LIST, LOAD_MOD_DETAILS, INSTALL_MOD, UNINSTALL_MOD, CLEAR_MODS, SET_INSTALLED_MODS, SET_SCANNING_FOR_MODS, SET_MOD_ACTIVE, ADD_PENDING_MOD, ADD_DEPENDENT, SET_PATCHING, REMOVE_DEPENDENT, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES, SET_IGNORE_MOD_UPDATE } from '../actions/types'
 
 const initialState = {
   mods: [],
@@ -82,21 +82,28 @@ export default function(state = initialState, action) {
         patching: action.payload
       }
     case SET_MOD_UPDATE_AVAILABLE:
+      console.log(`Setting ${ state.installedMods[action.payload.modIndex].name } to  ${ action.payload.updateAvailable }@${ action.payload.latestVersion }`)
       let updatedState = { ...state }
       updatedState.installedMods[action.payload.modIndex].updateAvailable = action.payload.updateAvailable
       if(action.payload.updateAvailable) {
         updatedState.installedMods[action.payload.modIndex].latestVersion = action.payload.latestVersion
         updatedState.updates++
       }
+      console.log(JSON.stringify(updatedState.installedMods[action.payload.modIndex]))
       return updatedState
     case CLEAR_MOD_UPDATES:
       let clearedUpdatesState = { ...state }
       for(let i = 0; i < clearedUpdatesState.installedMods.length; i++) {
         clearedUpdatesState.installedMods[i].updateAvailable = false
-        clearedUpdatesState.installedMods[i].latestVersion = clearedUpdatesState.installedMods[i].vesion
+        //clearedUpdatesState.installedMods[i].latestVersion = clearedUpdatesState.installedMods[i].vesion
       }
       clearedUpdatesState.updates = 0
       return clearedUpdatesState
+    case SET_IGNORE_MOD_UPDATE:
+      let ignoredState = { ...state }
+      ignoredState.installedMods[action.payload.modIndex].ignoreUpdate = action.payload.ignoreUpdate
+      if(action.payload.ignoreUpdate) ignoredState.updates--
+      return ignoredState
     default:
       return state
   }

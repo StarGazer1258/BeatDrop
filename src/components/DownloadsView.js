@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import Button from './Button'
 import ProgressBar from './ProgressBar'
-import { updateMod } from '../actions/modActions'
+import { updateMod, ignoreModUpdate } from '../actions/modActions'
 import { clearQueue } from '../actions/queueActions'
 
 class DownloadsView extends Component {
@@ -46,7 +46,8 @@ class DownloadsView extends Component {
                 <ul className="updates-list">
                   {
                     this.state.updates.map((mod, i) => {
-                      return <li key={ i }>{ mod.name } { mod.version } ➜ { mod.latestVersion } <div className="right"><Button type="primary" onClick={ () => { this.props.updateMod(mod.name) } }>Update</Button><Button>Ignore</Button></div></li>
+                      if(mod.ignoreUpdate) return null
+                      return <li key={ i }>{ mod.name } { mod.version } ➜ { mod.latestVersion } <div className="right"><Button type="primary" onClick={ () => { this.props.updateMod(mod.name) } }>Update</Button><Button onClick={ () => { this.props.ignoreModUpdate(mod.name) } }>Ignore</Button></div></li>
                     })
                   }
                 </ul>
@@ -74,4 +75,4 @@ const mapStateToProps = state => ({
   items: state.queue.items
 })
 
-export default connect(mapStateToProps, { updateMod, clearQueue })(DownloadsView)
+export default connect(mapStateToProps, { updateMod, ignoreModUpdate, clearQueue })(DownloadsView)

@@ -34,8 +34,9 @@ export const REMOVE_DEPENDENT           = 'REMOVE_DEPENDENT'
 export const SET_MOD_ACTIVE             = 'SET_MOD_ACTIVE'
 export const SET_PATCHING               = 'SET_PATCHING'
 export const SET_MOD_UPDATE_AVAILABLE   = 'SET_MOD_UPDATE_AVAILABLE'
-export const CLEAR_MOD_UPDATES              = 'CLEAR_MOD_UPDATES'
+export const CLEAR_MOD_UPDATES          = 'CLEAR_MOD_UPDATES'
 export const UPDATE_MOD                 = 'UPDATE_MOD'
+export const SET_IGNORE_MOD_UPDATE      = 'SET_IGNORE_MOD_UPDATE'
 
 // Playlists
 export const LOAD_NEW_PLAYLIST_IMAGE    = 'LOAD_NEW_PLAYLIST_IMAGE'

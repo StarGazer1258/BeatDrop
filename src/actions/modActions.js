@@ -1,4 +1,4 @@
-import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES } from './types'
+import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES, SET_IGNORE_MOD_UPDATE } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../constants/views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
@@ -653,6 +653,18 @@ export const updateMod = modName => (dispatch, getState) => {
   installMod(modName)(dispatch, getState)
 }
 
+export const ignoreModUpdate = modName => (dispatch, getState) => {
+  let modIndex = getState().mods.installedMods.findIndex(mod => mod.name === modName)
+  console.log('Ignore: ' + getState().mods.installedMods[modIndex].latestVersion)
+  dispatch({
+    type: SET_IGNORE_MOD_UPDATE,
+    payload: {
+      modIndex,
+      ignoreUpdate: true
+    }
+  })
+}
+
 export const checkModsForUpdates = () => (dispatch, getState) => {
   dispatch({
     type: CLEAR_MOD_UPDATES
@@ -668,6 +680,19 @@ export const checkModsForUpdates = () => (dispatch, getState) => {
           if(semver.satisfies(beatModsResponse[i].version, `^${ latestVersion }`)) {
             latestVersion = beatModsResponse[i].version
           }
+        }
+        if(installedMods[m].ignoreUpdate) {
+          console.log(latestVersion, JSON.stringify(installedMods[m]))
+          if(semver.gt(latestVersion, installedMods[m].latestVersion)) {
+            dispatch({
+              type: SET_IGNORE_MOD_UPDATE,
+              payload: {
+                modIndex: m,
+                ignoreUpdate: false
+              }
+            })
+          }
+          return
         }
         if(semver.gt(latestVersion, installedMods[m].version)) {
           dispatch({

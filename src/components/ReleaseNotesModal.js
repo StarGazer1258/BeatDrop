@@ -36,6 +36,9 @@ class ReleaseNotesModal extends Component {
               <li>Fixed bug where <b>app would crash randomly after downloading songs and mods.</b></li>
               <li>Fixed bug where <b>songs would be scanned twice on inital setup.</b></li>
               <li>Fixed <a href="https://github.com/StarGazer1258/BeatDrop/issues/65" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#65.</a></li>
+              <li>2.6.1: Fixed "Ignore Update" button.</li>
+              <li>2.6.1: Make playlist editing check more efficient.</li>
+              <li>2.6.1: Merge <a href="https://github.com/StarGazer1258/BeatDrop/pull/57" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#57.</a> Fixes bug with folder name creation.</li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
