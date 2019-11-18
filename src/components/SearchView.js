@@ -18,7 +18,6 @@ class SearchView extends Component {
         <h2>Results for: <span style={ { fontWeight: 400 } }>"{this.props.results.keywords}"</span></h2>
         <h2 style={ { display: 'inline-block', marginRight: '5px' } }>Library</h2><span>{this.props.results.library.length} result{(this.props.results.library.length !== 1 ? 's' : '')}</span>
         <div>{this.props.results.library.map((song, i) => {
-            console.log(song)
           return (
             <div className="search-result" onClick={ () => { this.props.loadDetailsFromFile(song.file) } } key={ i }>
               <img src={ song.coverUrl } alt=""/>

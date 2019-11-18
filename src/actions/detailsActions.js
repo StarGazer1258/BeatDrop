@@ -1,9 +1,10 @@
-import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, DISPLAY_WARNING } from './types'
+import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING } from './types'
 import { SONG_DETAILS } from '../constants/views'
 
 import AdmZip from 'adm-zip'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'
+import { displayFlash } from "./flashActions"
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
 const path = remote.require('path')
@@ -20,7 +21,7 @@ export const loadDetailsFromFile = file => (dispatch, getState) => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  setView(SONG_DETAILS)(dispatch)
+  setView(SONG_DETAILS)(dispatch, getState)
   fs.readFile(file, 'UTF-8', (err, data) => {
     if(err) return
     let details = JSON.parse(data)
@@ -50,7 +51,7 @@ export const loadDetailsFromFile = file => (dispatch, getState) => {
  * Loads and presents the details page for a song from a key.
  * @param {string} key The key of the song
  */
-export const loadDetailsFromKey = key => dispatch => {
+export const loadDetailsFromKey = key => (dispatch, getState) => {
   dispatch({
     type: CLEAR_DETAILS
   })
@@ -58,17 +59,14 @@ export const loadDetailsFromKey = key => dispatch => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  setView(SONG_DETAILS)(dispatch)
+
+  setView(SONG_DETAILS)(dispatch, getState)
+
   if((/^[a-f0-9]+$/).test(key)) {
     fetch(`https://beatsaver.com/api/maps/detail/${key}`)
       .then(res => {
         if(res.status === 404){
-          dispatch({
-            type: DISPLAY_WARNING,
-            payload: {
-              text: '404: Song details not found!'
-            }
-          })
+          displayFlash({ text: '404: Song details not found!' })(dispatch)
         }
         return res
       })
@@ -98,12 +96,7 @@ export const loadDetailsFromKey = key => dispatch => {
         })
       })
       .catch(err => {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `Error downloading song: ${err}. For help, please file a bug report with this error message.`
-          }
-        })
+        displayFlash({ text: `Error downloading song: ${err}. For help, please file a bug report with this error message.` })(dispatch)
       })
       fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${key}/ratings`)
         .then(res => res.json())
@@ -130,13 +123,8 @@ export const loadDetailsFromKey = key => dispatch => {
               }
             }
           })
-        })
+      })
   } else {
-    dispatch({
-      type: DISPLAY_WARNING,
-      payload: {
-        text: `Error loading details from key: "${key}" is not a valid key. If you are seeing this, please file  a bug report.`
-      }
-    })
+    displayFlash({ text: `Error loading details from key: "${key}" is not a valid key. If you are seeing this, please file  a bug report.` })(dispatch)
   }
 }

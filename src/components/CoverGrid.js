@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import '../css/CoverGrid.scss'
 
 import PropTypes from 'prop-types'
@@ -14,7 +14,7 @@ import { defaultPlaylistIcon } from '../b64Assets'
 
 import { setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist } from '../actions/playlistsActions'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
-import { displayWarning } from '../actions/warningActions'
+import { displayFlash } from '../actions/flashActions'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
@@ -61,38 +61,39 @@ class CoverGrid extends Component {
             })
           :
             this.props.songs.songs.map((song, i) => {
+              const songHash = song.hash || song.hashMd5
               let songTags = [
                 {
                   boolean: true,
-                  tag: song.hash || song.hashMd5
+                  tag: songHash
                 },
                 {
-                  boolean: !!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5)),
+                  boolean: !!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === songHash),
                   tag: '.downloaded'
                 }
               ]
               return (
-                <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
+                <ContextMenuTrigger id={ songHash } key={ songHash }>
                 <CoverGridItem
                   key={ makeRenderKey(songTags) }
                   title={ song.songName || song._songName || song.metadata.songName }
                   artist={ song.authorName || song._songAuthorName || (song.metadata === undefined ? null : song.metadata.songAuthorName) }
                   difficulties={ song.difficulties || song.difficultyLevels || song._difficultyBeatmapSets || song.metadata.difficulties }
                   imageSource={ song.coverURL || song.coverUrl }
-                  songKey={ song.key } hash={ song.hash || song.hashMd5 }
+                  songKey={ song.key } hash={ songHash }
                   file={ song.file } downloads={ song.downloadCount }
                   upvotes={ song.upVotes } downvotes={ song.downVotes }
                   plays={ song.playedCount }
                 />
-                <ContextMenu id={ song.hash || song.hashMd5 }>
+                <ContextMenu id={ songHash }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
-                    {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName}`}
+                    {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (songHash))) ? 'Delete'  : 'Download'} ${song.songName}`}
                   </MenuItem>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); this.setState({ song }); this.props.setPlaylistPickerOpen(true)} }>
                     Add to Playlist
                   </MenuItem>
                   <MenuItem divider />
-                  <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); }} }>Share</MenuItem>
+                  <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayFlash({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayFlash({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); }} }>Share</MenuItem>
                   {(!!song.id ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.id}`)} }>View on BeastSaber</MenuItem> : null)}
                 </ContextMenu>
               </ContextMenuTrigger>
@@ -155,4 +156,4 @@ const mapStateToProps = state => ({
   newPlaylistDialogOpen: state.playlists.newPlaylistDialogOpen
 })
 
-export default connect(mapStateToProps, { loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayWarning, checkDownloadedSongs })(CoverGrid)
+export default connect(mapStateToProps, { loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, setNewPlaylistDialogOpen, clearPlaylistDialog, createNewPlaylist, addSongToPlaylist, displayFlash, checkDownloadedSongs })(CoverGrid)

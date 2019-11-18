@@ -58,33 +58,33 @@ function Difficulties(props) {
 
 class CoverGridItem extends Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       bgc: 'rgba(128, 128, 128)',
       textColor: 'black'
     }
   }
 
-componentWillReceiveProps(props) {
-  getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource.substring(7, this.props.imageSource.length) : `https://beatsaver.com/${ this.props.imageSource }`)
-      .then(colors => {
-        this.setState({
-          bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
-          textColor: (colors[0].rgb()[0] * 0.299 + colors[0].rgb()[1] * 0.587 + colors[0].rgb()[2] * 0.114) > 186 ? 'black' : 'white'
+  componentWillReceiveProps(props) {
+    getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource.substring(7, this.props.imageSource.length) : `https://beatsaver.com/${ this.props.imageSource }`)
+        .then(colors => {
+          this.setState({
+            bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
+            textColor: (colors[0].rgb()[0] * 0.299 + colors[0].rgb()[1] * 0.587 + colors[0].rgb()[2] * 0.114) > 186 ? 'black' : 'white'
+          })
         })
-      })
-      .catch(() => {})
-}
+        .catch(() => {})
+  }
 
   componentDidMount() {
-    console.log( encodeURI(this.props.imageSource) )
     if(!this.props.imageSource) return
     getColors(this.props.imageSource.startsWith('file://') ? this.props.imageSource.substring(7, this.props.imageSource.length) : `https://beatsaver.com/${ this.props.imageSource }`)
       .then(colors => {
+        const rgb = colors[0].rgb()
         this.setState({
-          bgc: `rgb(${colors[0].rgb()[0]},${colors[0].rgb()[1]},${colors[0].rgb()[2]})`,
-          textColor: (colors[0].rgb()[0] * 0.299 + colors[0].rgb()[1] * 0.587 + colors[0].rgb()[2] * 0.114) > 186 ? 'black' : 'white'
+          bgc: `rgb(${rgb.join(',')})`,
+          textColor: (rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114) > 186 ? 'black' : 'white'
         })
       })
       .catch(() => {})

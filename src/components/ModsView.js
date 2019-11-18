@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { BEATMODS, LIBRARY } from '../constants/resources';
 
 import { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod } from '../actions/modActions'
-import { displayWarning } from '../actions/warningActions'
+import { displayFlash } from '../actions/flashActions'
 import { ContextMenuTrigger, MenuItem, ContextMenu } from 'react-contextmenu';
 
 import { makeRenderKey } from '../utilities'
@@ -159,7 +159,7 @@ class ModsView extends Component {
                               : null
                             : null
                           }
-                           <MenuItem onClick={ (e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://mods/details/${encodeURIComponent(mod.name)}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${mod.name} copied to clipboard!` })} }>Share</MenuItem>
+                           <MenuItem onClick={ (e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://mods/details/${encodeURIComponent(mod.name)}`); this.props.displayFlash({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${mod.name} copied to clipboard!` })} }>Share</MenuItem>
                         </ContextMenu>
                       </Fragment>
                     )
@@ -179,7 +179,7 @@ const mapStateToProps = state => ({
   resource: state.resource
 })
 
-export default connect(mapStateToProps, { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod, displayWarning })(ModsView)
+export default connect(mapStateToProps, { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod, displayFlash })(ModsView)
 
 /*
 { mod.name !== 'BSIPA' ? <MenuItem>Add to Mod Pack</MenuItem> : null }

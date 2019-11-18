@@ -50,10 +50,10 @@ export const LOAD_PLAYLIST_SONGS        = 'LOAD_PLAYLIST_SONGS'
 export const CLEAR_PLAYLIST_DETAILS     = 'CLEAR_PLAYLIST_DETAILS'
 export const SET_PLAYLIST_EDITING       = 'SET_PLAYLIST_EDITING'
 
-// Warnings
-export const DISPLAY_WARNING            = 'DISPLAY_WARNING'
-export const REMOVE_WARNING             = 'REMOVE_WARNING'
-export const CLEAR_WARNINGS             = 'CLEAR_WARNINGS'
+// Flash messages
+export const DISPLAY_FLASH            = 'DISPLAY_FLASH'
+export const REMOVE_FLASH             = 'REMOVE_FLASH'
+export const CLEAR_FLASHES             = 'CLEAR_FLASHES'
 
 // Source
 export const SET_SOURCE                 = 'SET_SOURCE'

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { installMod, uninstallMod, activateMod, deactivateMod } from '../actions/modActions'
 import { setView } from '../actions/viewActions'
-import { displayWarning } from '../actions/warningActions'
+import { displayFlash } from '../actions/flashActions'
 
 import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
 
@@ -21,6 +21,7 @@ const md = new Remarkable()
 const { clipboard } = window.require('electron')
 
 const exitDetailsShortcut = function (e) { if(e.keyCode === 27) { this.props.setView(this.props.previousView) } }
+const resetState = () => this.setState({})
 
 const { ipcRenderer } = window.require('electron')
 
@@ -29,19 +30,18 @@ class ModDetails extends Component {
   constructor(props) {
     super(props)
 
-    ipcRenderer.on('mod-installed', (_, event, message) => {
-      this.setState({})
-    })
-
     this.exitDetailsShortcut = exitDetailsShortcut.bind(this)
+    this.resetState = resetState.bind(this)
   }
 
   componentDidMount() {
     window.addEventListener('keyup', this.exitDetailsShortcut)
+    ipcRenderer.on('mod-installed', this.resetState)
   }
 
   componentWillUnmount() {
     window.removeEventListener('keyup', this.exitDetailsShortcut)
+    ipcRenderer.removeListener('mod-installed', this.resetState)
   }
 
   render() {
@@ -93,7 +93,7 @@ class ModDetails extends Component {
             }
             <ContextMenuTrigger id={ this.props.details._id } holdToDisplay={ 0 }><span className="action-button more-button"><img src={ moreIcon } alt='' /></span></ContextMenuTrigger>
             <ContextMenu id={ this.props.details._id }>
-              <MenuItem onClick={ (e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://mods/details/${encodeURIComponent(this.props.details.name)}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${this.props.details.name} copied to clipboard!` })} }>Share</MenuItem>
+              <MenuItem onClick={ (e) => {e.stopPropagation(); clipboard.writeText(`beatdrop://mods/details/${encodeURIComponent(this.props.details.name)}`); this.props.displayFlash({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${this.props.details.name} copied to clipboard!` })} }>Share</MenuItem>
             </ContextMenu>
           </div>
           <hr />
@@ -113,7 +113,7 @@ const mapStateToProps = state => ({
   previousView: state.view.previousView
 })
 
-export default connect(mapStateToProps, { setView, installMod, uninstallMod, activateMod, deactivateMod, displayWarning })(ModDetails)
+export default connect(mapStateToProps, { setView, installMod, uninstallMod, activateMod, deactivateMod, displayFlash })(ModDetails)
 
 /*
   { this.props.details.name !== 'BSIPA' ? <span className="action-button modpack-add-button" title="Add Mod to Mod Pack"><img src={ addIcon } alt='' />ADD TO MOD PACK</span> : null }

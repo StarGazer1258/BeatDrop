@@ -6,15 +6,15 @@ import { connect } from 'react-redux'
 import { loadMore } from '../actions/songListActions'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
 import { setPlaylistPickerOpen } from '../actions/playlistsActions'
-import { displayWarning } from '../actions/warningActions'
+import { displayFlash } from '../actions/flashActions'
 
 import SongListItem from './SongListItem'
 import LoadMore from './LoadMore';
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
-import { makeRenderKey } from '../utilities'
 import PlaylistPicker from './PlaylistPicker';
+import * as uniqid from "uniqid";
 
 const { clipboard, shell } = window.require('electron')
 
@@ -67,28 +67,12 @@ class SongList extends Component {
           <SongListItem loading />
         :
           this.props.songs.songs.map((song, i) => {
-            let songTags = [
-              {
-                boolean: true,
-                tag: song.hash || song.hashMd5 || song.songName
-              },
-              {
-                boolean: !!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5)),
-                tag: '.downloaded'
-              },
-              {
-                boolean: !!song.ratings,
-                tag: '.ratings-loaded'
-              },
-              {
-                boolean: this.props.view.subView === 'compact-list',
-                tag: '.compact'
-              }
-            ];
+
+            const songHash = song.hash || song.hashMd5;
             return (
-              <ContextMenuTrigger id={ song.hash || song.hashMd5 }>
+              <ContextMenuTrigger id={ songHash } key={ songHash }>
                 <SongListItem
-                  key={ makeRenderKey(songTags) }
+                  key={ uniqid() }
                   title={  song.songName || song._songName || song.metadata.songName }
                   ratings={ song.ratings || song.stats ? song.stats.rating : '' }
                   artist={ song.authorName || song._songAuthorName || (song.metadata === undefined ? null : song.metadata.songAuthorName) }
@@ -96,7 +80,7 @@ class SongList extends Component {
                   difficulties={ song.difficultyLevels || song.difficulties || song._difficultyBeatmapSets || ((song.metadata !== undefined) ? song.metadata.difficulties : null) }
                   imageSource={ song.coverURL || song.coverUrl }
                   songKey={ song.key }
-                  hash={ song.hash || song.hashMd5 }
+                  hash={ songHash }
                   file={ song.file }
                   downloads={ song.stats ? song.stats.downloads : song.downloadCount }
                   upvotes={ song.stats ? song.stats.upVotes : song.upVotes }
@@ -104,15 +88,15 @@ class SongList extends Component {
                   plays={ song.stats ? song.stats.plays : song.playedCount }
                   uploadDate={ !!song.uploaded ? new Date(Date.parse(song.uploaded)).toLocaleString() : '' }
                 />
-                <ContextMenu id={ song.hash || song.hashMd5 }>
+                <ContextMenu id={ songHash }>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); (!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? this.props.deleteSong(song.file || song.hash || song.hashMd5) : this.props.downloadSong(song.hash || song.hashMd5)} }>
-                    {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (song.hash || song.hashMd5))) ? 'Delete'  : 'Download'} ${song.songName || song._songName || song.metadata.songName}`}
+                    {`${(!!song.file || this.props.songs.downloadedSongs.some(dsong => dsong.hash === (songHash))) ? 'Delete'  : 'Download'} ${song.songName || song._songName || song.metadata.songName}`}
                   </MenuItem>
                   <MenuItem onClick={ (e) => {e.stopPropagation(); this.setState({ song }); this.props.setPlaylistPickerOpen(true)} }>
                     Add to Playlist
                   </MenuItem>
                   <MenuItem divider />
-                  <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); }} }>Share</MenuItem>
+                  <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayFlash({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayFlash({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); }} }>Share</MenuItem>
                   {(!!song.id ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.id}`)} }>View on BeastSaber</MenuItem> : null)}
                 </ContextMenu>
               </ContextMenuTrigger>
@@ -143,4 +127,4 @@ const mapStateToProps = state => ({
   autoLoadMore: state.settings.autoLoadMore
 })
 
-export default connect(mapStateToProps, { loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, displayWarning, checkDownloadedSongs })(SongList)
+export default connect(mapStateToProps, { loadMore, downloadSong, deleteSong, setPlaylistPickerOpen, displayFlash, checkDownloadedSongs })(SongList)

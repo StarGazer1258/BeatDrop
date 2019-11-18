@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { setView } from '../actions/viewActions'
 import { setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists, loadPlaylistCoverImage, clearPlaylistDialog } from '../actions/playlistsActions'
 import { downloadSong } from '../actions/queueActions'
-import { displayWarning } from '../actions/warningActions'
+import { displayFlash } from '../actions/flashActions'
 import PropTypes from 'prop-types'
 
 import deleteIcon from '../assets/delete-filled.png'
@@ -25,6 +25,19 @@ let playlistSongs
 
 class PlaylistDetails extends Component {
 
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.onMouseUp = this.onMouseUp.bind(this);
+  }
+
+  onMouseUp(event) {
+    if (!event.target.classList.contains('i-more-actions')) {
+      this.setState({ moreOpen: false })
+    }
+  }
+
   componentDidMount() {
     playlistSongs = new Sortable(document.getElementById('playlist-songs'), {
       animation: 150,
@@ -34,11 +47,12 @@ class PlaylistDetails extends Component {
       bubbleScroll: true,
       scrollSensitivity: 150
     })
-    document.addEventListener('mouseup', (e) => { if(!e.target.classList.contains('i-more-actions')) { this.setState({ moreOpen: false }) } })
+
+    document.addEventListener('mouseup', this.onMouseUp)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('mouseup', (e) => { if(!e.target.classList.contains('i-more-actions')) { this.setState({ moreOpen: false }) } })
+    document.removeEventListener('mouseup', this.onMouseUp)
   }
 
   render() {
@@ -65,7 +79,7 @@ class PlaylistDetails extends Component {
           <div className="close-icon" title="Close" onClick={ () => { this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) } }></div>
           <div id="details-split">
             <div id="details-info">
-              {this.props.editing ? 
+              {this.props.editing ?
                 <>
                   <label htmlFor="edit-playlist-cover-image" id="edit-playlist-add-cover-image"><img src={ this.props.newCoverImageSource || this.props.playlistDetails.image } alt="" /></label>
                   <input type="file" name="edit-playlist-cover-image" id="edit-playlist-cover-image" accept=".jpg,.jpeg,.png,.gif" onChange={ (e) => {this.props.loadPlaylistCoverImage(e.target.files[0].path || this.props.settings.newCoverImageSource)} } />
@@ -94,14 +108,14 @@ class PlaylistDetails extends Component {
                                 neededSongs++
                               }
                               checkedSongs++
-                              if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({ color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000 }); this.setState({ moreOpen: false })
+                              if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayFlash({ color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000 }); this.setState({ moreOpen: false })
                             })
                             .catch(err => {
-                              this.props.displayWarning({ text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.` })
+                              this.props.displayFlash({ text: `An unexpected error occured: ${err}. Please try removing any unavailable songs and try again.` })
                               return
                             })
                         } catch(err) {
-                          this.props.displayWarning({ text: `An unexpected error occured: ${err}. Please try again.` })
+                          this.props.displayFlash({ text: `An unexpected error occured: ${err}. Please try again.` })
                           return
                         }
                       } else {
@@ -110,7 +124,7 @@ class PlaylistDetails extends Component {
                           neededSongs++
                         }
                         checkedSongs++
-                        if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayWarning({ color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000 }); this.setState({ moreOpen: false })
+                        if(checkedSongs === this.props.playlistDetails.songs.length) if(neededSongs === 0) this.props.displayFlash({ color: 'lightgreen', text: 'All available songs are already downloaded.', timeout: 5000 }); this.setState({ moreOpen: false })
                       }
                     }
                   } }>Download Missing Songs</MenuItem></ContextMenu>
@@ -150,7 +164,7 @@ PlaylistDetails.propTypes = {
   deletePlaylist: PropTypes.func.isRequired,
   fetchLocalPlaylists: PropTypes.func.isRequired,
   downloadSong: PropTypes.func.isRequired,
-  displayWarning: PropTypes.func.isRequired
+  displayFlash: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
@@ -162,4 +176,4 @@ const mapStateToProps = state => ({
   newCoverImageSource: state.playlists.newCoverImageSource
 })
 
-export default connect(mapStateToProps, { setView, setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists, loadPlaylistCoverImage, clearPlaylistDialog, downloadSong, displayWarning })(PlaylistDetails)
+export default connect(mapStateToProps, { setView, setPlaylistEditing, savePlaylistDetails, deletePlaylist, fetchLocalPlaylists, loadPlaylistCoverImage, clearPlaylistDialog, downloadSong, displayFlash })(PlaylistDetails)

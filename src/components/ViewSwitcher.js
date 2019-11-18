@@ -12,7 +12,7 @@ import SearchView from './SearchView'
 import PlaylistView from './PlaylistView'
 import SettingsView from './SettingsView'
 import SongDetails from './SongDetails'
-import Warning from './Warning'
+import Flash from './Flash'
 import * as VIEWS from '../constants/views'
 import PlaylistDetails from './PlaylistDetails'
 import DonateView from './DonateView'
@@ -63,11 +63,12 @@ function MainView(props) {
   }
 }
 
-function Warnings(props) {
+function Flashes(props) {
   return (
-    <div className='warnings'>
-      {props.warnings.map((warning, i) => {
-        return <Warning text={ warning.text } color={ warning.color } timeout={ warning.timeout } index={ i } key={ i } />
+    <div className='flashes'>
+      {props.flashes.map((flash, i) => {
+        const { id, payload } = flash;
+        return <Flash text={ payload.text } color={ payload.color } timeout={ payload.timeout } index={ id } key={ id } />
       })}
     </div>
   )
@@ -92,7 +93,7 @@ class ViewSwitcher extends Component {
                  <MainView view={ this.props.view } subView={ this.props.subView } />
                </>
           }
-          <Warnings warnings={ this.props.warnings } />
+          <Flashes flashes={ this.props.flashes } />
         </div>
       </div>
     )
@@ -104,7 +105,7 @@ ViewSwitcher.propTypes = {
   subView: PropTypes.string.isRequired,
   settings: PropTypes.object.isRequired,
   details: PropTypes.object.isRequired,
-  warnings: PropTypes.array,
+  flashes: PropTypes.array,
   sidebarOpen: PropTypes.bool.isRequired,
 }
 
@@ -113,7 +114,7 @@ const mapStateToProps = state => ({
   subView: state.view.subView,
   settings: state.settings,
   details: state.details,
-  warnings: state.warnings,
+  flashes: state.flashes,
   sidebarOpen: state.sidebar.isOpen
 })
 

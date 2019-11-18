@@ -1,8 +1,9 @@
-import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE, DISPLAY_WARNING } from './types'
+import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, ADD_BSABER_RATING, SET_SCROLLTOP, SET_LOADING, SET_LOADING_MORE, LOAD_MORE, SET_RESOURCE } from './types'
 import { SONG_LIST } from '../constants/views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'
+import { displayFlash } from "./flashActions"
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -14,8 +15,8 @@ const resourceUrl = {
     'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/maps/plays'
 }
 
-export const fetchNew = () => dispatch => {
-  setView(SONG_LIST)(dispatch)
+export const fetchNew = () => (dispatch, getState) => {
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -31,7 +32,6 @@ export const fetchNew = () => dispatch => {
   fetch('https://beatsaver.com/api/maps/latest')
     .then(res => res.json())
     .then(data =>  {
-      console.log(data)
       dispatch({
         type: FETCH_NEW,
         payload:  data
@@ -40,7 +40,6 @@ export const fetchNew = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      console.log(data);
       for(let i = 0; i < data.docs.length; i++) {
         fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
@@ -60,8 +59,8 @@ export const fetchNew = () => dispatch => {
     })
 }
 
-export const fetchTopDownloads = () => dispatch => {
-  setView(SONG_LIST)(dispatch)
+export const fetchTopDownloads = () => (dispatch, getState) => {
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -85,7 +84,7 @@ export const fetchTopDownloads = () => dispatch => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
+      for(let i = 0; i < data.docs.length; i++) {
         fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
@@ -104,8 +103,8 @@ export const fetchTopDownloads = () => dispatch => {
     })
 }
 
-export const fetchTopFinished = () => dispatch => {
-  setView(SONG_LIST)(dispatch)
+export const fetchTopFinished = () => (dispatch, getState) => {
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -149,7 +148,7 @@ export const fetchTopFinished = () => dispatch => {
 }
 
 export const fetchLocalSongs = () => (dispatch, getState) => {
-  setView(SONG_LIST)(dispatch)
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -168,24 +167,14 @@ export const fetchLocalSongs = () => (dispatch, getState) => {
   for(let i = 0; i < downloadedSongs.length; i++) {
     fs.readFile(downloadedSongs[i].file, 'UTF-8', (err, data) => {
       if(err) {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `Failed to read ${ downloadedSongs[i].file }: ${ err }`
-          }
-        })
+        displayFlash({ text: `Failed to read ${downloadedSongs[i].file}: ${err}` })(dispatch)
         return
       }
       let song
       try {
         song = JSON.parse(data)
       } catch(err) {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `Failed to parse song: ${ err }`
-          }
-        })
+        displayFlash({ text: `Failed to parse song: ${err}` })(dispatch)
         return
       }
       song.coverUrl = `file://${ path.join(path.dirname(downloadedSongs[i].file), (song.coverImagePath || song._coverImageFilename)) }`
@@ -228,7 +217,7 @@ export const loadMore = () => (dispatch, getState) => {
         type: SET_LOADING_MORE,
         payload: false
       })
-      console.log(data)
+
       for(let i = state.songs.songs.length; i < state.songs.songs.length + data.docs.length; i++) {
         fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key}/ratings`)
         .then(res => res.json())
@@ -247,12 +236,7 @@ export const loadMore = () => (dispatch, getState) => {
       }
     })
     .catch((err) => {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          text: 'There was error loading more songs. Check your connection to the internet and try again.'
-        }
-      })
+      displayFlash({ text: 'There was error loading more songs. Check your connection to the internet and try again.' })(dispatch)
     })
 }
 
