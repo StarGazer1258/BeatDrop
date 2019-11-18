@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import xIcon from '../assets/x-filled.png'
 
-import { removeWarning } from '../actions/warningActions'
+import { removeFlash } from '../actions/flashActions'
 import { connect } from 'react-redux'
 
-import '../css/Warning.scss'
+import '../css/Flash.scss'
 
-class Warning extends Component {
+class Flash extends Component {
 
   constructor(props) {
     super(props)
@@ -27,7 +27,7 @@ class Warning extends Component {
           setTimeout(() => {
             this.setState({ translateY: '-50px', opacity: 0 })
             setTimeout(() => {
-              this.props.removeWarning(this.props.index)
+              this.props.removeFlash(this.props.index)
             }, 500)
           }, this.props.timeout)
       })
@@ -40,20 +40,20 @@ class Warning extends Component {
 
   render() {
     return (
-      <div className="warning" style={ { backgroundColor: this.props.color || 'rgb(255, 128, 128)', transform: `translateY(${ this.state.translateY })`, opacity: this.state.opacity } }>
+      <div className="flash" style={ { backgroundColor: this.props.color || 'rgb(255, 128, 128)', transform: `translateY(${ this.state.translateY })`, opacity: this.state.opacity } }>
         <span>{ this.props.text }</span>
-        <span className="remove-warning" onClick={ () => { this.props.removeWarning(this.props.index) } }><img src={ xIcon } alt="X"/></span>
+        <span className="remove-flash" onClick={ () => { this.props.removeFlash(this.props.index) } }><img src={ xIcon } alt="X"/></span>
       </div>
     )
   }
 }
 
-Warning.propTypes = {
+Flash.propTypes = {
   text: PropTypes.string.isRequired,
   color: PropTypes.string,
   timeout: PropTypes.number,
-  index: PropTypes.number.isRequired,
-  removeWarning: PropTypes.func.isRequired
+  index: PropTypes.string.isRequired,
+  removeFlash: PropTypes.func.isRequired
 }
 
-export default connect(null, { removeWarning })(Warning)
+export default connect(null, { removeFlash: removeFlash })(Flash)

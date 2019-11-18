@@ -1,7 +1,8 @@
-import { ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
+import { ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../constants/views'
 import { isModInstalled, installEssentialMods } from './modActions'
 import { setView } from './viewActions'
+import { displayFlash } from "./flashActions"
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -75,12 +76,9 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                       })
                       downloadSong(toDownload)(dispatch, getState)
                     }
-                    dispatch({
-                      type: DISPLAY_WARNING,
-                      payload: {
-                        text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
-                      }
-                    })
+                    displayFlash({
+                      text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
+                    })(dispatch)
                     return
                 }
                 let zip = new AdmZip(data)
@@ -112,33 +110,22 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                   if(accessErr) {
                     fs.writeFile(metadataFile, JSON.stringify({ key: song.key, hash: song.hash, downloadTime: utc }), err => {
                       if(err) {
-                        dispatch({
-                          type: DISPLAY_WARNING,
-                          payload: {
-                            text: `Failed to write metadata file for ${ song.name }. Go to settings and press "Scan for Songs" to try again.`
-                          }
-                        })
+                        displayFlash({
+                          text: `Failed to write metadata file for ${song.name}. Go to settings and press "Scan for Songs" to try again.`
+                        })(dispatch)
                       }
                     })
                     return
                   }
                   fs.readFile(metadataFile, 'UTF-8', (err, metadata) => {
                     if(err) {
-                      dispatch({
-                        type: DISPLAY_WARNING,
-                        payload: {
-                          text: `Failed to read metadata file for ${ song.name }. Go to settings and press "Scan for Songs" to try again.`
-                        }
-                      })
+                      displayFlash({ text: `Failed to read metadata file for ${song.name}. Go to settings and press "Scan for Songs" to try again.` })
+                      return
                     }
+
                     fs.writeFile(metadataFile, JSON.stringify({ ...JSON.parse(metadata), key: song.key, hash: song.hash, downloadTime: utc }), err => {
                       if(err) {
-                        dispatch({
-                          type: DISPLAY_WARNING,
-                          payload: {
-                            text: `Failed to write metadata file for ${ song.name }. Go to settings and press "Scan for Songs" to try again.`
-                          }
-                        })
+                        displayFlash({ text: `Failed to write metadata file for ${ song.name }. Go to settings and press "Scan for Songs" to try again.` })(dispatch)
                       }
                     })
                   })
@@ -181,15 +168,10 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 })
               })
             } else {
-              dispatch({
-                type: DISPLAY_WARNING,
-                payload: {
-                  text: `There was an error downloading the song with hash ${hash}. The song requested is no longer available for download.`
-                }
-              })
+              displayFlash({ text: `There was an error downloading the song with hash ${hash}. The song requested is no longer available for download.` })(dispatch)
             }
           })
-          .catch(err => {
+          .catch(() => {
             state = { ...getState() }
             dispatch({
               type: SET_DOWNLOADING_COUNT,
@@ -203,22 +185,11 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               })
               downloadSong(toDownload)(dispatch)
             }
-            dispatch({
-              type: DISPLAY_WARNING,
-              payload: {
-                text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
-              }
-            })
+            displayFlash({ text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.` })(dispatch)
           })
       })
-      .catch(err => {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `There was an error downloading the song with key ${identity}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
-          }
-        })
-        return
+      .catch(() => {
+        displayFlash({ text: `There was an error downloading the song with key ${identity}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.` })(dispatch)
       })
   } else {
     let state = { ...getState() }
@@ -246,18 +217,18 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           payload: { 
             utc,
             hash: song.hash,
-            image: `https://www.beatsaver.com${ song.coverURL }`,
+            image: `https://www.beatsaver.com${song.coverURL}`,
             title: song.metadata.songName,
             author: song.metadata.songAuthorName
           }
         })
         let req = request.get({
-          url: `https://beatsaver.com/${ song.downloadURL }`,
+          url: `https://beatsaver.com/${song.downloadURL}`,
           encoding: null
         }, (err, r, data) => {
           try {
-            // eslint-disable-next-line
-            if(err || r ? r.statusCode !== 200 : false) throw 'Error downloading!'
+            if(err || r ? r.statusCode !== 200 : false)
+              throw new Error('Error downloading!')
           } catch(err) {
             state = { ...getState() }
               dispatch({
@@ -272,14 +243,10 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 })
                 downloadSong(toDownload)(dispatch, getState)
               }
-              dispatch({
-                type: DISPLAY_WARNING,
-                payload: {
-                  text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
-                }
-              })
+              displayFlash({ text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.` })(dispatch)
               return
           }
+
           let zip = new AdmZip(data)
           let zipEntries = zip.getEntries()
           let infoEntry, infoObject
@@ -291,12 +258,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           try {
             infoObject = JSON.parse(infoEntry.getData().toString('UTF8'))
           } catch(err) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              payload: {
-                text: `There was an error unpacking the song "${song.songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${song.uploader.username}, if problem persists.`
-              }
-            })
+            displayFlash({ text: `There was an error unpacking the song "${song.songName}." The song's files may be corrupt or use formatting other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Please try again and contact the song's uploader, ${song.uploader.username}, if problem persists.` })(dispatch)
             return
           }
           infoObject.key = song.key
@@ -370,12 +332,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           })
           downloadSong(toDownload)(dispatch, getState)
         }
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.`
-          }
-        })
+        displayFlash({ text: `There was an error downloading the song with hash ${hash}. There may have been an error with BeatSaver's servers or the song may no longer be available. Please try again and contact the BeatSaver developers if problem persists.` })(dispatch)
       })
   }
 }
@@ -389,7 +346,7 @@ export const deleteSong = (identity) => (dispatch, getState) => {
   if(getState().songs.downloadedSongs.some(song => song.hash === identity)) {
     file = getState().songs.downloadedSongs[getState().songs.downloadedSongs.findIndex(song => song.hash === identity)].file
   }
-  setView(getState().view.previousView)(dispatch)
+  setView(getState().view.previousView)(dispatch, getState)
   let dirs = file.split(path.sep)
   let cld = dirs.indexOf('CustomLevels')
   for(let i = 2; i < file.split(path.sep).length - cld; i++) {
@@ -399,15 +356,10 @@ export const deleteSong = (identity) => (dispatch, getState) => {
   downloadedSongs.splice(downloadedSongs.findIndex(song => song.file === file), 1)
   rimraf(dirs.join(path.sep), (err) => {
     if(err) {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          text: `There was an error deleting the song located at ${dirs.join(path.sep)}. BeatDrop may have insufficient permissions or the file may be in use by another program. Please try closing any programs that may be using this song and try again.`
-        }
-      })
+      displayFlash({ text: `There was an error deleting the song located at ${dirs.join(path.sep)}. BeatDrop may have insufficient permissions or the file may be in use by another program. Please try closing any programs that may be using this song and try again.` })(dispatch)
       return
     }
-    setView(SONG_LIST)(dispatch)
+    setView(SONG_LIST)(dispatch, getState)
     dispatch({
       type: SET_DOWNLOADED_SONGS,
       payload: downloadedSongs
@@ -420,12 +372,7 @@ export const hashAndWriteToMetadata = (infoFile) => dispatch => {
     let metadataFile = path.join(path.dirname(infoFile), 'metadata.dat')
     fs.readFile(infoFile, { encoding: 'UTF-8' }, (infoReadErr, infoData) => {                             // Read the info.dat file
       if(infoReadErr) {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `Failed to read info file ${ infoFile }. Go to settings and press "Scan for Songs" to try again.`
-          }
-        })
+        displayFlash({ text: `Failed to read info file ${ infoFile }. Go to settings and press "Scan for Songs" to try again.` })(dispatch)
         reject(infoReadErr)
       }
       let song = JSON.parse(infoData),
@@ -446,22 +393,12 @@ export const hashAndWriteToMetadata = (infoFile) => dispatch => {
               .update(dataToHash)
               .digest('hex')
           } catch(hashingErr) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              payload: {
-                text: `Failed to calculate hash: ${ fileToHash } could not be accessed.`
-              }
-            })
+            displayFlash({ text: `Failed to calculate hash: ${fileToHash} could not be accessed.` })(dispatch)
             reject(hashingErr)
           }
           fs.writeFile(metadataFile, JSON.stringify({ ...(readMetadataErr ? {} : JSON.parse(metadataData)), hash: (readMetadataErr ? hash : JSON.parse(metadataData).hash), scannedTime: Date.now() }), writeErr => {   // Save metadata.dat file
             if(writeErr) {
-              dispatch({
-                type: DISPLAY_WARNING,
-                payload: {
-                  text: `Failed to write metadata file for ${ song.name }. Go to settings and press "Scan for Songs" to try again.`
-                }
-              })
+              displayFlash({ text: `Failed to write metadata file for ${song.name}. Go to settings and press "Scan for Songs" to try again.` })(dispatch)
               reject(writeErr)
             }
           })
@@ -545,19 +482,9 @@ export const checkDownloadedSongs = () => (dispatch, getState) => {
   })
   walk(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), (err, songs) => {
     if (err) {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          text: `Could not find CustomLevels folder. Please make sure you have your installation directory and type are set correctly.`
-        }
-      })
+      displayFlash({ text: `Could not find CustomLevels folder. Please make sure you have your installation directory and type are set correctly.` })(dispatch)
       fs.mkdir(path.join(getState().settings.installationDirectory, 'Beat Saber_Data', 'CustomLevels'), () => {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `Attempted to create CustomLevels folder and failed, likely due to permissions.`
-          }
-        })
+        displayFlash({ text: `Attempted to create CustomLevels folder and failed, likely due to permissions.` })(dispatch)
       })
     }
     dispatch({

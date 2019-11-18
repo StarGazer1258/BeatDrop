@@ -23,7 +23,7 @@ class SortBar extends Component {
 }
 
 SortBar.propTypes = {
-  setsubView: PropTypes.func.isRequired
+  setSubView: PropTypes.func.isRequired
 }
 
 let mapStateToProps = (state) => ({

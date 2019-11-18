@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { downloadSong, deleteSong, checkDownloadedSongs } from '../actions/queueActions'
 import { setPlaylistPickerOpen } from '../actions/playlistsActions'
 import { setView } from '../actions/viewActions'
-import { displayWarning } from '../actions/warningActions'
+import { displayFlash } from '../actions/flashActions'
 
 import Badge from './Badge'
 import downloadIcon from '../assets/download-filled.png'
@@ -13,10 +13,10 @@ import deleteIcon from '../assets/delete-filled.png'
 import addIcon from '../assets/add-filled.png'
 import moreIcon from '../assets/more-filled.png'
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
 
 import Linkify from 'react-linkify'
-import PlaylistPicker from './PlaylistPicker';
+import PlaylistPicker from './PlaylistPicker'
 const { shell, clipboard } = window.require('electron')
 
 const exitDetailsShortcut = function (e) { if(e.keyCode === 27) { this.props.setView(this.props.previousView) } }
@@ -148,6 +148,7 @@ class SongDetails extends Component {
     }
 
     this.exitDetailsShortcut = exitDetailsShortcut.bind(this)
+    this.closeDetail = this.closeDetail.bind(this)
   }
 
   componentDidMount() {
@@ -159,59 +160,138 @@ class SongDetails extends Component {
   }
 
   render() {
-    if(this.props.details.loading) {
+    const songDetails = this.props.details
+    if(songDetails.loading) {
       return (
         <div id="song-details" className="loading">
-          <div className="close-icon" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
+          <div className="close-icon" onClick={ this.closeDetail }/>
           <img className="cover-image" alt='' />
           <div className="details-info">
-            <span className="details-title"></span>
-            <span className="details-subtitle"></span>
-            <div className="details-artist"></div>
+            <span className="details-title"/>
+            <span className="details-subtitle"/>
+            <div className="details-artist"/>
             <div className="action-buttons">
-            <span className="action-button download-button"><span style={ { width: '101%' } }></span><img src={ downloadIcon } alt='' /><span>DOWNLOAD</span></span>
-              <span className="action-button playlist-add-button"><img src={ addIcon } alt='' />ADD TO PLAYLIST</span>
-              <span className="action-button more-button"><img src={ moreIcon } alt='' /></span>
+              <span className="action-button download-button">
+                <span style={ { width: '101%' } }/>
+                <img src={ downloadIcon } alt='' />
+                <span>DOWNLOAD</span>
+              </span>
+              <span className="action-button playlist-add-button">
+                <img src={ addIcon } alt='' />
+                ADD TO PLAYLIST
+              </span>
+              <span className="action-button more-button">
+                <img src={ moreIcon } alt='' />
+              </span>
             </div>
-            <div className="details-description"></div>
-            <div className="details-uploader"></div>
-            <div className="preview"><b>Preview:</b><br /><audio id="preview" controls /></div>
+            <div className="details-description"/>
+            <div className="details-uploader"/>
+            <div className="preview">
+              <b>Preview:</b>
+              <br />
+              <audio id="preview" controls />
+            </div>
           </div>
         </div>
       )
     } else {
+      const songMetadata = songDetails.metadata
+      const songName = songDetails.songName || songDetails._songName || (songMetadata && songMetadata.songName)
+      const songSubName = songDetails.songSubName || songDetails._songSubName || (songMetadata && songMetadata.songSubName)
+      const songAuthorName = songDetails.authorName || songDetails._songAuthorName || songDetails._songAuthorName || (songMetadata && songMetadata.songAuthorName)
+      const songHash = songDetails.hash || songDetails.hashMd5
+      const difficulties = songDetails.difficultyLevels || songDetails._difficultyBeatmapSets || (songMetadata && songMetadata.difficulties)
+
       return (
         <div id="song-details">
-          <div className="close-icon" title="Close" onClick={ () => {this.props.setView(this.props.previousView)} }></div>
-          <img className="cover-image" src={ this.props.details.coverURL.startsWith('file://') ? this.props.details.coverURL : `https://beatsaver.com${this.props.details.coverURL}` } alt='' />
+          <div className="close-icon" title="Close" onClick={ this.closeDetail }/>
+          <img className="cover-image" src={ this.getCoverImageSrc(songDetails) } alt=''/>
           <div className="details-info">
-            <span className="details-title" title={ this.props.details.songName || this.props.details._songName || this.props.details.metadata.songName }>{ this.props.details.songName || this.props.details._songName || this.props.details.metadata.songName }</span>
-            <div className="details-subtitle" title={ this.props.details.songSubName || this.props.details._songSubName || this.props.details.metadata ? this.props.details.metadata.songSubName : '' }>{ this.props.details.songSubName || this.props.details._songSubName || this.props.details.metadata ? this.props.details.metadata.songSubName : '' }</div>
-            <div className="details-artist" title={ this.props.details.authorName || this.props.details.songAuthorName || this.props.details._songAuthorName || this.props.details.metadata.songAuthorName }>{ this.props.details.authorName || this.props.details.songAuthorName || this.props.details._songAuthorName || this.props.details.metadata.songAuthorName }</div>
-            {this.props.downloadedSongs.some(song => song.hash === this.props.details.hash) ? <div className="song-in-library">This song is in your library.</div> : null}
+            <span className="details-title" title={ songName }>{songName}</span>
+            <div className="details-subtitle" title={ songSubName }>{songSubName}</div>
+            <div className="details-artist" title={ songAuthorName }>{songAuthorName}</div>
+            {this.props.downloadedSongs.some(song => song.hash === songDetails.hash) &&
+            <div className="song-in-library">This song is in your library.</div>}
             <div className="action-buttons">
-              {(!!this.props.details.file || this.props.downloadedSongs.some(song => song.hash === this.props.details.hash)) ?
-                <span className="action-button delete-button" onClick={ () => {document.getElementById('preview').src = ''; document.getElementById('preview').load(); this.props.deleteSong(this.props.details.file || this.props.downloadedSongs[this.props.downloadedSongs.findIndex(song => song.hash === this.props.details.hash)].file)} }><img src={ deleteIcon } alt='' />{this.state.deletionStatus}</span>
-              :
-                <span className="action-button download-button" onClick={ () => {this.props.downloadSong(this.props.details.hash)} }><span style={ { width: this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.hash)] === undefined ? '102%' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.hash)].progress + 5 } }></span><img src={ downloadIcon } alt='' /><span>{this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.hash)] === undefined ? 'DOWNLOAD' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.hash)].progress === 100 ? 'DOWNLOAD' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === this.props.details.hash)].progress + '%'}</span></span>
-              }
-              <span className="action-button playlist-add-button" title="Add to Playlist" onClick={ () => { this.props.setPlaylistPickerOpen(true) } }><img src={ addIcon } alt='' />ADD TO PLAYLIST</span>
-              <ContextMenuTrigger id={ this.props.details.hash || this.props.details.hashMd5 } holdToDisplay={ 0 }><span className="action-button more-button"><img src={ moreIcon } alt='' /></span></ContextMenuTrigger>
-              <ContextMenu id={ this.props.details.hash || this.props.details.hashMd5 }>
-                <MenuItem onClick={ (e) => {e.stopPropagation(); if(this.props.details.hash !== undefined || this.props.details.hashMd5 !== undefined || this.props.details.key !== undefined) { clipboard.writeText(`beatdrop://songs/details/${this.props.details.hash || this.props.details.hashMd5 || this.props.key}`); this.props.displayWarning({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${this.props.details.metadata.songName} copied to clipboard!` })} else { this.props.displayWarning({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); this.props.setView(this.props.previousView) }} }>Share</MenuItem>
-                {(!!this.props.details.id ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${this.props.details.id}`)} }>View on BeastSaber</MenuItem> : null)}
+              {this.isDownloaded(songDetails) ? this.getDeleteButton() : this.getDownloadButton(songDetails)}
+              {this.getAddToPlaylistButton()}
+              <ContextMenuTrigger id={ songHash } holdToDisplay={ 0 }>
+                <span className="action-button more-button">
+                  <img src={ moreIcon } alt=''/>
+                </span>
+              </ContextMenuTrigger>
+              <ContextMenu id={ songHash }>
+                <MenuItem onClick={ (e) => {
+                  e.stopPropagation()
+                  if (this.props.details.hash !== undefined || this.props.details.hashMd5 !== undefined || this.props.details.key !== undefined) {
+                    clipboard.writeText(`beatdrop://songs/details/${this.props.details.hash || this.props.details.hashMd5 || this.props.key}`)
+                    this.props.displayFlash({
+                      timeout: 5000,
+                      color: 'lightgreen',
+                      text: `Sharable Link for ${this.props.details.metadata.songName} copied to clipboard!`
+                    })
+                  } else {
+                    this.props.displayFlash({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` })
+                    this.props.checkDownloadedSongs()
+                    this.closeDetail()
+                  }
+                } }>Share</MenuItem>
+                {(!!songDetails.id ? <MenuItem onClick={ (e) => {
+                  e.stopPropagation()
+                  shell.openExternal(`https://www.bsaber.com/songs/${this.props.details.id}`)
+                } }>View on BeastSaber</MenuItem> : null)}
               </ContextMenu>
             </div>
-            <Description details={ this.props.details } />
-            <Uploader details={ this.props.details } />
-            <Difficulties difficulties={ this.props.details.difficultyLevels || this.props.details._difficultyBeatmapSets || this.props.details.metadata.difficulties } />
-            <div className="preview"><b>Preview:</b><br /><audio id="preview" src={ this.props.details.audioSource } controls controlsList="nodownload" /></div>
+            <Description details={ songDetails }/>
+            <Uploader details={ songDetails }/>
+            <Difficulties difficulties={ difficulties }/>
+            <div className="preview">
+              <b>Preview:</b>
+              <br/>
+              <audio id="preview" src={ songDetails.audioSource } controls controlsList="nodownload"/>
+            </div>
           </div>
-          <BeatSaver details={ this.props.details } />
-          <PlaylistPicker song={ this.props.details } />
+          <BeatSaver details={ songDetails }/>
+          <PlaylistPicker song={ songDetails }/>
         </div>
       )
     }
+  }
+
+  getAddToPlaylistButton() {
+    return <span className="action-button playlist-add-button" title="Add to Playlist" onClick={ () => {
+      this.props.setPlaylistPickerOpen(true)
+    } }><img src={ addIcon } alt=''/>ADD TO PLAYLIST</span>
+  }
+
+  getDownloadButton(songDetails) {
+    return <span className="action-button download-button" onClick={ () => { this.props.downloadSong(this.props.details.hash) } }>
+        <span style={
+          { width: this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === songDetails.hash)] === undefined ? '102%' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === songDetails.hash)].progress + 5 }
+        }/>
+        <img src={ downloadIcon } alt=''/>
+        <span>{this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === songDetails.hash)] === undefined ? 'DOWNLOAD' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === songDetails.hash)].progress === 100 ? 'DOWNLOAD' : this.props.queueItems[this.props.queueItems.findIndex(song => song.hash === songDetails.hash)].progress + '%'}</span>
+    </span>
+  }
+
+  getDeleteButton() {
+    return <span className="action-button delete-button" onClick={ () => {
+      document.getElementById('preview').src = ''
+      document.getElementById('preview').load()
+      this.props.deleteSong(this.props.details.file || this.props.downloadedSongs[this.props.downloadedSongs.findIndex(song => song.hash === this.props.details.hash)].file)
+    } }><img src={ deleteIcon } alt=''/>{this.state.deletionStatus}</span>
+  }
+
+  isDownloaded(songDetails) {
+    return !!songDetails.file || this.props.downloadedSongs.some(song => song.hash === songDetails.hash)
+  }
+
+  getCoverImageSrc(songDetails) {
+    return songDetails.coverURL.startsWith('file://') ? songDetails.coverURL : `https://beatsaver.com${songDetails.coverURL}`
+  }
+
+  closeDetail() {
+    this.props.setView(this.props.previousView)
   }
 }
 
@@ -223,4 +303,4 @@ const mapStateToProps = (state) => ({
   newCoverImageSource: state.playlists.newCoverImageSource
 })
 
-export default connect(mapStateToProps, { downloadSong, deleteSong, setView, displayWarning, checkDownloadedSongs, setPlaylistPickerOpen })(SongDetails)
+export default connect(mapStateToProps, { downloadSong, deleteSong, setView, displayFlash, checkDownloadedSongs, setPlaylistPickerOpen })(SongDetails)

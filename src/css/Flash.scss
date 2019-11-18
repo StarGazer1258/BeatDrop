@@ -1,4 +1,4 @@
-.warning {
+.flash {
   position: relative;
   top: 60px;
   width: calc(100% - 40px);
@@ -15,14 +15,14 @@
   transition: .5s;
   z-index: 999;
 
-  .remove-warning img {
+  .remove-flash img {
     width: 16px;
     height: 16px;
     cursor: pointer;
   }
 }
 
-@keyframes warning-slide-in {
+@keyframes flash-slide-in {
   from {
     transform: translateY(-50px);
     opacity: 0;

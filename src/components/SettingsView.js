@@ -59,24 +59,27 @@ class SettingsView extends Component {
         <input type="file" id="dl-location" webkitdirectory="" onChange={ (e) => {this.props.setInstallationDirectory(e.target.files[0].path || this.props.settings.installationDirectory)} } /><br />
         <label htmlFor="dl-location"><Button type="primary" onClick={ () => {} }>Choose Folder</Button></label><Button onClick={ () => {window.require('child_process').exec('start "" "' + this.props.settings.installationDirectory + '"')} }>Open Folder</Button><br /><br />
         <table>
+          <thead>
           <tr>
-            <th>Installation Type&emsp;</th>
-            <th>Game Version</th>
+              <th>Installation Type&emsp;</th>
+              <th>Game Version</th>
           </tr>
-          <br />
+          </thead>
+          <tbody>
           <tr>
-            <td>
-              <select id="installation-type-select" name="installation-type-select" value={ this.props.settings.installationType } onChange={ (e) => { this.props.setInstallationType(e.target.value) } }>
-                <option value="steam">Steam</option>
-                <option value="oculus">Oculus</option>
-              </select>
-            </td>
-            <td>
-              <select id="game-version-select" name="game-version-select" value={ this.props.settings.gameVersion } onChange={ (e) => { this.props.setGameVersion(e.target.value) } }>
-                { this.state.gameVersions.map(version => <option key={ version } value={ version }>{ version }</option>) }
-              </select>
-            </td>
+              <td>
+                  <select id="installation-type-select" name="installation-type-select" value={ this.props.settings.installationType } onChange={ (e) => { this.props.setInstallationType(e.target.value) } }>
+                      <option value="steam">Steam</option>
+                      <option value="oculus">Oculus</option>
+                  </select>
+              </td>
+              <td>
+                  <select id="game-version-select" name="game-version-select" value={ this.props.settings.gameVersion } onChange={ (e) => { this.props.setGameVersion(e.target.value) } }>
+                      { this.state.gameVersions.map(version => <option key={ version } value={ version }>{ version }</option>) }
+                  </select>
+              </td>
           </tr>
+          </tbody>
         </table>
         { this.props.settings.installationType === 'steam' && this.props.settings.installationDirectory.includes('Oculus') ? <><br /><br /><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Oculus version of BeatSaber. If this is the case, please set "Installation Type" to "Oculus". Otherwise, you can ignore this message.</span><br /><br /></> : null }
         { this.props.settings.installationType === 'oculus' && this.props.settings.installationDirectory.includes('Steam') ? <><br /><br /><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Steam version of BeatSaber. If this is the case, please set "Installation Type" to "Steam". Otherwise, you can ignore this message.</span><br /><br /></> : null }

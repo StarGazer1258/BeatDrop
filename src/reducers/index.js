@@ -9,7 +9,7 @@ import settingsReducer from './settingsReducer'
 import loadingReducer from './loadingReducer'
 import loadingMoreReducer from './loadingMoreReducer'
 import queueReducer from './queueReducer'
-import warningsReducer from './warningsReducer'
+import flashesReducer from './flashesReducer'
 import playlistsReducer from './playlistsReducer'
 import searchReducer from './searchReducer'
 import modReducer from './modReducer'
@@ -27,6 +27,6 @@ export default combineReducers({
   loading: loadingReducer,
   loadingMore: loadingMoreReducer,
   queue: queueReducer,
-  warnings: warningsReducer,
+  flashes: flashesReducer,
   search: searchReducer
 })

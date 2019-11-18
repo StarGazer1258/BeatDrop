@@ -21,7 +21,8 @@ const initialState = {
     patching: false
   },
   queue: {
-    items: []
+    items: [],
+    isOpen: false
   },
   songs: {
     songs: [],
@@ -56,7 +57,7 @@ const initialState = {
     view: WELCOME,
     subView: 'list'
   },
-  warnings: [],
+  flashes: [],
   window: {
     isMaximized: false,
     isTranslucent: true
@@ -66,6 +67,7 @@ const initialState = {
 const persistConfig = {
   key: 'root',
   storage: storage,
+  blacklist: ['flashes'],
   stateReconciler: autoMergeLevel2
  };
  

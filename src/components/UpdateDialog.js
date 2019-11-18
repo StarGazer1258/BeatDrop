@@ -60,10 +60,9 @@ class UpdateDialog extends Component {
                 <Button type="primary" onClick={ () => { ipcRenderer.send('electron-updater', 'download-update') } }>{ semver.gt(this.state.newVersion, require('../../package.json').version) ? 'Update' : 'Downgrade' } Now</Button>
                 <Button onClick={ () => { this.setState({ updateAvailable: false }) } }>Remind Me Later</Button>
               </div>
-              
             </>
           }
-          <div className="flex-br"></div>
+          <div className="flex-br"/>
         </Modal>
       : null
     )

@@ -46,7 +46,8 @@ ipcMain.on('launch-events', (_, event, message) => {
           details: [],
           install: [],
           uninstall: []
-        }
+        },
+        files: []
       }
       return
     default:
@@ -68,7 +69,7 @@ if (!gotTheLock) {
   app.quit()
 } else {
   app.on('second-instance', (event, argv, workingDirectory) => {
-    if(!isDev) handleArgs(argv, true)
+    handleArgs(argv, true)
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore()
       mainWindow.focus()
@@ -79,27 +80,30 @@ if (!gotTheLock) {
     autoUpdater.autoDownload = false
     autoUpdater.autoInstallOnAppQuit = false
 
-    ipcMain.on('electron-updater', (_, event, message) => {
-      switch(event) {
-        case 'download-update':
-          autoUpdater.downloadUpdate()
-          return
-        case 'check-for-updates':
-          try {
-            autoUpdater.checkForUpdates()
-          } catch(err) {
-            main.webContents.send('electron-updater', 'error')
-          }
-          return
-        case 'set-update-channel':
-          autoUpdater.channel = message
-          autoUpdater.allowPrerelease = (message !== 'latest')
-          autoUpdater.allowDowngrade =  (message === 'latest')
-          return
-        default:
-          return
-      }
-    })
+    // Do not auto-update when developing
+    if(!isDev) {
+      ipcMain.on('electron-updater', (_, event, message) => {
+        switch(event) {
+          case 'download-update':
+            autoUpdater.downloadUpdate()
+            return
+          case 'check-for-updates':
+            try {
+              autoUpdater.checkForUpdates()
+            } catch(err) {
+              main.webContents.send('electron-updater', 'error')
+            }
+            return
+          case 'set-update-channel':
+            autoUpdater.channel = message
+            autoUpdater.allowPrerelease = (message !== 'latest')
+            autoUpdater.allowDowngrade =  (message === 'latest')
+            return
+          default:
+            return
+        }
+      })
+    }
 
     let loading = new BrowserWindow({ width: 400, height: 400, show: false, frame: false, resizable: false, webPreferences: { webSecurity: false } })
     

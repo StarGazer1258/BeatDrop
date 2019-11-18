@@ -1,8 +1,9 @@
-import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING, DISPLAY_WARNING } from './types'
+import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../constants/views'
 import { defaultPlaylistIcon } from '../b64Assets'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'
+import { displayFlash } from "./flashActions"
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -12,7 +13,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let state = getState()
   if(typeof doSetView === 'object' || doSetView === undefined) { doSetView = true } else { doSetView = false }
   if(doSetView === true) {
-    setView(PLAYLIST_LIST)(dispatch)
+    setView(PLAYLIST_LIST)(dispatch, getState)
     dispatch({
       type: SET_LOADING,
       payload: true
@@ -34,13 +35,11 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
           type: SET_LOADING,
           payload: false
         })
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            color: 'gold',
-            text: 'No playlists found!'
-          }
-        })
+        displayFlash({
+          color: 'gold',
+          text: 'No playlists found!',
+          timeout: 2500
+        })(dispatch)
       }
       let playlistsFound = 0
       for(let f in files) {
@@ -66,12 +65,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
             playlist.file = path.join(state.settings.installationDirectory, 'Playlists', files[f])
             pushPlaylist(playlist)
           } catch(e) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              payload: {
-                text: `The playlist file ${files[f]} is invalid and cannot be parsed. Please use a tool such as https://codebeautify.org/jsonvalidator to check for errors and try again.`
-              }
-            })
+            displayFlash({ text: `The playlist file ${files[f]} is invalid and cannot be parsed. Please use a tool such as https://codebeautify.org/jsonvalidator to check for errors and try again.` })(dispatch)
           }
         })
       }
@@ -103,13 +97,7 @@ export const createNewPlaylist = playlistInfo => (dispatch, getState) => {
 export const deletePlaylist = playlistFile => dispatch => {
   fs.unlink(playlistFile, (err) => {
     if(err) {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          text: 'Cannot delete playlist file! Try restarting BeatDrop and try again.'
-        }
-      })
-      return
+      displayFlash({ text: 'Cannot delete playlist file! Try restarting BeatDrop with administrator privileges and try again.' })(dispatch)
     }
   })
 }
@@ -140,27 +128,21 @@ export const clearPlaylistDialog = () => dispatch => {
 }
 
 export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
-  setView(PLAYLIST_DETAILS)(dispatch)
+  setView(PLAYLIST_DETAILS)(dispatch, getState)
   fs.access(playlistFile, (err) => {
     if(err) {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          color: 'gold',
-          text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.'
-        }
-      })
+      displayFlash({
+        color: 'gold',
+        text: 'Cannot access playlist file! Try redownloading the playlist or restarting BeatDrop and try again.'
+      })(dispatch)
       return
     }
     fs.readFile(playlistFile, 'UTF8', (err, data) => {
       if(err) {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            color: 'gold',
-            text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
-          }
-        })
+        displayFlash({
+          color: 'gold',
+          text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
+        })(dispatch)
         return
       }
       let playlist = JSON.parse(data)
@@ -278,13 +260,10 @@ export const savePlaylistDetails = details => (dispatch, getState) => {
   } catch(_){}
   fs.writeFile(file, JSON.stringify(details), 'UTF8', (err) => {
     if(err)  {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          color: 'gold',
-          text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
-        }
-      })
+      displayFlash({
+        color: 'gold',
+        text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
+      })(dispatch)
       return
     }
     delete details.songs
@@ -306,13 +285,10 @@ export const setPlaylistEditing = isEditing => dispatch => {
 export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) => {
   fs.readFile(playlistFile, 'UTF8', (err, data) => {
     if(err) {
-      dispatch({
-        type: DISPLAY_WARNING,
-        payload: {
-          color: 'gold',
-          text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
-        }
-      })
+      displayFlash({
+        color: 'gold',
+        text: 'Error reading playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
+      })(dispatch)
       return
     }
     let playlist = JSON.parse(data)
@@ -333,13 +309,10 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
     
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
       if(err)  {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            color: 'gold',
-            text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
-          }
-        })
+        displayFlash({
+          color: 'gold',
+          text: 'Error saving playlist file! The playlist may be corrupt or use encoding other than UTF-8 (Why UTF-8? The IETF says so! https://tools.ietf.org/html/rfc8259#section-8.1). Try redownloading the playlist and try again.'
+        })(dispatch)
         return
       }
       fetchLocalPlaylists(false)(dispatch, getState)

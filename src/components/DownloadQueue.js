@@ -38,7 +38,7 @@ DownloadQueue.propTypes = {
 let mapStateToProps = (state) => ({
   items: state.queue.items,
   isOpen: state.queue.isOpen,
-  theme: state.settings.theme
+  theme: state.settings.theme,
 })
 
 export default connect(mapStateToProps, { clearQueue })(DownloadQueue)

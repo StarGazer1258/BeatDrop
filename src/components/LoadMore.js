@@ -37,9 +37,9 @@ class LoadMore extends Component {
 }
 
 LoadMore.propTypes = {
-  loadingMore: PropTypes.bool.isRequired,
-  source: PropTypes.object.isRequired,
-  loadMore: PropTypes.func.isRequired
+  loadingMore: PropTypes.bool,
+  source: PropTypes.object,
+  loadMore: PropTypes.func
 }
 
 const mapStateToProps = (state) => ({

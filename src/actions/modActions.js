@@ -1,10 +1,11 @@
-import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES, SET_IGNORE_MOD_UPDATE } from './types'
+import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES, SET_IGNORE_MOD_UPDATE } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../constants/views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
 
 import modIcon from '../assets/dark/mod.png'
 import { setView } from './viewActions'
+import { displayFlash } from "./flashActions"
 
 const { remote } = window.require('electron')
 const request = remote.require('request')
@@ -18,7 +19,7 @@ const semver = remote.require('semver')
 const { ipcRenderer } = window.require('electron')
 
 export const fetchApprovedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.NEW_MODS
@@ -42,7 +43,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
 }
 
 export const fetchRecommendedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.RECOMMENDED_MODS
@@ -51,30 +52,39 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  let recommendedMods = ['CameraPlus', 'YUR Fit Calorie Tracker', 'SyncSaber', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
-  let mods = []
-  for(let i = 0; i < recommendedMods.length; i++) {
-    fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}&gameVersion=${getState().settings.gameVersion}`)
-      .then(res => res.json())
-      .then(beatModsResponse => {
-        if(beatModsResponse.length === 0) { recommendedMods.splice(i, 1); return }
-        mods.push(beatModsResponse[beatModsResponse.length - 1])
-        if(mods.length === recommendedMods.length) {
-          dispatch({
-            type: SET_MOD_LIST,
-            payload: mods
-          })
-          dispatch({
-            type: SET_LOADING,
-            payload: false
-          })
-        }
+  const recommendedMods = ['CameraPlus', 'YUR Fit Calorie Tracker', 'SyncSaber', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
+
+  const requests = recommendedMods.map(modName => {
+    return fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(modName)}&gameVersion=${getState().settings.gameVersion}`)
+        .then(res => res.json())
+        .then(beatModsResponse => beatModsResponse[beatModsResponse.length - 1] || null)
+  })
+
+  Promise.all(requests)
+      .then(mods => {
+        mods = mods.filter(mod => mod !== null)
+        dispatch({
+          type: SET_MOD_LIST,
+          payload: mods
+        })
       })
-  }
+      .catch(() => {
+        displayFlash({ text: 'Error while loading recommended mods' })(dispatch)
+        dispatch({
+          type: SET_MOD_LIST,
+          payload: []
+        })
+      })
+      .finally(() => {
+        dispatch({
+          type: SET_LOADING,
+          payload: false
+        })
+      })
 }
 
-export const fetchModCategories = () => dispatch => {
-  setView(MODS_VIEW)(dispatch)
+export const fetchModCategories = () => (dispatch, getState) => {
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORY_SELECT
@@ -90,7 +100,7 @@ export const fetchModCategories = () => dispatch => {
 }
 
 export const fetchModCategory = category => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORIES
@@ -114,7 +124,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
 }
 
 export const fetchLocalMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ALL
@@ -140,19 +150,13 @@ export const fetchLocalMods = () => (dispatch, getState) => {
         payload: false
       })
       if(m.length === 0) {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            color: 'gold',
-            text: 'No mods found!'
-          }
-        })
+        displayFlash({ text: 'No mods found!' })(dispatch)
       }
     })
 }
 
 export const fetchActivatedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ACTIVATED
@@ -178,19 +182,16 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
         payload: false
       })
       if(m.length === 0) {
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            color: 'gold',
-            text: 'No mods found!'
-          }
-        })
+        displayFlash({
+          color: 'gold',
+          text: 'No mods found!'
+        })(dispatch)
       }
     })
 }
 
-export const loadModDetails = modId => dispatch => {
-  setView(MOD_DETAILS)(dispatch)
+export const loadModDetails = modId => (dispatch, getState) => {
+  setView(MOD_DETAILS)(dispatch, getState)
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -271,11 +272,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       if(mod.downloads.some(version => version.type === 'universal')) {
         req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
           if(err) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
-                                Please try again and file a bug report if the problem persists.` }
-            })
+            displayFlash({ text: `An error occured while downloading ${modName}. There may have been a connection error. Please try again and file a bug report if the problem persists.` })(dispatch)
             return
           }
           let zip = new AdmZip(data)
@@ -293,10 +290,8 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
           
           if(modName === 'BSIPA') {
             execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
-            dispatch({
-              type: 'DISPLAY_WARNING',
-              payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
-            })
+
+            displayFlash({ text: 'Game successfully patched with BSIPA.', color: 'lightgreen' })(dispatch)
             dispatch({
               type: SET_PATCHING,
               payload: false
@@ -321,17 +316,13 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
         if(mod.downloads.some(version => version.type === installationType)) {
           req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === installationType)[0].url}`, encoding: null }, (err, r, data) => {
             if(err) {
-              dispatch({
-                type: DISPLAY_WARNING,
-                payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
-                                  Please try again and file a bug report if the problem persists.` }
-              })
+              displayFlash({ text: `An error occured while downloading ${modName}. There may have been a connection error. Please try again and file a bug report if the problem persists.` })(dispatch)
               return
             }
 
             let zip = new AdmZip(data)
             zip.extractAllTo(getState().settings.installationDirectory)
-    
+
             let entries = zip.getEntries()
             let files = []
             for(let i = 0; i < entries.length; i++) {
@@ -353,12 +344,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
             ipcRenderer.emit('mod-installed')
           })
         } else {
-          dispatch({
-            type: DISPLAY_WARNING,
-            payload: {
-              text: `The mod ${mod.name} does not have a version for ${installationType} v${getState().settings.gameVersion} installations.`
-            }
-          })
+          displayFlash({ text: `The mod ${mod.name} does not have a version for ${installationType} v${getState().settings.gameVersion} installations.` })(dispatch)
         }
       }
 
@@ -492,12 +478,7 @@ export const checkInstalledMods = () => (dispatch, getState) => {
     fs.access(path.join(state.settings.installationDirectory, 'Plugins'), (err) => {
       if(err) {
         fs.mkdir(path.join(state.settings.installationDirectory, 'Plugins'), () => {})
-        dispatch({
-          type: DISPLAY_WARNING,
-          payload: {
-            text: `Could not find Plugins directory. Please make sure you have your installation directory and type set correctly.`
-          }
-        })
+        displayFlash({ text: `Could not find Plugins directory. Please make sure you have your installation directory and type set correctly.` })(dispatch)
         dispatch({
           type: SET_SCANNING_FOR_MODS,
           payload: false
@@ -632,10 +613,7 @@ export const patchGame = () => (dispatch, getState) => {
     installMod('BSIPA', '')(dispatch, getState)
   } else {
     if(patchedWith === 'BSIPA') {
-      dispatch({
-        type: 'DISPLAY_WARNING',
-        payload: { text: 'Your game is already patched with BSIPA.', color: 'lightgreen' }
-      })
+      displayFlash({ text: 'Your game is already patched with BSIPA.', color: 'lightgreen' })(dispatch)
     }
     dispatch({
       type: SET_PATCHING,
@@ -704,14 +682,11 @@ export const checkModsForUpdates = () => (dispatch, getState) => {
             }
           })
           if(getState().mods.updates === 1) {
-            dispatch({
-              type: DISPLAY_WARNING,
-              payload: {
-                text: 'Mod updates are available. Go to downloads to install updates.',
-                color: 'gold',
-                timeout: 5000
-              }
-            })
+            displayFlash({
+              text: 'Mod updates are available. Go to downloads to install updates.',
+              color: 'gold',
+              timeout: 5000
+            })(dispatch)
           }
         }
       })
@@ -729,14 +704,11 @@ export const gamePatchedWith = () => (dispatch, getState) => {
       fs.accessSync(path.join(getState().settings.installationDirectory, 'IPA.exe'))
       fs.accessSync(path.join(getState().settings.installationDirectory, 'IPA', 'Data', 'Managed', 'IllusionInjector.dll'))
       installationType = 'IPA'
-      dispatch({
-        type: 'DISPLAY_WARNING',
-        payload: { 
-          text: `Your game is patched with IPA. It is reccommeded that you upgrade to BSIPA to maintain compatability with future mods.
-                  To upgrade, reinstall Beat Saber and download any mod from BeatDrop.`,
-          color: 'gold'
-        }
-      })
+
+      displayFlash({
+        text: `Your game is patched with IPA. It is recommended that you upgrade to BSIPA to maintain compatibility with future mods. To upgrade, reinstall Beat Saber and download any mod from BeatDrop.`,
+        color: 'gold'
+      })(dispatch)
     } catch {}
   }
   return installationType
