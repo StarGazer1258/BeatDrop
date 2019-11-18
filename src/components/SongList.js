@@ -9,12 +9,12 @@ import { setPlaylistPickerOpen } from '../actions/playlistsActions'
 import { displayFlash } from '../actions/flashActions'
 
 import SongListItem from './SongListItem'
-import LoadMore from './LoadMore';
+import LoadMore from './LoadMore'
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
 
-import PlaylistPicker from './PlaylistPicker';
-import * as uniqid from "uniqid";
+import PlaylistPicker from './PlaylistPicker'
+import * as uniqid from "uniqid"
 
 const { clipboard, shell } = window.require('electron')
 
@@ -68,7 +68,7 @@ class SongList extends Component {
         :
           this.props.songs.songs.map((song, i) => {
 
-            const songHash = song.hash || song.hashMd5;
+            const songHash = song.hash || song.hashMd5
             return (
               <ContextMenuTrigger id={ songHash } key={ songHash }>
                 <SongListItem
@@ -96,7 +96,7 @@ class SongList extends Component {
                     Add to Playlist
                   </MenuItem>
                   <MenuItem divider />
-                  <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayFlash({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayFlash({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs(); }} }>Share</MenuItem>
+                  <MenuItem onClick={ (e) => {e.stopPropagation(); if(song.hash || song.hashMd5 || song.key) { clipboard.writeText(`beatdrop://songs/details/${song.hash || song.hashMd5 || song.key}`); this.props.displayFlash({ timeout: 5000, color:'lightgreen', text: `Sharable Link for ${song.songName} copied to clipboard!` })} else { this.props.displayFlash({ text: `Failed to identify song. Song may have been downloaded externally. Songs will now be scanned. Please try again when scanning is finished.` }); this.props.checkDownloadedSongs() }} }>Share</MenuItem>
                   {(!!song.id ? <MenuItem onClick={ (e) => {e.stopPropagation(); shell.openExternal(`https://www.bsaber.com/songs/${song.id}`)} }>View on BeastSaber</MenuItem> : null)}
                 </ContextMenu>
               </ContextMenuTrigger>

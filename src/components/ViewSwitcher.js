@@ -18,7 +18,7 @@ import PlaylistDetails from './PlaylistDetails'
 import DonateView from './DonateView'
 import ModsView from './ModsView'
 import ModDetails from './ModDetails'
-import ModsListView from './ModsListView';
+import ModsListView from './ModsListView'
 import DownloadsView from './DownloadsView'
 
 function Songs(props) {
@@ -67,7 +67,7 @@ function Flashes(props) {
   return (
     <div className='flashes'>
       {props.flashes.map((flash, i) => {
-        const { id, payload } = flash;
+        const { id, payload } = flash
         return <Flash text={ payload.text } color={ payload.color } timeout={ payload.timeout } index={ id } key={ id } />
       })}
     </div>

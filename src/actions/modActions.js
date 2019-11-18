@@ -58,11 +58,11 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
     return fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(modName)}&gameVersion=${getState().settings.gameVersion}`)
         .then(res => res.json())
         .then(beatModsResponse => beatModsResponse[beatModsResponse.length - 1] || null)
-  });
+  })
 
   Promise.all(requests)
       .then(mods => {
-        mods = mods.filter(mod => mod !== null);
+        mods = mods.filter(mod => mod !== null)
         dispatch({
           type: SET_MOD_LIST,
           payload: mods
@@ -272,7 +272,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       if(mod.downloads.some(version => version.type === 'universal')) {
         req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
           if(err) {
-            displayFlash({text: `An error occured while downloading ${modName}. There may have been a connection error. Please try again and file a bug report if the problem persists.` })(dispatch)
+            displayFlash({ text: `An error occured while downloading ${modName}. There may have been a connection error. Please try again and file a bug report if the problem persists.` })(dispatch)
             return
           }
           let zip = new AdmZip(data)

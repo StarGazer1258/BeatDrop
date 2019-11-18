@@ -1,5 +1,5 @@
 import { CLEAR_FLASHES, DISPLAY_FLASH, REMOVE_FLASH } from '../actions/types'
-import * as uniqid  from 'uniqid';
+import * as uniqid  from 'uniqid'
 
 export default function(state = [], action) {
   switch(action.type) {

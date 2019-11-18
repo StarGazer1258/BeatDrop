@@ -16,7 +16,7 @@ import errorIcon from '../assets/error.png'
 
 import { makeRenderKey } from '../utilities'
 
-import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu"
 
 import Linkify from 'react-linkify'
 const shell = window.require('electron').shell
@@ -27,9 +27,9 @@ class PlaylistDetails extends Component {
 
 
   constructor(props, context) {
-    super(props, context);
+    super(props, context)
 
-    this.onMouseUp = this.onMouseUp.bind(this);
+    this.onMouseUp = this.onMouseUp.bind(this)
   }
 
   onMouseUp(event) {
