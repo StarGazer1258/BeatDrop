@@ -389,7 +389,7 @@ export const deleteSong = (identity) => (dispatch, getState) => {
   if(getState().songs.downloadedSongs.some(song => song.hash === identity)) {
     file = getState().songs.downloadedSongs[getState().songs.downloadedSongs.findIndex(song => song.hash === identity)].file
   }
-  setView(getState().view.previousView)(dispatch)
+  setView(getState().view.previousView)(dispatch, getState)
   let dirs = file.split(path.sep)
   let cld = dirs.indexOf('CustomLevels')
   for(let i = 2; i < file.split(path.sep).length - cld; i++) {
@@ -407,7 +407,7 @@ export const deleteSong = (identity) => (dispatch, getState) => {
       })
       return
     }
-    setView(SONG_LIST)(dispatch)
+    setView(SONG_LIST)(dispatch, getState)
     dispatch({
       type: SET_DOWNLOADED_SONGS,
       payload: downloadedSongs

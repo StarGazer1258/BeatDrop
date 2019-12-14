@@ -14,8 +14,8 @@ const resourceUrl = {
     'BEATSAVER_TOP_FINISHED_SONGS': 'https://beatsaver.com/api/maps/plays'
 }
 
-export const fetchNew = () => dispatch => {
-  setView(SONG_LIST)(dispatch)
+export const fetchNew = () => (dispatch, getState) => {
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -60,8 +60,8 @@ export const fetchNew = () => dispatch => {
     })
 }
 
-export const fetchTopDownloads = () => dispatch => {
-  setView(SONG_LIST)(dispatch)
+export const fetchTopDownloads = () => (dispatch, getState) => {
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -104,8 +104,8 @@ export const fetchTopDownloads = () => dispatch => {
     })
 }
 
-export const fetchTopFinished = () => dispatch => {
-  setView(SONG_LIST)(dispatch)
+export const fetchTopFinished = () => (dispatch, getState) => {
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
@@ -149,7 +149,7 @@ export const fetchTopFinished = () => dispatch => {
 }
 
 export const fetchLocalSongs = () => (dispatch, getState) => {
-  setView(SONG_LIST)(dispatch)
+  setView(SONG_LIST)(dispatch, getState)
   dispatch({
     type: SET_SCROLLTOP,
     payload: 0
