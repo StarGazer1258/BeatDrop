@@ -74,7 +74,7 @@ export const loadDetailsFromKey = key => dispatch => {
       })
       .then(res => res.json())
       .then(details => {
-        fetch(`http://beatsaver.com${details.downloadURL}`)
+        fetch(`https://beatsaver.com${details.downloadURL}`)
           .then(res => res.arrayBuffer())
           .then(data => {
             let zip = new AdmZip(new Buffer(data))

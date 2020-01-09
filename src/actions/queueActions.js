@@ -62,7 +62,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 }
               })
               let req = request.get({
-                url: `http://www.beatsaver.com${song.downloadURL}`,
+                url: `https://www.beatsaver.com${song.downloadURL}`,
                 encoding: null
               }, (err, r, data) => {
                 try {
