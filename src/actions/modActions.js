@@ -1,5 +1,6 @@
 import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../constants/views'
+import { BEATMODS_BASE_URL } from '../constants/urls'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
 
@@ -27,7 +28,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&gameVersion=${getState().settings.gameVersion}`)
+  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&gameVersion=${getState().settings.gameVersion}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -54,7 +55,7 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
   let recommendedMods = ['CameraPlus', 'YUR Fit Calorie Tracker', 'SyncSaber', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
   let mods = []
   for(let i = 0; i < recommendedMods.length; i++) {
-    fetch(`https://beatmods.com/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}&gameVersion=${getState().settings.gameVersion}`)
+    fetch(`${BEATMODS_BASE_URL}/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}&gameVersion=${getState().settings.gameVersion}`)
       .then(res => res.json())
       .then(beatModsResponse => {
         if(beatModsResponse.length === 0) { recommendedMods.splice(i, 1); return }
@@ -99,7 +100,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?category=${ category }&status=approved&gameVersion=${getState().settings.gameVersion}`)
+  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?category=${ category }&status=approved&gameVersion=${getState().settings.gameVersion}`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -123,7 +124,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive`)
+  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&status=inactive`)
     .then(res => res.json())
     .then(beatModsResponse => {
       let installedMods = getState().mods.installedMods
@@ -162,7 +163,7 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive`)
+  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&status=inactive`)
     .then(res => res.json())
     .then(beatModsResponse => {
       let activatedMods = getState().mods.installedMods.filter(mod => mod.active === true)
@@ -197,7 +198,7 @@ export const loadModDetails = modId => dispatch => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`https://beatmods.com/api/v1/mod`)
+  fetch(`${BEATMODS_BASE_URL}/api/v1/mod`)
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -240,7 +241,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     return
   }
   console.log(`Fetching ${modName} from BeatMods...`)
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`)
+  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&name=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`)
     .then(res => res.json())
     .then(beatModsResponse => {
       console.log(`Got the BeatMods response for ${ modName }`)
@@ -284,7 +285,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       // Install Mod
       console.log(`Installing ${ modName }...`)
       if(mod.downloads.some(version => version.type === 'universal')) {
-        req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
+        req = request.get({ url: `${BEATMODS_BASE_URL}${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
           if(r) if(err || (r.hasOwnProperty('statusCode') && r.statusCode !== 200)) {
             dispatch({
               type: DISPLAY_WARNING,
@@ -331,7 +332,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       } else {
         let installationType = getState().settings.installationType
         if(mod.downloads.some(version => version.type === installationType)) {
-          req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === installationType)[0].url}`, encoding: null }, (err, r, data) => {
+          req = request.get({ url: `${BEATMODS_BASE_URL}${mod.downloads.filter(version => version.type === installationType)[0].url}`, encoding: null }, (err, r, data) => {
             if(r) if(err || r.statusCode !== 200) {
               dispatch({
                 type: DISPLAY_WARNING,
@@ -525,7 +526,7 @@ export const checkInstalledMods = () => (dispatch, getState) => {
                   let md5sum = crypto.createHash('md5')
                   md5sum.update(data)
                   let hash = md5sum.digest('hex')
-                  fetch(`https://beatmods.com/api/v1/mod?hash=${hash}`)
+                  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?hash=${hash}`)
                     .then(res => res.json())
                     .then(beatModsResponse => {
                       if(beatModsResponse.length > 0) {
@@ -581,7 +582,7 @@ export const checkInstalledMods = () => (dispatch, getState) => {
                 let md5sum = crypto.createHash('md5')
                 md5sum.update(data)
                 let hash = md5sum.digest('hex')
-                fetch(`https://beatmods.com/api/v1/mod?hash=${hash}`)
+                fetch(`${BEATMODS_BASE_URL}/api/v1/mod?hash=${hash}`)
                   .then(res => res.json())
                   .then(beatModsResponse => {
                     if(beatModsResponse.length > 0) {

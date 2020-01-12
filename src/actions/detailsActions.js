@@ -1,5 +1,6 @@
 import { LOAD_DETAILS, CLEAR_DETAILS, SET_DETAILS_LOADING, DISPLAY_WARNING } from './types'
 import { SONG_DETAILS } from '../constants/views'
+import { BEATSAVER_BASE_URL, BSABER_BASE_URL } from '../constants/urls'
 
 import AdmZip from 'adm-zip'
 import { hashAndWriteToMetadata } from './queueActions'
@@ -60,7 +61,7 @@ export const loadDetailsFromKey = key => dispatch => {
   })
   setView(SONG_DETAILS)(dispatch)
   if((/^[a-f0-9]+$/).test(key)) {
-    fetch(`https://beatsaver.com/api/maps/detail/${key}`)
+    fetch(`${BEATSAVER_BASE_URL}/api/maps/detail/${key}`)
       .then(res => {
         if(res.status === 404){
           dispatch({
@@ -74,7 +75,7 @@ export const loadDetailsFromKey = key => dispatch => {
       })
       .then(res => res.json())
       .then(details => {
-        fetch(`https://beatsaver.com${details.downloadURL}`)
+        fetch(`${BEATSAVER_BASE_URL}${details.downloadURL}`)
           .then(res => res.arrayBuffer())
           .then(data => {
             let zip = new AdmZip(new Buffer(data))
@@ -105,7 +106,7 @@ export const loadDetailsFromKey = key => dispatch => {
           }
         })
       })
-      fetch(`https://bsaber.com/wp-json/bsaber-api/songs/${key}/ratings`)
+      fetch(`${BSABER_BASE_URL}/wp-json/bsaber-api/songs/${key}/ratings`)
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
