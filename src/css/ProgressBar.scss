@@ -1,10 +1,9 @@
 .progress-bar {
+  display: inline-block;
   background: silver;
   height: 10px;
   border-radius: 5px;
-  width: 80%;
-  margin: 0 10%;
-  margin-top: 50px;
+  width: 100%;
   overflow: hidden;
 
   .progress-bar-inner {

@@ -49,6 +49,11 @@
         background-position: center center;
         flex-shrink: 0;
       }
+
+      &.open {
+        font-weight: bold;
+        color: $beatdrop-blue;
+      }
     }
 
     #settings-button {

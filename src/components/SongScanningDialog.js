@@ -24,7 +24,7 @@ class SongScanningDialog extends Component {
       this.state.open ?
         <Modal width={ 575 } height={ 330 } onClose={ () => { this.setState({ open: false }) } }>
           <h1 className={ `scanning-text theme-${this.props.theme}` }>{ !this.props.scanning ? `Finished scanning for songs.` : 'Scanning for songs...' }</h1>
-          <ProgressBar progress={ this.props.processedFiles / this.props.discoveredFiles * 100 } />
+          <div className="song-scanning-progress"><ProgressBar progress={ this.props.processedFiles / this.props.discoveredFiles * 100 } /></div>
           <h5 className="scanning-text">{ `${ this.props.processedFiles } / ${ this.props.discoveredFiles } Files scanned.${ !this.props.scanning ? ` | ${this.props.songs.length } songs discovered.` : '..' }` }</h5>
           { !this.props.scanning ? <h5 className="scanning-text">Click outside to exit.</h5> : null }
         </Modal>

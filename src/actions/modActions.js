@@ -1,4 +1,4 @@
-import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING } from './types'
+import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES, SET_IGNORE_MOD_UPDATE } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../constants/views'
 
 import { BEATMODS, LIBRARY } from '../constants/resources'
@@ -18,7 +18,7 @@ const semver = remote.require('semver')
 const { ipcRenderer } = window.require('electron')
 
 export const fetchApprovedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.NEW_MODS
@@ -42,7 +42,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
 }
 
 export const fetchRecommendedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.RECOMMENDED_MODS
@@ -73,8 +73,8 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
   }
 }
 
-export const fetchModCategories = () => dispatch => {
-  setView(MODS_VIEW)(dispatch)
+export const fetchModCategories = () => (dispatch, getState) => {
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORY_SELECT
@@ -90,7 +90,7 @@ export const fetchModCategories = () => dispatch => {
 }
 
 export const fetchModCategory = category => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORIES
@@ -114,7 +114,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
 }
 
 export const fetchLocalMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ALL
@@ -130,7 +130,6 @@ export const fetchLocalMods = () => (dispatch, getState) => {
       let m = []
       for(let i = 0; i < installedMods.length; i++) {
         if(beatModsResponse.filter(mod => mod._id === installedMods[i].id)[0]) m.push(beatModsResponse.filter(mod => mod._id === installedMods[i].id)[0])
-        console.log(installedMods[i].name)
       }
       dispatch({
         type: SET_MOD_LIST,
@@ -153,7 +152,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
 }
 
 export const fetchActivatedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ACTIVATED
@@ -169,7 +168,6 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
       let m = []
       for(let i = 0; i < activatedMods.length; i++) {
         if(beatModsResponse.filter(mod => mod.name === activatedMods[i].name)[0]) m.push(beatModsResponse.filter(mod => mod.name === activatedMods[i].name)[0])
-        console.log(activatedMods[i].name)
       }
       dispatch({
         type: SET_MOD_LIST,
@@ -191,8 +189,8 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
     })
 }
 
-export const loadModDetails = modId => dispatch => {
-  setView(MOD_DETAILS)(dispatch)
+export const loadModDetails = modId => (dispatch, getState) => {
+  setView(MOD_DETAILS)(dispatch, getState)
   dispatch({
     type: SET_LOADING,
     payload: true
@@ -212,13 +210,10 @@ export const loadModDetails = modId => dispatch => {
 }
 
 export const installMod = (modName, version, dependencyOf = '') => (dispatch, getState) => {
-  console.log(`Asked to install ${modName}`)
   if(isModPendingInstall(modName)(dispatch, getState)) {
-    console.log(`${modName} is already pending install!`)
     return
   } else {
     if(!isModInstalled(modName)(dispatch, getState)) {
-      console.log(`${modName} isn't installed, adding it to pending installs...`)
       dispatch({
         type: ADD_PENDING_MOD,
         payload: modName
@@ -227,7 +222,6 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
   }
   if(gamePatchedWith()(dispatch, getState) === 'NONE' && !isModPendingInstall('BSIPA')(dispatch, getState)) patchGame()(dispatch, getState)
   if(isModInstalled(modName)(dispatch, getState)) {
-    console.log(`${modName} is already installed!`)
     if(!getState().mods.installedMods.filter(mod => mod.name === modName)[0].dependencyOf.includes(dependencyOf)) {
       dispatch({
         type: ADD_DEPENDENT,
@@ -239,17 +233,13 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     }
     return
   }
-  console.log(`Fetching ${modName} from BeatMods...`)
-  fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`)
+  fetch(`https://beatmods.com/api/v1/mod?status=approved&status=inactive&name=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`)
     .then(res => res.json())
     .then(beatModsResponse => {
-      console.log(`Got the BeatMods response for ${ modName }`)
-      console.log(JSON.stringify(beatModsResponse))
-      if(beatModsResponse.length === 0) return
-      let latestVersion = beatModsResponse[0].version
-      let latestIndex = 0
-      for(let i = 0; i < beatModsResponse; i++) {
-        if(semver.satisfies(beatModsResponse[i].version, `^${ latestVersion }`)) {
+      let latestVersion = '0.0.0'
+      let latestIndex = -1
+      for(let i = 0; i < beatModsResponse.length; i++) {
+        if(beatModsResponse[i].name === modName && (semver.satisfies(beatModsResponse[i].version, `^${ latestVersion }`) || latestVersion === '0.0.0')) {
           latestVersion = beatModsResponse[i].version
           latestIndex = i
         }
@@ -259,7 +249,6 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
       let req
       let len = 0
       let chunks = 0
-      console.log(mod)
       dispatch({
         type: ADD_TO_QUEUE,
         payload: {
@@ -273,19 +262,15 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
 
       let dependsOn = []
       // Install Dependencies
-      console.log(`Installing dependencies for ${ modName }...`)
       for(let i = 0; i < mod.dependencies.length; i++) {
-        console.log(`You gonna install ${ mod.dependencies[i].name }?`)
         installMod(mod.dependencies[i].name, mod.dependencies[i].version, modName)(dispatch, getState)
         dependsOn.push(mod.dependencies[i].name)
       }
-      console.log(`Dependencies found: ${ dependsOn.join(', ') }`)
 
       // Install Mod
-      console.log(`Installing ${ modName }...`)
       if(mod.downloads.some(version => version.type === 'universal')) {
         req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === 'universal')[0].url}`, encoding: null }, (err, r, data) => {
-          if(r) if(err || (r.hasOwnProperty('statusCode') && r.statusCode !== 200)) {
+          if(err) {
             dispatch({
               type: DISPLAY_WARNING,
               payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
@@ -294,7 +279,11 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
             return
           }
           let zip = new AdmZip(data)
-          zip.extractAllTo(getState().settings.installationDirectory)
+          if(modName === 'BSIPA') {
+            zip.extractAllTo(getState().settings.installationDirectory)
+          } else {
+            zip.extractAllTo(path.join(getState().settings.installationDirectory, 'IPA', 'Pending'))
+          }
   
           let entries = zip.getEntries()
           let files = []
@@ -313,7 +302,6 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
               payload: false
             })
           }
-
           dispatch({
             type: INSTALL_MOD,
             payload: {
@@ -332,7 +320,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
         let installationType = getState().settings.installationType
         if(mod.downloads.some(version => version.type === installationType)) {
           req = request.get({ url: `https://beatmods.com${mod.downloads.filter(version => version.type === installationType)[0].url}`, encoding: null }, (err, r, data) => {
-            if(r) if(err || r.statusCode !== 200) {
+            if(err) {
               dispatch({
                 type: DISPLAY_WARNING,
                 payload: { text: `An error occured while downloading ${modName}. There may have been a connection error.
@@ -410,10 +398,12 @@ export const uninstallMod = modName => (dispatch, getState) => {
       type: UNINSTALL_MOD,
       payload: modIndex
     })
+    checkModsForUpdates()(dispatch, getState)
   }
 }
 
 export const activateMod = modName => (dispatch, getState) => {
+  checkModsForUpdates()(dispatch, getState)
   if(isModInstalled(modName)(dispatch, getState) && !isModActive(modName)(dispatch, getState)) {
     try {
       let mod = getState().mods.installedMods.filter(mod => mod.name === modName)[0]
@@ -432,6 +422,7 @@ export const activateMod = modName => (dispatch, getState) => {
 }
 
 export const deactivateMod = modName => (dispatch, getState) => {
+  checkModsForUpdates()(dispatch, getState)
   if(isModInstalled(modName)(dispatch, getState) && isModActive(modName)(dispatch, getState)) {
     let mod = getState().mods.installedMods.filter(mod => mod.name === modName)[0]
     let zip = new AdmZip()
@@ -494,6 +485,7 @@ export const checkInstalledMods = () => (dispatch, getState) => {
           type: SET_SCANNING_FOR_MODS,
           payload: false
         })
+        checkModsForUpdates()(dispatch, getState)
         return
       }
     }
@@ -563,7 +555,6 @@ export const checkInstalledMods = () => (dispatch, getState) => {
               })
             }
           }
-          console.log('Plugins Done')
           pluginsEnded = true
           checkIfDone()
         } else {
@@ -619,7 +610,6 @@ export const checkInstalledMods = () => (dispatch, getState) => {
                 })
               }
           }
-          console.log('Managed Done')
           managedEnded = true
           checkIfDone()
         } else {
@@ -640,20 +630,6 @@ export const patchGame = () => (dispatch, getState) => {
   let patchedWith = gamePatchedWith()(dispatch, getState)
   if(patchedWith === 'NONE') {
     installMod('BSIPA', '')(dispatch, getState)
-    /*
-    fetch('https://api.github.com/repos/nike4613/BeatSaber-IPA-Reloaded/releases/latest')
-      .then(res => res.json())
-      .then(latestRelease => {
-        request.get(latestRelease.assets[latestRelease.assets.findIndex(asset => asset.name === 'Release.zip')].browser_download_url, { encoding: null }, (err, r, data) => {
-          AdmZip(data).extractAllTo(getState().settings.installationDirectory)
-          execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
-          dispatch({
-            type: 'DISPLAY_WARNING',
-            payload: { text: 'Game successfully patched with BSIPA.', color: 'lightgreen' }
-          })
-        })
-      })
-      */
   } else {
     if(patchedWith === 'BSIPA') {
       dispatch({
@@ -665,6 +641,80 @@ export const patchGame = () => (dispatch, getState) => {
       type: SET_PATCHING,
       payload: false
     })
+  }
+}
+
+export const updateMod = modName => (dispatch, getState) => {
+  let modIndex = getState().mods.installedMods.findIndex(mod => mod.name === modName)
+  dispatch({
+    type: UNINSTALL_MOD,
+    payload: modIndex
+  })
+  installMod(modName)(dispatch, getState)
+}
+
+export const ignoreModUpdate = modName => (dispatch, getState) => {
+  let modIndex = getState().mods.installedMods.findIndex(mod => mod.name === modName)
+  console.log('Ignore: ' + getState().mods.installedMods[modIndex].latestVersion)
+  dispatch({
+    type: SET_IGNORE_MOD_UPDATE,
+    payload: {
+      modIndex,
+      ignoreUpdate: true
+    }
+  })
+}
+
+export const checkModsForUpdates = () => (dispatch, getState) => {
+  dispatch({
+    type: CLEAR_MOD_UPDATES
+  })
+  let installedMods = getState().mods.installedMods
+  for(let m = 0; m < installedMods.length; m++) {
+    fetch(`https://beatmods.com/api/v1/mod?status=approved&name=${ installedMods[m].name }&gameVersion=${ getState().settings.gameVersion }`)
+      .then(res => res.json())
+      .then(beatModsResponse => {
+        if(beatModsResponse.length === 0) return
+        let latestVersion = beatModsResponse[0].version
+        for(let i = 0; i < beatModsResponse; i++) {
+          if(semver.satisfies(beatModsResponse[i].version, `^${ latestVersion }`)) {
+            latestVersion = beatModsResponse[i].version
+          }
+        }
+        if(installedMods[m].ignoreUpdate) {
+          console.log(latestVersion, JSON.stringify(installedMods[m]))
+          if(semver.gt(latestVersion, installedMods[m].latestVersion)) {
+            dispatch({
+              type: SET_IGNORE_MOD_UPDATE,
+              payload: {
+                modIndex: m,
+                ignoreUpdate: false
+              }
+            })
+          }
+          return
+        }
+        if(semver.gt(latestVersion, installedMods[m].version)) {
+          dispatch({
+            type: SET_MOD_UPDATE_AVAILABLE,
+            payload: {
+              modIndex: m,
+              updateAvailable: true,
+              latestVersion
+            }
+          })
+          if(getState().mods.updates === 1) {
+            dispatch({
+              type: DISPLAY_WARNING,
+              payload: {
+                text: 'Mod updates are available. Go to downloads to install updates.',
+                color: 'gold',
+                timeout: 5000
+              }
+            })
+          }
+        }
+      })
   }
 }
 

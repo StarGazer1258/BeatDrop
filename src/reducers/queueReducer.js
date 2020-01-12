@@ -1,17 +1,11 @@
-import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS } from '../actions/types'
+import { ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS } from '../actions/types'
 
 const initialState = {
-  isOpen: false,
   items: []
 }
 
 export default function(state = initialState, action) {
   switch(action.type) {
-    case SET_QUEUE_OPEN:
-      return {
-        ...state,
-        isOpen: action.payload
-      }
     case ADD_TO_QUEUE:
       let items = [...state.items]
       if(items.length >= 25) items.pop()

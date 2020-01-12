@@ -16,7 +16,7 @@ import { connect } from 'react-redux'
 
 import { setHasError, setErrorMessage } from '../actions/windowActions'
 import { downloadSong } from '../actions/queueActions'
-import { loadModDetails, installMod } from '../actions/modActions'
+import { loadModDetails, installMod, checkModsForUpdates } from '../actions/modActions'
 import { loadDetailsFromKey } from '../actions/detailsActions'
 import { setView } from '../actions/viewActions'
 import { fetchLocalPlaylists } from '../actions/playlistsActions'
@@ -30,6 +30,7 @@ const path = window.require('path')
 class App extends Component {
   
   componentDidMount() {
+    checkModsForUpdates()(store.dispatch, store.getState)
     ipcRenderer.send('launch-events', 'check-launch-events')
     ipcRenderer.on('launch-events', (_, event, message) => {
       switch(event) {
@@ -57,21 +58,19 @@ class App extends Component {
           for(let i = 0; i < message.mods.install.length; i++) {
             installMod(message.mods.install[i], '')(store.dispatch, store.getState)
           }
+          for(let i = 0; i < message.files.length; i++) {
+            let dir = message.files[i].file.split(path.sep)
+            let filename = dir[dir.length - 1] + message.files[i].ext
+            let newPath = path.join(store.getState().settings.installationDirectory, "Playlists", filename);
+            fs.rename(message.files[i].file, newPath, (err) => {
+              if (err) throw err;
+              fetchLocalPlaylists(true)(store.dispatch, store.getState)
+            })
+          }
           return
         default:
           return
       }
-    })
-
-    // handle beatsaber playlist file opens
-    ipcRenderer.on('file-open', (_, file, ext) => {
-      let dir = file.split(path.sep)
-      let filename = dir[dir.length - 1] + ext
-      let newPath = path.join(store.getState().settings.installationDirectory, "Playlists", filename);
-      fs.rename(file, newPath, (err) => {
-        if (err) throw err;
-        fetchLocalPlaylists(true)(store.dispatch, store.getState)
-      })
     })
   }
 

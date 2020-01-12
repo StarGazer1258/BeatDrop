@@ -23,7 +23,8 @@ let launchEvents = {
     details: [],
     install: [],
     uninstall: []
-  }
+  },
+  files: []
 }
 
 ipcMain.on('launch-events', (_, event, message) => {
@@ -155,7 +156,7 @@ function handleArgs(argv, sendImmediately) {
   // handle files
   const args = argv.filter((_, i) => !(i < (isDev ? 2 : 1)))
   const { ext } = path.parse(args[0])
-  return handleFiles(args[0], ext);
+  launchEvents.files.push({ file: args[0], ext })
 }
 
 function handleBeatdrop(argv, sendImmediately){
@@ -218,10 +219,6 @@ function handleBeatdrop(argv, sendImmediately){
       }
     }
   }
-}
-
-function handleFiles(path, ext){
- mainWindow.webContents.send('file-open', path, ext);
 }
 
 function createWindow() {

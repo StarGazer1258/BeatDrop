@@ -82,6 +82,19 @@ hr {
   margin-top: 20px;
 }
 
+.view {
+  height: 100%;
+  overflow-y: scroll;
+
+  padding: 0 50px;
+
+  h1 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 32pt;
+  }
+}
+
 .hidden {
   display: none !important;
 }
