@@ -12,7 +12,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   let state = getState()
   if(typeof doSetView === 'object' || doSetView === undefined) { doSetView = true } else { doSetView = false }
   if(doSetView === true) {
-    setView(PLAYLIST_LIST)(dispatch)
+    setView(PLAYLIST_LIST)(dispatch, getState)
     dispatch({
       type: SET_LOADING,
       payload: true
@@ -140,7 +140,7 @@ export const clearPlaylistDialog = () => dispatch => {
 }
 
 export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
-  setView(PLAYLIST_DETAILS)(dispatch)
+  setView(PLAYLIST_DETAILS)(dispatch, getState)
   fs.access(playlistFile, (err) => {
     if(err) {
       dispatch({

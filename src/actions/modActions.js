@@ -18,7 +18,7 @@ const semver = remote.require('semver')
 const { ipcRenderer } = window.require('electron')
 
 export const fetchApprovedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.NEW_MODS
@@ -42,7 +42,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
 }
 
 export const fetchRecommendedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.RECOMMENDED_MODS
@@ -73,8 +73,8 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
   }
 }
 
-export const fetchModCategories = () => dispatch => {
-  setView(MODS_VIEW)(dispatch)
+export const fetchModCategories = () => (dispatch, getState) => {
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORY_SELECT
@@ -90,7 +90,7 @@ export const fetchModCategories = () => dispatch => {
 }
 
 export const fetchModCategory = category => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: BEATMODS.MOD_CATEGORIES
@@ -114,7 +114,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
 }
 
 export const fetchLocalMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ALL
@@ -152,7 +152,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
 }
 
 export const fetchActivatedMods = () => (dispatch, getState) => {
-  setView(MODS_VIEW)(dispatch)
+  setView(MODS_VIEW)(dispatch, getState)
   dispatch({
     type: SET_RESOURCE,
     payload: LIBRARY.MODS.ACTIVATED
@@ -189,8 +189,8 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
     })
 }
 
-export const loadModDetails = modId => dispatch => {
-  setView(MOD_DETAILS)(dispatch)
+export const loadModDetails = modId => (dispatch, getState) => {
+  setView(MOD_DETAILS)(dispatch, getState)
   dispatch({
     type: SET_LOADING,
     payload: true
