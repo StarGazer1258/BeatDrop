@@ -1,5 +1,6 @@
 import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../constants/views'
+import { BEATSAVER_BASE_URL } from '../constants/urls'
 import { defaultPlaylistIcon } from '../b64Assets'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'
@@ -196,7 +197,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                 })
             })
           } else {
-            fetch(`https://beatsaver.com/api/maps/by-hash/${playlist.songs[i].hash}`)
+            fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${playlist.songs[i].hash}`)
             .then(res => res.json())
             .then(song => {
               song.coverURL = `https://beatsaver.com/${song.coverURL}`
@@ -213,10 +214,10 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
             })
           }
         } else {
-          fetch(`https://beatsaver.com/api/maps/detail/${playlist.songs[i].key}`)
+          fetch(`${BEATSAVER_BASE_URL}/api/maps/detail/${playlist.songs[i].key}`)
             .then(res => res.json())
             .then(details => {
-              details.coverURL = `https://beatsaver.com/${details.coverURL}`
+              details.coverURL = `${BEATSAVER_BASE_URL}/${details.coverURL}`
               if(state.songs.downloadedSongs.some(song => song.hash === details.hash)) {
                 let file = state.songs.downloadedSongs[state.songs.downloadedSongs.findIndex(song => song.hash === details.hash)].file
                 fs.readFile(file, 'UTF8', (err, data) => {
