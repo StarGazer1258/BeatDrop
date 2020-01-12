@@ -39,6 +39,7 @@ class ReleaseNotesModal extends Component {
               <li>2.6.1: Fixed "Ignore Update" button.</li>
               <li>2.6.1: Make playlist editing check more efficient.</li>
               <li>2.6.1: Merge <a href="https://github.com/StarGazer1258/BeatDrop/pull/57" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#57.</a> Fixes bug with folder name creation.</li>
+              <li>2.6.2: Merge <a href="https://github.com/StarGazer1258/BeatDrop/pull/110" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#110.</a> Fixes <a href="https://github.com/StarGazer1258/BeatDrop/issues/86" onClick={ (e) => { e.preventDefault(); e.stopPropagation(); window.require('electron').shell.openExternal(e.target.href) } }>#86</a>, a crash when opening centain categories.</li>
             </ul>
             <br />
             <Button type="primary" onClick={ () => { this.props.setLatestReleaseNotes(require('../../package.json').version) } }>Awesome!</Button>
