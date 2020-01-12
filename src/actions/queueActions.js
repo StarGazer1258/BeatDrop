@@ -56,7 +56,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 payload: { 
                   utc,
                   hash: song.hash,
-                  image: `https://www.beatsaver.com${ song.coverURL }`,
+                  image: `https://beatsaver.com${ song.coverURL }`,
                   title: song.metadata.songName,
                   author: song.metadata.songAuthorName
                 }
@@ -253,7 +253,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           payload: { 
             utc,
             hash: song.hash,
-            image: `https://www.beatsaver.com${ song.coverURL }`,
+            image: `https://beatsaver.com${ song.coverURL }`,
             title: song.metadata.songName,
             author: song.metadata.songAuthorName
           }
