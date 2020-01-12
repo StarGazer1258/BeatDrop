@@ -26,7 +26,7 @@ class WelcomePage extends Component {
   }
 
   componentDidMount() {
-    if(this.props.settings.installationDirectory === ''   ||
+    if(this.props.settings.installationDirectory === 'Please Choose a Folder...'   ||
        this.props.settings.installationType === 'choose'  ||
        this.props.settings.installationType === undefined ||
        this.props.settings.gameVersion === 'choose'       ||
@@ -80,7 +80,7 @@ class WelcomePage extends Component {
             <br /><br />
             { this.props.settings.installationType === 'steam' && this.props.settings.installationDirectory.includes('Oculus') ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Oculus version of BeatSaber. If this is the case, please set "Installation Type" to "Oculus". Otherwise, you can ignore this message.</span><br /><br /></> : null }
             { this.props.settings.installationType === 'oculus' && this.props.settings.installationDirectory.includes('Steam') ? <><span style={ { fontWeight: 'bold', color: 'salmon' } }>Warning: BeatDrop has detected that you may be using the Steam version of BeatSaber. If this is the case, please set "Installation Type" to "Steam". Otherwise, you can ignore this message.</span><br /><br /></> : null }
-            <Button type='primary' onClick={ () => { this.props.checkDownloadedSongs(); this.props.checkInstalledMods(); this.setState({ modalOpen: false }) } } disabled={ this.props.settings.installationDirectory === '' || this.props.settings.installationType === 'choose' || this.props.settings.installationType === undefined || this.props.settings.gameVersion === 'choose' || this.props.settings.gameVersion === undefined }>Continue</Button>
+            <Button type='primary' onClick={ () => { this.setState({ modalOpen: false }) } } disabled={ this.props.settings.installationDirectory === 'Please Choose a Folder...' || this.props.settings.installationType === 'choose' || this.props.settings.installationType === undefined || this.props.settings.gameVersion === 'choose' || this.props.settings.gameVersion === undefined }>Continue</Button>
           </Modal> : null }
       </div>
     )

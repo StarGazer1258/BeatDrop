@@ -1,8 +1,8 @@
 import { SET_VIEW, SET_SUB_VIEW, SET_SCROLLTOP } from './types'
 import { setPlaylistEditing } from '../actions/playlistsActions'
 
-export const setView = view => dispatch => {
-  setPlaylistEditing(false)(dispatch)
+export const setView = view => (dispatch, getState) => {
+  if(getState().playlists.editing) setPlaylistEditing(false)(dispatch)
   dispatch({
     type: SET_VIEW,
     payload: view

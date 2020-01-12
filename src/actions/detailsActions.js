@@ -21,7 +21,7 @@ export const loadDetailsFromFile = file => (dispatch, getState) => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  setView(SONG_DETAILS)(dispatch)
+  setView(SONG_DETAILS)(dispatch, getState)
   fs.readFile(file, 'UTF-8', (err, data) => {
     if(err) return
     let details = JSON.parse(data)
@@ -51,7 +51,7 @@ export const loadDetailsFromFile = file => (dispatch, getState) => {
  * Loads and presents the details page for a song from a key.
  * @param {string} key The key of the song
  */
-export const loadDetailsFromKey = key => dispatch => {
+export const loadDetailsFromKey = key => (dispatch, getState) => {
   dispatch({
     type: CLEAR_DETAILS
   })
@@ -59,7 +59,7 @@ export const loadDetailsFromKey = key => dispatch => {
     type: SET_DETAILS_LOADING,
     payload: true
   })
-  setView(SONG_DETAILS)(dispatch)
+  setView(SONG_DETAILS)(dispatch, getState)
   if((/^[a-f0-9]+$/).test(key)) {
     fetch(`${BEATSAVER_BASE_URL}/api/maps/detail/${key}`)
       .then(res => {

@@ -1,0 +1,76 @@
+#downloads-view {
+  .updates-title {
+    margin-top: 30px;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+
+    h1 {
+      margin: 0;
+    }
+  }
+
+  .updates-list {
+    list-style: none;
+    padding: 0;
+
+    li {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .downloads-list {
+    list-style: none;
+    padding: 0;
+
+    li {
+      height: 100px;
+      display: flex;
+      flex-flow: row nowrap;
+
+      img {
+        width: 80px;
+        height: 80px;
+        margin: 10px 10px;
+        border-radius: 5px;
+        position: relative;
+        filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.25));
+      }
+      
+      .download-info {
+        width: calc(100% - 100px);
+      }
+
+      .title {
+        font-size: 18pt;
+        font-weight: 900;
+        margin-top: 3px;
+        margin-bottom: -3px;
+        max-width: calc(100vw - 460px);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      
+
+      .download-progress {
+        display: inline-block;
+        width: 90%;
+        margin-right: 10px;
+      }
+    }
+
+    .no-downloads {
+      color: grey;
+      margin-bottom: 30px;
+    }
+  }
+}

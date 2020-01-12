@@ -4,8 +4,9 @@ import '../css/SideBar.scss'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
+import Badge from './Badge'
+
 import { setView } from '../actions/viewActions'
-import { setQueueOpen } from '../actions/queueActions'
 import { fetchNew, fetchTopDownloads, fetchTopFinished, fetchLocalSongs } from '../actions/songListActions'
 import { fetchApprovedMods, fetchRecommendedMods, fetchModCategories, fetchLocalMods, fetchActivatedMods, checkInstalledMods } from '../actions/modActions'
 import { fetchLocalPlaylists } from '../actions/playlistsActions'
@@ -16,24 +17,7 @@ import * as VIEWS from '../constants/views'
 import * as RESOURCES from '../constants/resources'
 import * as SECTIONS from '../constants/sections'
 
-const closeQueueAction = function (e) { if(!e.target.classList.contains('i-download-queue') && this.props.isQueueOpen) { this.props.setQueueOpen(false) } }
-
 class SideBar extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.closeQueueAction = closeQueueAction.bind(this)
-  }
-
-  componentDidMount() {
-    document.addEventListener('mouseup', this.closeQueueAction)
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mouseup', this.closeQueueAction)
-  }
-
   render() {
     return (
       <div id='sidebar' className={ this.props.sidebarOpen ? '' : 'collapsed' }>
@@ -69,7 +53,7 @@ class SideBar extends Component {
         <div className="buttons-bottom">
           <div id="settings-button" className={ this.props.view === VIEWS.SETTINGS ? 'open' : '' } title="Settings" onClick={ () => this.props.setView(VIEWS.SETTINGS) }> Settings</div>
           <div id="search-button" className={ this.props.view === VIEWS.SEARCH ? 'open' : '' } title="Search" onClick={ () => this.props.setView(VIEWS.SEARCH) }> Search</div>
-          <div id="queue-button" className={ `i-download-queue${this.props.isQueueOpen ? ' open' : ''}` } title="Download Queue" onClick={ () => { this.props.setQueueOpen(!this.props.isQueueOpen) } }>Downloads</div>
+          <div id="queue-button" className={ this.props.view === VIEWS.DOWNLOADS ? 'open' : '' } title="Downloads" onClick={ () => { this.props.setView(VIEWS.DOWNLOADS) } }>Downloads{ this.props.updates > 0 ? <>&nbsp;<Badge backgroundColor="red">{ this.props.updates }</Badge></> : null }</div>
           <div id="donate-button" className={ this.props.view === VIEWS.DONATE ? 'open' : '' } title="Donate" onClick={ () => { this.props.setView(VIEWS.DONATE) } }> Donate</div>
         </div>
       </div>
@@ -100,10 +84,10 @@ const mapStateToProps = state => ({
   sidebarOpen: state.sidebar.isOpen,
   offlineMode: state.settings.offlineMode,
   section: state.sidebar.section,
-  isQueueOpen: state.queue.isOpen
+  updates: state.mods.updates
 })
 
-export default connect(mapStateToProps, { fetchNew, fetchTopDownloads, fetchTopFinished, fetchLocalSongs, fetchLocalPlaylists, fetchApprovedMods, fetchLocalMods, fetchActivatedMods, fetchRecommendedMods, fetchModCategories, setResource, resizeSidebar, setSection, checkInstalledMods, setView, setQueueOpen })(SideBar)
+export default connect(mapStateToProps, { fetchNew, fetchTopDownloads, fetchTopFinished, fetchLocalSongs, fetchLocalPlaylists, fetchApprovedMods, fetchLocalMods, fetchActivatedMods, fetchRecommendedMods, fetchModCategories, setResource, resizeSidebar, setSection, checkInstalledMods, setView })(SideBar)
 
 /*
 <li className={ `library-conflicted-mods${this.props.view === MODS_VIEW && this.props.resource === RESOURCES.LIBRARY.MODS.CONFLICTS ? ' selected' : ''}` }>Mod Packs</li>
