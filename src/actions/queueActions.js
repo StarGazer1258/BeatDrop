@@ -1,5 +1,6 @@
 import { SET_QUEUE_OPEN, ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../constants/views'
+import { BEATSAVER_BASE_URL } from '../constants/urls'
 import { isModInstalled, installEssentialMods } from './modActions'
 import { setView } from './viewActions'
 
@@ -26,7 +27,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
   if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
   let hash = identity
   if(identity) {
-    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
+    fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${hash}`)
       .then(res => res.json())
       .then(song => {
         hash = song.hash
@@ -46,7 +47,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         setTimeout(() => {
           document.getElementById('queue-button').classList.remove('notify')
         }, 1000)
-        fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
+        fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${hash}`)
           .then(res =>  res.json())
           .then(song => {
             let utc = Date.now()
@@ -56,13 +57,13 @@ export const downloadSong = (identity) => (dispatch, getState) => {
                 payload: { 
                   utc,
                   hash: song.hash,
-                  image: `https://beatsaver.com${ song.coverURL }`,
+                  image: `${BEATSAVER_BASE_URL}${ song.coverURL }`,
                   title: song.metadata.songName,
                   author: song.metadata.songAuthorName
                 }
               })
               let req = request.get({
-                url: `https://beatsaver.com${song.downloadURL}`,
+                url: `${BEATSAVER_BASE_URL}${song.downloadURL}`,
                 encoding: null
               }, (err, r, data) => {
                 try {
@@ -244,7 +245,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
     setTimeout(() => {
       document.getElementById('queue-button').classList.remove('notify')
     }, 1000)
-    fetch(`https://beatsaver.com/api/maps/by-hash/${hash}`)
+    fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${hash}`)
       .then(res =>  res.json())
       .then(song => {
         let utc = Date.now()
@@ -253,13 +254,13 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           payload: { 
             utc,
             hash: song.hash,
-            image: `https://beatsaver.com${ song.coverURL }`,
+            image: `${BEATSAVER_BASE_URL}${ song.coverURL }`,
             title: song.metadata.songName,
             author: song.metadata.songAuthorName
           }
         })
         let req = request.get({
-          url: `https://beatsaver.com/${ song.downloadURL }`,
+          url: `${BEATSAVER_BASE_URL}/${ song.downloadURL }`,
           encoding: null
         }, (err, r, data) => {
           try {
