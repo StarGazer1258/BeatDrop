@@ -1,6 +1,7 @@
 import { FETCH_LOCAL_PLAYLISTS, LOAD_NEW_PLAYLIST_IMAGE, SET_NEW_PLAYLIST_OPEN, SET_PLAYLIST_PICKER_OPEN, CLEAR_PLAYLIST_DIALOG, LOAD_PLAYLIST_DETAILS, LOAD_PLAYLIST_SONGS, CLEAR_PLAYLIST_DETAILS, SET_PLAYLIST_EDITING, SET_LOADING, DISPLAY_WARNING } from './types'
 import { PLAYLIST_LIST, PLAYLIST_DETAILS } from '../constants/views'
 import { BEATSAVER_BASE_URL } from '../constants/urls'
+import { makeUrl } from '../utilities'
 import { defaultPlaylistIcon } from '../b64Assets'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'
@@ -21,7 +22,7 @@ export const fetchLocalPlaylists = (doSetView) => (dispatch, getState) => {
   }
   let playlists = []
   fs.access(path.join(state.settings.installationDirectory, 'Playlists'), (err) => {
-    if(err) { 
+    if(err) {
       fs.mkdirSync(path.join(state.settings.installationDirectory, 'Playlists'))
     }
     fs.readdir(path.join(state.settings.installationDirectory, 'Playlists'), (err, files) => {
@@ -197,7 +198,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
                 })
             })
           } else {
-            fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${playlist.songs[i].hash}`)
+            fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/by-hash/${playlist.songs[i].hash}`))
             .then(res => res.json())
             .then(song => {
               song.coverURL = `https://beatsaver.com/${song.coverURL}`
@@ -214,7 +215,7 @@ export const loadPlaylistDetails = playlistFile => (dispatch, getState) => {
             })
           }
         } else {
-          fetch(`${BEATSAVER_BASE_URL}/api/maps/detail/${playlist.songs[i].key}`)
+          fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/detail/${playlist.songs[i].key}`))
             .then(res => res.json())
             .then(details => {
               details.coverURL = `${BEATSAVER_BASE_URL}/${details.coverURL}`
@@ -331,7 +332,7 @@ export const addSongToPlaylist = (song, playlistFile) => (dispatch, getState) =>
           })
         })
     }
-    
+
     fs.writeFile(playlistFile, JSON.stringify(playlist), 'UTF8', (err) => {
       if(err)  {
         dispatch({

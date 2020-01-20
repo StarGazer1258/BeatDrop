@@ -12,6 +12,9 @@ import { checkInstalledMods } from '../actions/modActions'
 import { fetchNew } from '../actions/songListActions'
 import { connect } from 'react-redux'
 
+import { BEATMODS_BASE_URL } from '../constants/urls'
+import { makeUrl } from '../utilities'
+
 const { shell } = window.require('electron')
 
 class WelcomePage extends Component {
@@ -34,7 +37,7 @@ class WelcomePage extends Component {
          this.setState({ modalOpen: true })
        }
 
-    fetch('https://beatmods.com/api/v1/version')
+    fetch(makeUrl(BEATMODS_BASE_URL, '/api/v1/version'))
       .then(res => res.json())
       .then(gameVersions => this.setState({ gameVersions }))
   }

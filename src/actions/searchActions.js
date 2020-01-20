@@ -1,5 +1,6 @@
 import { SET_SEARCH_SOURCES, SUBMIT_SEARCH, SET_LOADING } from './types'
 import { BEATSAVER_BASE_URL } from '../constants/urls'
+import { makeUrl } from '../utilities'
 
 const { remote } = window.require('electron')
 const fs = remote.require('fs')
@@ -49,7 +50,7 @@ export const submitSearch = keywords => (dispatch, getState) => {
   localResultsReady = true
 
   // BeatSaver Search
-  fetch(`${BEATSAVER_BASE_URL}/api/search/text/all?q=` + encodeURIComponent(keywords.replace('/', '\\')))
+  fetch(makeUrl(BEATSAVER_BASE_URL, `/api/search/text/all?q=${encodeURIComponent(keywords.replace('/', '\\'))}`))
     .then(res => res.json())
     .then(data => {
       beatSaverSongs = data.docs
@@ -66,10 +67,10 @@ export const submitSearch = keywords => (dispatch, getState) => {
       }
       beatSaverResultsReady = true
     })
-  
+
   // BeatSaver ID Search
   if(isId) {
-    fetch(`${BEATSAVER_BASE_URL}/api/maps/detail/` + keywords)
+    fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/detail/${keywords}`))
     .then(res => { if(res.status !== 200) { beatSaverIdResultsReady = true; return } return res.json() })
     .then(data => {
       if(!data) { beatSaverIdResultsReady = true; return }

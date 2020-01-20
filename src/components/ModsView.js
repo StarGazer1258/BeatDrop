@@ -2,13 +2,14 @@ import React, { Component, Fragment } from 'react'
 import '../css/ModsView.scss'
 
 import { connect } from 'react-redux'
+import { BEATMODS_BASE_URL } from '../constants/urls'
 import { BEATMODS, LIBRARY } from '../constants/resources';
+import { makeRenderKey, makeUrl } from '../utilities'
 
 import { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod } from '../actions/modActions'
 import { displayWarning } from '../actions/warningActions'
 import { ContextMenuTrigger, MenuItem, ContextMenu } from 'react-contextmenu';
 
-import { makeRenderKey } from '../utilities'
 import LibraryIndicator from './LibraryIndicator';
 import DeactivatedIndicator from './DeactivatedIndicator';
 import SortBar from './SortBar';
@@ -19,7 +20,7 @@ class ModsView extends Component {
   Catergories(props) {
     return (
       <ul className="categories-list">
-        { this.state.categories ? 
+        { this.state.categories ?
           this.state.categories.map((category) => {
             return (
               <li className="category" onClick={ () => { props.fetchModCategory(category.toLowerCase()); this.setState({ category }) } }>
@@ -53,7 +54,7 @@ class ModsView extends Component {
   componentDidMount() {
     let categories = []
     let prevCat = ''
-    fetch('https://beatmods.com/api/v1/mod?status=approved')
+    fetch(makeUrl(BEATMODS_BASE_URL, '/api/v1/mod?status=approved'))
       .then(res => res.json())
       .then(beatModsResponse => {
         for(let i = 0; i < beatModsResponse.length; i++) {

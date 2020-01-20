@@ -1,7 +1,7 @@
 import { SET_MOD_LIST, SET_RESOURCE, SET_LOADING, LOAD_MOD_DETAILS, INSTALL_MOD, SET_SCANNING_FOR_MODS, SET_INSTALLED_MODS, DISPLAY_WARNING, UNINSTALL_MOD, CLEAR_MODS, ADD_TO_QUEUE, UPDATE_PROGRESS, ADD_DEPENDENT, SET_MOD_ACTIVE, ADD_PENDING_MOD, SET_PATCHING, SET_MOD_UPDATE_AVAILABLE, CLEAR_MOD_UPDATES, SET_IGNORE_MOD_UPDATE } from './types'
 import { MODS_VIEW, MOD_DETAILS } from '../constants/views'
 import { BEATMODS_BASE_URL } from '../constants/urls'
-
+import { makeUrl } from '../utilities'
 import { BEATMODS, LIBRARY } from '../constants/resources'
 
 import modIcon from '../assets/dark/mod.png'
@@ -28,7 +28,7 @@ export const fetchApprovedMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&gameVersion=${getState().settings.gameVersion}`)
+  fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?status=approved&gameVersion=${getState().settings.gameVersion}`))
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -55,7 +55,7 @@ export const fetchRecommendedMods = () => (dispatch, getState) => {
   let recommendedMods = ['CameraPlus', 'YUR Fit Calorie Tracker', 'SyncSaber', 'Custom Sabers', 'Custom Platforms', 'Custom Avatars', 'BeatSaberTweaks', 'PracticePlugin', 'Counters+']
   let mods = []
   for(let i = 0; i < recommendedMods.length; i++) {
-    fetch(`${BEATMODS_BASE_URL}/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}&gameVersion=${getState().settings.gameVersion}`)
+    fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?name=${encodeURIComponent(recommendedMods[i])}&gameVersion=${getState().settings.gameVersion}`))
       .then(res => res.json())
       .then(beatModsResponse => {
         if(beatModsResponse.length === 0) { recommendedMods.splice(i, 1); return }
@@ -100,7 +100,7 @@ export const fetchModCategory = category => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?category=${ category }&status=approved&gameVersion=${getState().settings.gameVersion}`)
+  fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?category=${ category }&status=approved&gameVersion=${getState().settings.gameVersion}`))
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -124,7 +124,7 @@ export const fetchLocalMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&status=inactive`)
+  fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?status=approved&status=inactive`))
     .then(res => res.json())
     .then(beatModsResponse => {
       let installedMods = getState().mods.installedMods
@@ -162,7 +162,7 @@ export const fetchActivatedMods = () => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&status=inactive`)
+  fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?status=approved&status=inactive`))
     .then(res => res.json())
     .then(beatModsResponse => {
       let activatedMods = getState().mods.installedMods.filter(mod => mod.active === true)
@@ -196,7 +196,7 @@ export const loadModDetails = modId => (dispatch, getState) => {
     type: SET_LOADING,
     payload: true
   })
-  fetch(`${BEATMODS_BASE_URL}/api/v1/mod`)
+  fetch(makeUrl(BEATMODS_BASE_URL, '/api/v1/mod'))
     .then(res => res.json())
     .then(beatModsResponse => {
       dispatch({
@@ -234,7 +234,7 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
     }
     return
   }
-  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&status=inactivename=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`)
+  fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?status=approved&status=inactivename=${ encodeURIComponent(modName) }&gameVersion=${ getState().settings.gameVersion }`))
     .then(res => res.json())
     .then(beatModsResponse => {
       let latestVersion = '0.0.0'
@@ -285,13 +285,13 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
           } else {
             zip.extractAllTo(path.join(getState().settings.installationDirectory, 'IPA', 'Pending'))
           }
-  
+
           let entries = zip.getEntries()
           let files = []
           for(let i = 0; i < entries.length; i++) {
             files.push(entries[i].entryName)
           }
-          
+
           if(modName === 'BSIPA') {
             execFile(path.join(getState().settings.installationDirectory, 'IPA.exe'), ['-n'], { cwd: getState().settings.installationDirectory })
             dispatch({
@@ -332,13 +332,13 @@ export const installMod = (modName, version, dependencyOf = '') => (dispatch, ge
 
             let zip = new AdmZip(data)
             zip.extractAllTo(getState().settings.installationDirectory)
-    
+
             let entries = zip.getEntries()
             let files = []
             for(let i = 0; i < entries.length; i++) {
               files.push(entries[i].entryName)
             }
-            
+
             dispatch({
               type: INSTALL_MOD,
               payload: {
@@ -518,7 +518,7 @@ export const checkInstalledMods = () => (dispatch, getState) => {
                   let md5sum = crypto.createHash('md5')
                   md5sum.update(data)
                   let hash = md5sum.digest('hex')
-                  fetch(`${BEATMODS_BASE_URL}/api/v1/mod?hash=${hash}`)
+                  fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?hash=${hash}`))
                     .then(res => res.json())
                     .then(beatModsResponse => {
                       if(beatModsResponse.length > 0) {
@@ -573,7 +573,7 @@ export const checkInstalledMods = () => (dispatch, getState) => {
                 let md5sum = crypto.createHash('md5')
                 md5sum.update(data)
                 let hash = md5sum.digest('hex')
-                fetch(`${BEATMODS_BASE_URL}/api/v1/mod?hash=${hash}`)
+                fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?hash=${hash}`))
                   .then(res => res.json())
                   .then(beatModsResponse => {
                     if(beatModsResponse.length > 0) {
@@ -672,7 +672,7 @@ export const checkModsForUpdates = () => (dispatch, getState) => {
   })
   let installedMods = getState().mods.installedMods
   for(let m = 0; m < installedMods.length; m++) {
-    fetch(`${BEATMODS_BASE_URL}/api/v1/mod?status=approved&name=${ installedMods[m].name }&gameVersion=${ getState().settings.gameVersion }`)
+    fetch(makeUrl(BEATMODS_BASE_URL, `/api/v1/mod?status=approved&name=${ installedMods[m].name }&gameVersion=${ getState().settings.gameVersion }`))
       .then(res => res.json())
       .then(beatModsResponse => {
         if(beatModsResponse.length === 0) return
@@ -732,7 +732,7 @@ export const gamePatchedWith = () => (dispatch, getState) => {
       installationType = 'IPA'
       dispatch({
         type: 'DISPLAY_WARNING',
-        payload: { 
+        payload: {
           text: `Your game is patched with IPA. It is reccommeded that you upgrade to BSIPA to maintain compatability with future mods.
                   To upgrade, reinstall Beat Saber and download any mod from BeatDrop.`,
           color: 'gold'

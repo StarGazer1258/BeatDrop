@@ -8,6 +8,8 @@ import { resetApp } from '../actions/appActions'
 import '../css/SettingsView.scss'
 import Button from './Button'
 import Toggle from './Toggle'
+import { BEATMODS_BASE_URL } from '../constants/urls'
+import { makeUrl } from '../utilities'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -29,7 +31,7 @@ class SettingsView extends Component {
       }
     })
 
-    fetch('https://beatmods.com/api/v1/version')
+    fetch(makeUrl(BEATMODS_BASE_URL, '/api/v1/version'))
       .then(res => res.json())
       .then(gameVersions => this.setState({ gameVersions }))
   }

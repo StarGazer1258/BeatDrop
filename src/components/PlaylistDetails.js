@@ -14,7 +14,8 @@ import addIcon from '../assets/add-filled.png'
 import moreIcon from '../assets/more-filled.png'
 import errorIcon from '../assets/error.png'
 
-import { makeRenderKey } from '../utilities'
+import { BEATSAVER_BASE_URL } from '../constants/urls'
+import { makeRenderKey, makeUrl } from '../utilities'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
@@ -65,7 +66,7 @@ class PlaylistDetails extends Component {
           <div className="close-icon" title="Close" onClick={ () => { this.props.clearPlaylistDialog(); this.props.setView(this.props.previousView) } }></div>
           <div id="details-split">
             <div id="details-info">
-              {this.props.editing ? 
+              {this.props.editing ?
                 <>
                   <label htmlFor="edit-playlist-cover-image" id="edit-playlist-add-cover-image"><img src={ this.props.newCoverImageSource || this.props.playlistDetails.image } alt="" /></label>
                   <input type="file" name="edit-playlist-cover-image" id="edit-playlist-cover-image" accept=".jpg,.jpeg,.png,.gif" onChange={ (e) => {this.props.loadPlaylistCoverImage(e.target.files[0].path || this.props.settings.newCoverImageSource)} } />
@@ -86,7 +87,7 @@ class PlaylistDetails extends Component {
                     for(let i = 0; i < this.props.playlistDetails.songs.length; i++) {
                       if(!this.props.playlistDetails.songs[i].hash) {
                         try {
-                          fetch(`https://beatsaver.com/api/maps/detail/${this.props.playlistDetails.songs[i].key}`)
+                          fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/detail/${this.props.playlistDetails.songs[i].key}`))
                             .then(res => res.json())
                             .then(data => { // eslint-disable-line no-loop-func
                               if(!this.props.downloadedSongs.some(song => song.hash === data.song.hash)) {
