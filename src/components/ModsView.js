@@ -4,7 +4,7 @@ import '../css/ModsView.scss'
 import { connect } from 'react-redux'
 import { BEATMODS_BASE_URL } from '../constants/urls'
 import { BEATMODS, LIBRARY } from '../constants/resources';
-import { makeRenderKey, makeUrl } from '../utilities'
+import { makeUrl } from '../utilities'
 
 import { loadModDetails, installMod, uninstallMod, fetchModCategory, deactivateMod, activateMod } from '../actions/modActions'
 import { displayWarning } from '../actions/warningActions'
@@ -111,22 +111,8 @@ class ModsView extends Component {
               <div className="mod-list">
                 { this.props.mods.mods.map(mod => {
                     let category = (mod.category || 'Uncategorized')
-                    let renderTags = [
-                      {
-                        boolean: true,
-                        tag: `${mod.name}@${mod.version}`
-                      },
-                      {
-                        boolean: this.props.mods.installedMods.some(m => m.id === mod._id),
-                        tag: '.installed'
-                      },
-                      {
-                        boolean: this.props.mods.installedMods.some(m => m.name === mod.name) ? !this.props.mods.installedMods.filter(m => m.name === mod.name)[0].active : false,
-                        tag: '.activated'
-                      }
-                    ]
                     return (
-                      <Fragment key={ makeRenderKey(renderTags) }>
+                      <Fragment key={ mod._id }>
                         <ContextMenuTrigger id={ mod._id }>
                         <div className='mod-marketplace-tile' onClick={ () => { this.props.loadModDetails(mod._id) } }>
                           { this.props.mods.installedMods.some(m => m.name === mod.name) ? <LibraryIndicator /> : null }

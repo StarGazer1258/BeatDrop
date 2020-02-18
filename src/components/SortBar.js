@@ -9,7 +9,7 @@ import { setSubView } from '../actions/viewActions'
 
 import * as VIEWS from '../constants/views'
 import * as RESOURCES from '../constants/resources'
- 
+
 class SortBar extends Component {
   render() {
     if(this.props.hidden) return null
@@ -23,7 +23,7 @@ class SortBar extends Component {
 }
 
 SortBar.propTypes = {
-  setsubView: PropTypes.func.isRequired
+  setSubView: PropTypes.func.isRequired
 }
 
 let mapStateToProps = (state) => ({

@@ -94,7 +94,7 @@ componentWillReceiveProps(props) {
     if(this.props.loading) {
       return (
         <div className="cover-grid-item loading">
-          <img className="cover-image" src={ Loader } alt={ this.props.key } />
+          <img className="cover-image" src={ Loader } alt={ this.props.alt } />
         </div>
       )
     } else {

@@ -87,7 +87,7 @@ export const fetchTopDownloads = () => (dispatch, getState) => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
+      for(let i = 0; i < data.docs.length; i++) {
         fetch(makeUrl(BSABER_BASE_URL, `/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`))
         .then(res => res.json())
         .then(bsaberData => {
@@ -217,7 +217,7 @@ export const loadMore = () => (dispatch, getState) => {
     payload: true
   })
   let state = getState()
-  fetch(makeUrl(resourceUrl[state.resource], state.songs.songs.length))
+  fetch(makeUrl(resourceUrl[state.resource], `/${state.songs.nextFetch}`))
     .then(res => {
       return res.json()
     })
@@ -252,7 +252,7 @@ export const loadMore = () => (dispatch, getState) => {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          text: 'There was error loading more songs. Check your connection to the internet and try again.'
+          text: 'There was an error loading more songs. Check your connection to the internet and try again.'
         }
       })
     })

@@ -15,7 +15,7 @@ import moreIcon from '../assets/more-filled.png'
 import errorIcon from '../assets/error.png'
 
 import { BEATSAVER_BASE_URL } from '../constants/urls'
-import { makeRenderKey, makeUrl } from '../utilities'
+import { makeUrl } from '../utilities'
 
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
 
@@ -120,18 +120,8 @@ class PlaylistDetails extends Component {
             </div>
             <ol id="playlist-songs">
               {this.props.playlistDetails.songs.length === 0 ? <div style={ { marginTop: '10px', color: 'silver', fontStyle: 'italic' } }>This playlist is empty.</div> : ''}
-              {this.props.playlistDetails.songs.map((song) => {
-                let songTags = [
-                  {
-                    boolean: true,
-                    tag: song.hash || song.key
-                  },
-                  {
-                    boolean: this.props.downloadedSongs.some(s => s.hash === song.hash),
-                    tag: '.downloaded'
-                  }
-                ]
-                return <li className={ `playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}` } key={ makeRenderKey(songTags) } data-id={ makeRenderKey(songTags) }><span><img style={ { boxShadow: 'none', background: 'transparent' } } src={ song.coverURL || errorIcon } alt="?" /><div className="playlist-item-title">{song.name || song.songName || song._songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={ (e) => {e.target.parentNode.parentNode.remove()} }></div> : null}</span></li>
+              {this.props.playlistDetails.songs.map((song, i) => {
+                return <li className={ `playlist-song-item${(playlistSongs ? (playlistSongs.option('disabled') ? '' : ' draggable') : '')}` } key={ song.hash || song.hashMd5 || i } data-id={ song.hash || song.hashMd5 || i }><span><img style={ { boxShadow: 'none', background: 'transparent' } } src={ song.coverURL || errorIcon } alt="?" /><div className="playlist-item-title">{song.name || song.songName || song._songName || 'Error: Song Unavailable.'}</div>{this.props.downloadedSongs.some(s => s.hash === song.hash) && !this.props.editing ? <div className='playlist-item-downloaded'></div> : null}{this.props.editing ? <div className='delete-playlist-item' onClick={ (e) => {e.target.parentNode.parentNode.remove()} }></div> : null}</span></li>
               })}
             </ol>
           </div>
