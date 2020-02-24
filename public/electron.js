@@ -46,7 +46,8 @@ ipcMain.on('launch-events', (_, event, message) => {
           details: [],
           install: [],
           uninstall: []
-        }
+        },
+        files: []
       }
       return
     default:
@@ -216,7 +217,8 @@ function handleBeatdrop(argv, sendImmediately){
         details: [],
         install: [],
         uninstall: []
-      }
+      },
+      files: []
     }
   }
 }
