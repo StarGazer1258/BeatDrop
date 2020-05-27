@@ -1,3 +1,10 @@
+## BeatDrop is looking for maintainers!
+I no longer have the time to maintain BeatDrop by myself. Therefore, I am seeking 2-3 interested parties to develop and maintain BeatDrop for the forseeable future.
+
+If you are interested, please email blackbandit1258@gmail.com with the title of "[YOUR NAME] - BeatDrop Maintainer" with a copy of a résumé and/or link to a porfolio website or LinkedIn profile. You may also provide details of why you think you would make a good fit for the project.
+
+Please understand that the reason I am so particular is that I would like to see BeatDrop continue to succeed, as many people seem to enjoy it and find good use from it. Thank you for being so patient in waiting for updates and I hope to find the right people to carry on my work.
+
 # BeatDrop
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/StarGazer1258/BeatDrop.svg) ![GitHub All Releases](https://img.shields.io/github/downloads/StarGazer1258/BeatDrop/total.svg) ![GitHub Releases](https://img.shields.io/github/downloads/StarGazer1258/BeatDrop/latest/total.svg) [![Build Status](https://travis-ci.org/StarGazer1258/BeatDrop.svg?branch=master)](https://travis-ci.org/StarGazer1258/BeatDrop)
 
