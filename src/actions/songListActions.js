@@ -29,7 +29,7 @@ export const fetchNew = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: BEATSAVER.NEW_SONGS
   })
-  fetch(`${BEATSAVER_BASE_URL}api/maps/latest`)
+  fetch(`${BEATSAVER_BASE_URL}/api/maps/latest`)
     .then(res => res.json())
     .then(data =>  {
       console.log(data)

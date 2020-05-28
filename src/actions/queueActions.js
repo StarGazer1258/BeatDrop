@@ -57,6 +57,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               })
               let req = request.get({
                 url: `${BEATSAVER_BASE_URL}${song.downloadURL}`,
+                headers: {'User-Agent': 'BeatDrop request'},
                 encoding: null
               }, (err, r, data) => {
                 try {
@@ -244,7 +245,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         let utc = Date.now()
         dispatch({
           type: ADD_TO_QUEUE,
-          payload: { 
+          payload: {
             utc,
             hash: song.hash,
             image: `${BEATSAVER_BASE_URL}${ song.coverURL }`,
@@ -253,7 +254,8 @@ export const downloadSong = (identity) => (dispatch, getState) => {
           }
         })
         let req = request.get({
-          url: `${BEATSAVER_BASE_URL}/${ song.downloadURL }`,
+          url: `${BEATSAVER_BASE_URL}${ song.downloadURL }`,
+          headers: {'User-Agent': 'BeatDrop request'},
           encoding: null
         }, (err, r, data) => {
           try {
