@@ -2,6 +2,7 @@ import { FETCH_NEW, FETCH_TOP_DOWNLOADS, FETCH_TOP_FINISHED, FETCH_LOCAL_SONGS, 
 import { SONG_LIST } from '../constants/views'
 import { BEATSAVER, LIBRARY } from '../constants/resources'
 import { BEATSAVER_BASE_URL, BSABER_BASE_URL } from '../constants/urls'
+import { makeUrl } from '../utilities'
 import { hashAndWriteToMetadata } from './queueActions'
 import { setView } from './viewActions'
 
@@ -29,7 +30,7 @@ export const fetchNew = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: BEATSAVER.NEW_SONGS
   })
-  fetch(`${BEATSAVER_BASE_URL}api/maps/latest`)
+  fetch(makeUrl(BEATSAVER_BASE_URL, '/api/maps/latest'))
     .then(res => res.json())
     .then(data =>  {
       console.log(data)
@@ -43,7 +44,7 @@ export const fetchNew = () => (dispatch, getState) => {
       })
       console.log(data);
       for(let i = 0; i < data.docs.length; i++) {
-        fetch(`${BSABER_BASE_URL}/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
+        fetch(makeUrl(BSABER_BASE_URL, `/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`))
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -75,7 +76,7 @@ export const fetchTopDownloads = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: BEATSAVER.TOP_DOWNLOADED_SONGS
   })
-  fetch(`${BEATSAVER_BASE_URL}/api/maps/downloads`)
+  fetch(makeUrl(BEATSAVER_BASE_URL, '/api/maps/downloads'))
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -86,8 +87,8 @@ export const fetchTopDownloads = () => (dispatch, getState) => {
         type: SET_LOADING,
         payload: false
       })
-      for(let i = 0; i < data.songs.length; i++) {
-        fetch(`${BSABER_BASE_URL}/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
+      for(let i = 0; i < data.docs.length; i++) {
+        fetch(makeUrl(BSABER_BASE_URL, `/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`))
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -119,7 +120,7 @@ export const fetchTopFinished = () => (dispatch, getState) => {
     type: SET_RESOURCE,
     payload: BEATSAVER.TOP_FINISHED_SONGS
   })
-  fetch(`${BEATSAVER_BASE_URL}/api/maps/plays`)
+  fetch(makeUrl(BEATSAVER_BASE_URL, '/api/maps/plays'))
     .then(res => res.json())
     .then(data => {
       dispatch({
@@ -131,7 +132,7 @@ export const fetchTopFinished = () => (dispatch, getState) => {
         payload: false
       })
       for(let i = 0; i < data.docs.length; i++) {
-        fetch(`${BSABER_BASE_URL}/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`)
+        fetch(makeUrl(BSABER_BASE_URL, `/wp-json/bsaber-api/songs/${data.docs[i].key}/ratings`))
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -216,7 +217,7 @@ export const loadMore = () => (dispatch, getState) => {
     payload: true
   })
   let state = getState()
-  fetch(resourceUrl[state.resource] + '/' + state.songs.songs.length)
+  fetch(makeUrl(resourceUrl[state.resource], `/${state.songs.nextFetch}`))
     .then(res => {
       return res.json()
     })
@@ -231,7 +232,7 @@ export const loadMore = () => (dispatch, getState) => {
       })
       console.log(data)
       for(let i = state.songs.songs.length; i < state.songs.songs.length + data.docs.length; i++) {
-        fetch(`${BSABER_BASE_URL}/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key}/ratings`)
+        fetch(makeUrl(BSABER_BASE_URL, `/wp-json/bsaber-api/songs/${data.docs[i - state.songs.songs.length].key}/ratings`))
         .then(res => res.json())
         .then(bsaberData => {
           dispatch({
@@ -251,7 +252,7 @@ export const loadMore = () => (dispatch, getState) => {
       dispatch({
         type: DISPLAY_WARNING,
         payload: {
-          text: 'There was error loading more songs. Check your connection to the internet and try again.'
+          text: 'There was an error loading more songs. Check your connection to the internet and try again.'
         }
       })
     })

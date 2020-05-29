@@ -1,6 +1,7 @@
 import { ADD_TO_QUEUE, CLEAR_QUEUE, UPDATE_PROGRESS, SET_DOWNLOADED_SONGS, SET_DOWNLOADING_COUNT, SET_WAIT_LIST, DISPLAY_WARNING, SET_SCANNING_FOR_SONGS, SET_DISCOVERED_FILES, SET_PROCESSED_FILES } from './types'
 import { SONG_LIST } from '../constants/views'
 import { BEATSAVER_BASE_URL } from '../constants/urls'
+import { makeUrl } from '../utilities'
 import { isModInstalled, installEssentialMods } from './modActions'
 import { setView } from './viewActions'
 
@@ -20,7 +21,7 @@ export const downloadSong = (identity) => (dispatch, getState) => {
   if(!isModInstalled('SongLoader')(dispatch, getState)) installEssentialMods()(dispatch, getState)
   let hash = identity
   if(identity) {
-    fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${hash}`)
+    fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/by-hash/${hash}`))
       .then(res => res.json())
       .then(song => {
         hash = song.hash
@@ -40,14 +41,14 @@ export const downloadSong = (identity) => (dispatch, getState) => {
         setTimeout(() => {
           document.getElementById('queue-button').classList.remove('notify')
         }, 1000)
-        fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${hash}`)
+        fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/by-hash/${hash}`))
           .then(res =>  res.json())
           .then(song => {
             let utc = Date.now()
             if(song) {
               dispatch({
                 type: ADD_TO_QUEUE,
-                payload: { 
+                payload: {
                   utc,
                   hash: song.hash,
                   image: `${BEATSAVER_BASE_URL}${ song.coverURL }`,
@@ -238,13 +239,13 @@ export const downloadSong = (identity) => (dispatch, getState) => {
     setTimeout(() => {
       document.getElementById('queue-button').classList.remove('notify')
     }, 1000)
-    fetch(`${BEATSAVER_BASE_URL}/api/maps/by-hash/${hash}`)
+    fetch(makeUrl(BEATSAVER_BASE_URL, `/api/maps/by-hash/${hash}`))
       .then(res =>  res.json())
       .then(song => {
         let utc = Date.now()
         dispatch({
           type: ADD_TO_QUEUE,
-          payload: { 
+          payload: {
             utc,
             hash: song.hash,
             image: `${BEATSAVER_BASE_URL}${ song.coverURL }`,

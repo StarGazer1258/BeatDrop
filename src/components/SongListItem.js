@@ -118,8 +118,8 @@ function Difficulties(props) {
 
 class SongListItem extends Component {
 
-  shouldComponentUpdate() {
-    return this.props.bsaberRating !== undefined
+  shouldComponentUpdate(nextProps) {
+    return this.props.bsaberRating !== undefined || this.props.view.subView !== nextProps.view.subView
   }
 
   render() {

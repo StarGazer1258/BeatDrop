@@ -9,7 +9,8 @@ const initialState = {
   scanningForSongs: false,
   discoveredFiles: 0,
   processedFiles: 0,
-  totalSongs: 0
+  totalSongs: 0,
+  nextFetch: 0
 }
 
 export default function(state = initialState, action) {
@@ -23,7 +24,8 @@ export default function(state = initialState, action) {
       songs:  [
         ...action.payload.docs
       ],
-      totalSongs: action.payload.total
+      totalSongs: action.payload.totalDocs,
+      nextFetch: action.payload.nextPage
     }
     case FETCH_LOCAL_SONGS:
       return {
@@ -40,7 +42,8 @@ export default function(state = initialState, action) {
           ...state.songs,
           ...action.payload.docs
         ],
-        totalSongs: action.payload.total
+        totalSongs: action.payload.totalDocs,
+        nextFetch: action.payload.nextPage
       }
     case ADD_BSABER_RATING:
       let ratedState = { ...state }
