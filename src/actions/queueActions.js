@@ -57,7 +57,10 @@ export const downloadSong = (identity) => (dispatch, getState) => {
               })
               let req = request.get({
                 url: `${BEATSAVER_BASE_URL}${song.downloadURL}`,
-                encoding: null
+                encoding: null,
+                headers: {
+                  'user-agent': window.navigator.userAgent
+                }
               }, (err, r, data) => {
                 try {
                   // eslint-disable-next-line
