@@ -35,7 +35,7 @@
   "devDependencies": {
     "concurrently": "3.5.1",
     "cross-env": "5.1.6",
-    "electron": "3.0.10",
+    "electron": "11.5.0",
     "electron-builder": "20.38.1",
     "electron-devtools-installer": "^2.2.4",
     "prettier": "^1.4.4",
