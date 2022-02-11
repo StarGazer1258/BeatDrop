@@ -16,7 +16,7 @@
     "electron-updater": "4.0.5",
     "get-image-colors": "^1.8.1",
     "md5": "^2.2.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "original-fs": "^1.0.0",
     "react": "16.4.0",
     "react-contextmenu": "^2.10.0",
