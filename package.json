@@ -39,7 +39,7 @@
     "electron-builder": "20.38.1",
     "electron-devtools-installer": "^2.2.4",
     "prettier": "^1.4.4",
-    "react-scripts": "2.1.2",
+    "react-scripts": "5.0.1",
     "wait-on": "2.1.0"
   },
   "main": "public/electron.js",
